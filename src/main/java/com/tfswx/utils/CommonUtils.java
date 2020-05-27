@@ -99,9 +99,9 @@ public class CommonUtils {
         try {
             String filename = file.getOriginalFilename();
             if (filename.contains(".")) {
-                String[] split = filename.split("\\.");
-                filename = split[0] + "_" + UUID.randomUUID().toString().replace("-", "")
-                        + "." + split[1];
+                int i = filename.lastIndexOf(".");
+                filename = filename.substring(0,i)+"_" + UUID.randomUUID().toString().replace("-", "")
+                        + filename.substring(i,filename.length());
             } else {
                 filename = filename + "_" + UUID.randomUUID().toString().replace("-", "");
             }

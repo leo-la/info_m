@@ -43,14 +43,22 @@ public class ThreeDirectoryPage extends PageSearchTemplate {
         Integer size = pageBean.getPageSize();
         List<FileInfo> fileInfos = Dao.listHistoryVersionPageByVersionid(start, size, pageBean.getId());
         for (FileInfo fileInfo : fileInfos) {
-            if(fileInfo.getName().contains("_")){
-                String name = fileInfo.getName().substring(0, fileInfo.getName().indexOf("_"));
-                fileInfo.setName(name);
-            }else if(fileInfo.getName().contains(".")){
-                String name = fileInfo.getName().substring(0, fileInfo.getName().indexOf("."));
+            if(fileInfo.getName().contains(".")){
+                int i = fileInfo.getName().lastIndexOf("_");
+                int j = fileInfo.getName().lastIndexOf(".");
+                if(j>i){
+                    String name =fileInfo.getName().substring(0,i)+fileInfo.getName().substring(j,fileInfo.getName().length());
+                    fileInfo.setName(name);
+                }else{
+                    String name =fileInfo.getName().substring(0,i);
+                    fileInfo.setName(name);
+                }
+
+            }else {
+                int k = fileInfo.getName().lastIndexOf("_");
+                String name =fileInfo.getName().substring(0,k);
                 fileInfo.setName(name);
             }
-
         }
         pageBean.setPageData(fileInfos);
         return pageBean;
