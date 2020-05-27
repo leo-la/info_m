@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>同方赛威讯 </title>
+
+    <!-- Bootstrap -->
+    <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/pagination.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+    <!-- NProgress -->
+    <link th:href="@{/vendors/nprogress/nprogress.css}" rel="stylesheet">
+    <!-- iCheck -->
+    <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link th:href="@{/vendors/google-code-prettify/bin/prettify.min.css}" rel="stylesheet">
+    <!-- Select2 -->
+    <link th:href="@{/vendors/select2/dist/css/select2.min.css}" rel="stylesheet">
+    <!-- Switchery -->
+    <link th:href="@{/vendors/switchery/dist/switchery.min.css}" rel="stylesheet">
+    <!-- starrr -->
+    <link th:href="@{/vendors/starrr/dist/starrr.css}" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link th:href="@{/vendors/bootstrap-daterangepicker/daterangepicker.css}" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div th:replace="~{commons/commons::sidebar}"></div>
+
+        <!-- top navigation -->
+        <div th:replace="~{commons/commons::topbar}"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left" style="padding-bottom: 8px;padding-left: 12px">
+                        <span style="font-size: 25px;">权限管理
+                            <span style="font-size: 16px;color: #668995;margin-top: 40px;">Permission</span>
+
+                        </span>
+                    </div>
+
+
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-12 col-sm-12  ">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <span style="font-size: 18px;color: #668995;padding-bottom: 0;width: 100px">添加管理员
+                                <span style="font-size: 10px;color: #668995;margin-top: 40px;width: 100px">Add Permission</span>
+
+                            </span>
+
+                            <ul class="nav navbar-right panel_toolbox" >
+                                <li style="float: right;margin-left:50px"><a class="collapse-link"><i class="fa fa-chevron-up" ></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="x_content">
+                            <br>
+                            <form class="form-horizontal form-label-left">
+                                <div class="item form-group">
+                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="username">姓名 <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 ">
+                                        <input type="text" required="required"
+                                               class="form-control " id="username">
+                                    </div>
+                                </div>
+                                <div class="item form-group">
+                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="password">密码 <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 ">
+                                        <input type="text" required="required"
+                                               class="form-control " id="password">
+                                    </div>
+                                </div>
+                                <div class="item form-group">
+                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="depid">部门 <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 ">
+                                        <select class="form-control" required id="depid">
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="item form-group">
+                                    <label for="roleid" class="col-form-label col-md-3 col-sm-3 label-align">角色 <span class="required">*</span></label>
+                                    <div class="col-md-6 col-sm-6 ">
+                                        <select class="form-control" required id="roleid">
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="col-md-3"></div>
+                                <div class="col-md-6">
+                                    <div id="errorMsg2" class="alert alert-danger" style="display: none"></div>
+                                </div>
+                                <br>
+                                <br>
+                                <div class="ln_solid"></div>
+
+
+                                <div class="item form-group">
+                                    <div class="col-md-6 col-sm-6 offset-md-3" style="text-align: center">
+                                        <button class="btn btn-info btn-sm" type="button" onclick="javascript:history.go(-1);">取消</button>
+                                        <a onclick="javascript:addManager()" class="btn btn-success btn-sm">确认</a>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<!-- jQuery -->
+<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+<!-- bootstrap-progressbar -->
+<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+<!-- iCheck -->
+<script th:src="@{/vendors/iCheck/icheck.min.js}"></script>
+<!-- bootstrap-daterangepicker -->
+<script th:src="@{/vendors/moment/min/moment.min.js}"></script>
+<script th:src="@{/vendors/bootstrap-daterangepicker/daterangepicker.js}"></script>
+<!-- bootstrap-wysiwyg -->
+<script th:src="@{/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js}"></script>
+<script th:src="@{/vendors/jquery.hotkeys/jquery.hotkeys.js}"></script>
+<script th:src="@{/vendors/google-code-prettify/src/prettify.js}"></script>
+<!-- jQuery Tags Input -->
+<script th:src="@{/vendors/jquery.tagsinput/src/jquery.tagsinput.js}"></script>
+<!-- Switchery -->
+<script th:src="@{/vendors/switchery/dist/switchery.min.js}"></script>
+<!-- Select2 -->
+<script th:src="@{/vendors/select2/dist/js/select2.full.min.js}"></script>
+<!-- Parsley -->
+<script th:src="@{/vendors/parsleyjs/dist/parsley.min.js}"></script>
+<!-- Autosize -->
+<script th:src="@{/vendors/autosize/dist/autosize.min.js}"></script>
+<!-- jQuery autocomplete -->
+<script th:src="@{/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js}"></script>
+<!-- starrr -->
+<script th:src="@{/vendors/starrr/dist/starrr.js}"></script>
+<!-- Custom Theme Scripts -->
+<script th:src="@{/build/js/custom.min.js}"></script>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/layer.js}"></script>
+
+<script language='javascript' th:inline="javascript">
+    $(function () {
+        loadData();
+    })
+
+
+    var id;
+    var username;
+    var depname;
+    var roleid;
+
+    function loadData() {
+        var id = $("#managerid").val();
+        var da = JSON.stringify({id:id});
+        $.ajax({
+            url: getContextPath() + "/permission/manager/searchOneManagerPageInfo",
+            contentType: "application/json;charset=UTF-8",
+            data: da,
+            dataType: "json",
+            type: "post",
+            async: false,
+            success: function (data) {
+                $("#managername").val(data.username)
+                id = data.id;
+                username = data.username;
+                depname = data.depname;
+                roleid = data.roleid;
+            }
+        });
+
+
+        $.ajax({
+            url: getContextPath() + "/permission/searchDeps",
+            contentType: "application/json;charset=UTF-8",
+            data: da,
+            dataType: "json",
+            type: "post",
+            success: function (data2) {
+                var depContent = '';
+                for (var i = 0; i < data2.length; i++) {
+                    if(depname==data2[i].depname){
+                        var c1 =
+                            '  <option value="' + data2[i].id + '" selected="selected">' + data2[i].depname + '</option>';
+                    }else{
+                        var c1 =
+                            '  <option value="' + data2[i].id + '">' + data2[i].depname + '</option>';
+                    }
+
+                    depContent += c1;
+                }
+                $("#depid").html(depContent);
+            }
+        })
+
+        $.ajax({
+            url: getContextPath() + "/permission/role/searchRoles",
+            contentType: "application/json;charset=UTF-8",
+            data: da,
+            dataType: "json",
+            type: "post",
+            success: function (data3) {
+                var roleContent = '';
+                for (var i = 0; i < data3.length; i++) {
+                    if(roleid==data3[i].id){
+                        var c2 =
+                            '  <option value="' + data3[i].id + '" selected="selected">' + data3[i].name + '</option>';
+                    }else{
+                        var c2 =
+                            '  <option value="' + data3[i].id + '">' + data3[i].name + '</option>';
+                    }
+                    roleContent += c2;
+                }
+                $("#roleid").html(roleContent);
+            }
+        })
+        
+    }
+
+    function addManager() {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var depid = $("#depid").val();
+        var roleid = $("#roleid").val();
+
+        var da = JSON.stringify({username: username,password:password,depid:depid,roleid:roleid})
+        $.ajax({
+            url: getContextPath() + "/permission/manager/addManager",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            type: "post",
+            data: da,
+            success: function (data) {
+                if (data.name == "yes") {
+                    layer.msg('添加管理员成功', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 1,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                    setTimeout(function () {
+                        window.location.href = getContextPath() + "/route/permission/addManager";
+                    }, 1000)
+                }else if(data.name=="no"){
+                    layer.msg('服务器错误,请稍后重试', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 2,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                }else{
+                    $("#errorMsg2").css("display","block");
+                    $("#errorMsg2").text(data.name);
+                }
+            }
+        })
+    }
+</script>
+
+</body>
+</html>

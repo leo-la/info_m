@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>同方赛威讯</title>
+
+    <!-- Bootstrap -->
+    <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/pagination.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+    <!-- NProgress -->
+    <link th:href="@{/vendors/nprogress/nprogress.css}" rel="stylesheet">
+    <!-- iCheck -->
+    <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link th:href="@{/vendors/google-code-prettify/bin/prettify.min.css}" rel="stylesheet">
+    <!-- Select2 -->
+    <link th:href="@{/vendors/select2/dist/css/select2.min.css}" rel="stylesheet">
+    <!-- Switchery -->
+    <link th:href="@{/vendors/switchery/dist/switchery.min.css}" rel="stylesheet">
+    <!-- starrr -->
+    <link th:href="@{/vendors/starrr/dist/starrr.css}" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link th:href="@{/vendors/bootstrap-daterangepicker/daterangepicker.css}" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div th:replace="~{commons/commons::sidebar}"></div>
+
+        <!-- top navigation -->
+        <div th:replace="~{commons/commons::topbar}"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <input type="hidden" id="depid" th:value="${id}">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left" style="padding-bottom: 8px;padding-left: 12px">
+                        <span style="font-size: 25px;">质量管理部
+                            <span style="font-size: 16px;color: #668995;margin-top: 40px;">Quality management department</span>
+
+                        </span>
+                    </div>
+
+                    <div class="title_right" style="padding-bottom: 8px;padding-left: 12px">
+                        <a href="javascript:addTDir()" style="float:right"><i class="fa fa-plus fa-3x"></i></a>
+                    </div>
+
+                </div>
+                <div class="clearfix"></div>
+                <div class="" id="imgContent"></div>
+                <div class="" id="dirContent">
+
+                    <div class="clearfix"></div>
+
+
+                </div>
+            </div>
+            <!-- Small modal -->
+            <button data-toggle="modal" data-target=".bs-example-modal-sm" style="display: none" id="disbtn"></button>
+            <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content" style="width: 500px">
+
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel1">编辑目录信息</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form th:action="@{/quality/updateTDirName}" method="post">
+                                <div class="panel-body">
+                                    <h2>一级名称</h2>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="hidden" id="dirid" name="id">
+
+                                                <input type="text" class="form-control" name="name" id="oneName" required="required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h2>二级名称</h2>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="custom-file">
+
+                                                <input type="text" class="form-control" name="enname" id="twoName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="text-align: center">
+                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">取消
+                                    </button>
+                                    <button type="submit" class="btn btn-info btn-sm">保存</button>
+                                </div>
+                            </form>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <button data-toggle="modal" data-target=".bs-example-modal-sm2" style="display: none" id="disbtn2"></button>
+            <div class="modal fade bs-example-modal-sm2" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content" style="width: 500px">
+
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel2">编辑目录信息</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form th:action="@{/quality/addTDir}" method="post">
+                                <input type="hidden" name="depid" th:value="${id}">
+                                <div class="panel-body">
+                                    <h2>一级名称</h2>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="custom-file">
+
+                                                <input type="text" class="form-control" name="name" required="required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h2>二级名称</h2>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="custom-file">
+
+                                                <input type="text" class="form-control" name="enname" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="text-align: center">
+                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">取消
+                                    </button>
+                                    <button type="submit" class="btn btn-info btn-sm">保存</button>
+                                </div>
+                            </form>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- /modals -->
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<!-- jQuery -->
+<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+<!-- bootstrap-progressbar -->
+<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+<!-- iCheck -->
+<script th:src="@{/vendors/iCheck/icheck.min.js}"></script>
+<!-- bootstrap-daterangepicker -->
+<script th:src="@{/vendors/moment/min/moment.min.js}"></script>
+<script th:src="@{/vendors/bootstrap-daterangepicker/daterangepicker.js}"></script>
+<!-- bootstrap-wysiwyg -->
+<script th:src="@{/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js}"></script>
+<script th:src="@{/vendors/jquery.hotkeys/jquery.hotkeys.js}"></script>
+<script th:src="@{/vendors/google-code-prettify/src/prettify.js}"></script>
+<!-- jQuery Tags Input -->
+<script th:src="@{/vendors/jquery.tagsinput/src/jquery.tagsinput.js}"></script>
+<!-- Switchery -->
+<script th:src="@{/vendors/switchery/dist/switchery.min.js}"></script>
+<!-- Select2 -->
+<script th:src="@{/vendors/select2/dist/js/select2.full.min.js}"></script>
+<!-- Parsley -->
+<script th:src="@{/vendors/parsleyjs/dist/parsley.min.js}"></script>
+<!-- Autosize -->
+<script th:src="@{/vendors/autosize/dist/autosize.min.js}"></script>
+<!-- jQuery autocomplete -->
+<script th:src="@{/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js}"></script>
+<!-- starrr -->
+<script th:src="@{/vendors/starrr/dist/starrr.js}"></script>
+<!-- Custom Theme Scripts -->
+<script th:src="@{/build/js/custom.min.js}"></script>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/layer.js}"></script>
+
+<script language='javascript' th:inline="javascript">
+    $(function () {
+        loadDirData();
+    })
+
+    // 加载目录信息
+    function loadDirData() {
+        var id = $("#depid").val();
+        var da = JSON.stringify({id: id})
+        $.ajax({
+            url: getContextPath() + "/quality/searchDirectory",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            type: "post",
+            data:da,
+            success: function (data) {
+                if(data.length==0){
+                    nodata();
+                }
+                var content = '';
+                //显示数据
+                for (var i = 0; i < data.length; i++) {
+                    var content1 =
+                        '        <div class="col-md-6 col-sm-6  ">\n' +
+                        '                        <div class="x_panel">\n' +
+                        '                            <div class="x_title">\n' +
+                        '                                <h2>\n' +
+                        '                                    <i class="fa fa-bars"></i>\n' +
+
+                            data[i].dirname +
+                        '                                    <small>'+data[i].enname+'</small>\n' +
+                        '                                </h2>\n' +
+                        '                                <ul class="nav navbar-right panel_toolbox">\n' +
+                        '                                    <li style="float: right;margin-left:50px"><a class="collapse-link" href="javascript:updateName(' + data[i].id + ')"><i class="fa fa-cog"></i></a>\n' +
+                        '                                    </li>\n' +
+                        '                                    <li style="float: right;margin-left:2px"><a class="collapse-link" href="javascript:deleteConfirm(' + data[i].id + ')"><i class="fa fa-close"></i></a>\n' +
+                        '                                    </li>\n' +
+                        '                                </ul>\n' +
+                        '                                <div class="clearfix"></div>\n' +
+                        '                            </div>\n' +
+                        '                            <a href="javascript:searchDetails('+data[i].id+')" style="float: right;padding-right: 20px">查看详情>></a>\n' +
+                        '                        </div>\n' +
+                        '                    </div>';
+
+                    content += content1;
+
+                }
+
+                // dirContent += dirContent2;
+                // dirContent += dirContent3;
+
+                $("#dirContent").html(content);
+            }
+        })
+    }
+
+
+    function deleteConfirm(id) {
+        layer.confirm('删除该目录将同时删除该目录下的文件，确认删除吗？', {
+                skin: 'layui-layer-molv', //样式类名
+                btn: ['确定', '取消']
+            }, function (index) {
+                layer.close(index);
+                deleteOne(id)
+            }, function () {
+            }
+        );
+    }
+
+    function deleteOne(id) {
+        var da = JSON.stringify({id: id})
+        var path = getContextPath() + "/quality/deleteTDir"
+        $.ajax({
+            url: path,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            data: da,
+            type: "post",
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+                if (data == true) {
+                    layer.msg('删除分类目录成功', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 1,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                    setTimeout(function () {
+                        window.location.href = getContextPath() + "/route/quality/index"
+                    }, 1000)
+                }
+            }
+        })
+    }
+    
+    function searchDetails(id) {
+        window.location.href = getContextPath() + '/route/quality/fileDir/{' + id + '}'
+    }
+
+    function convertToFileVersion(id) {
+        window.location.href = getContextPath() + '/route/quality/fileVersions/{' + id + '}'
+    }
+
+    function updateName(id) {
+        $("#dirid").val(id);
+
+        var da = JSON.stringify({id: id});
+        $.ajax({
+            url: getContextPath() + "/quality/getDir",
+            contentType: "application/json;charset=UTF-8",
+            data: da,
+            dataType: "json",
+            type: "post",
+            success: function (data) {
+                $("#oneName").val(data.dirname);
+                $("#twoName").val(data.enname);
+            }
+        })
+
+        $("#disbtn").click();
+
+    }
+    
+    function addTDir() {
+        $("#disbtn2").click();
+    }
+    
+    function deleteTDir() {
+        
+    }
+</script>
+
+</body>
+</html>

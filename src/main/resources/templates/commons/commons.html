@@ -1,0 +1,244 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.thymeleaf.org/thymeleaf-extras-shiro">
+
+
+<!-- top navigation -->
+<div class="top_nav" th:fragment="topbar">
+    <div class="nav_menu">
+        <div class="nav toggle" style="padding-top:4px">
+            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+
+        </div>
+
+        <nav class="nav navbar-nav">
+            <ul class=" navbar-right" style="padding-left:0px">
+                <span style="font-size: 25px;color: #0f6674">知识管理平台</span>
+                <li class="nav-item dropdown open" style="padding-left: 15px;padding-top: 8px">
+                    <a th:href="@{/permissionPage/javascript:}" class="user-profile dropdown-toggle"
+                       aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                        <shiro:guest>
+                            <i class="fa fa-user"></i>
+                        </shiro:guest>
+                        <span shiro:authenticated="true">
+                            <shiro:principal property="username"/>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                        <span shiro:authenticated="true">
+                            <a class="dropdown-item" href="javascript:updatePas()">修改密码</a>
+                        </span>
+                        <span shiro:authenticated="true">
+                                <a class="dropdown-item" th:href="@{/user/logout}"><i
+                                        class="fa fa-sign-out pull-right"></i> 注销</a>
+                        </span>
+                        　　
+                        <shiro:guest>
+                            <a class="dropdown-item" th:href="@{/route/toLogin}"><i
+                                    class="fa fa-sign-out pull-right"></i> 管理员登录</a>
+                            　　
+                        </shiro:guest>
+
+                        <shiro:hasRole name="admin">admin角色登录显示此内容</shiro:hasRole>
+                    </div>
+                </li>
+
+            </ul>
+            <button data-toggle="modal" data-target=".bs-example-modal-sm" style="display: none" id="disbtn3"></button>
+            <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content" style="width: 500px">
+
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">修改密码</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form method="post">
+                                <div class="panel-body">
+                                    <h2>原始密码</h2>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="custom-file">
+
+                                                <input type="text" class="form-control" id="oldPassword"
+                                                       required="required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h2>新密码</h2>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="custom-file">
+
+                                                <input type="text" class="form-control" id="newPassword" name="newPassword" required="required">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h2>确认密码</h2>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="custom-file">
+
+                                                <input type="text" class="form-control" id="newPassword2" required="required" onblur="javascript:checkPassword()">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div id="errorMsg" class="alert alert-danger" style="display: none"></div>
+                                <br>
+                                <div style="text-align: center">
+                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">取消
+                                    </button>
+                                    <a onclick="javascript:updatePassword()" class="btn btn-info btn-sm">保存</a>
+                                </div>
+
+                            </form>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </nav>
+    </div>
+</div>
+<!-- /top navigation -->
+
+
+<!--  side navigation -->
+<div class="col-md-3 left_col" th:fragment="sidebar">
+    <div class="left_col scroll-view">
+        <div class="navbar nav_title" style="border: 0;">
+            <a th:href="@{/permissionPage/index.html}" class="site_title">
+                <img th:src="@{/img/tfswxlogo.png}" style="padding-left:10px"/>
+            </a>
+        </div>
+        <div class="clearfix"></div>
+
+        <!-- menu profile quick info -->
+
+        <!-- /menu profile quick info -->
+
+        <br/>
+
+        <!-- sidebar menu -->
+        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+            <div class="menu_section">
+                <ul class="nav side-menu">
+                    <li><a th:href="@{/route/main}"><i class="fa fa-home"></i> 主页 <span
+                            class="fa fa-chevron-down"></span></a>
+                    </li>
+                    <shiro:hasRole name="超级管理员">
+                        <li><a><i class="fa fa-edit"></i> 权限管理 <span class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a th:href="@{/route/permission/managers}">管理员信息</a></li>
+                                <li><a th:href="@{/route/permission/roles}">角色管理</a></li>
+                            </ul>
+                        </li>
+                    </shiro:hasRole>
+                    <shiro:hasAnyRoles name="超级管理员,公司公告管理员">
+                        <li><a th:href="@{/route/firm/index}"><i class="fa fa-desktop"></i> 公司公告 <span
+                                class="fa fa-chevron-down"></span></a>
+                        </li>
+                    </shiro:hasAnyRoles>
+
+                    <li><a><i class="fa fa-table"></i> 职能部门 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a th:href="@{/route/front/human/index}">人力资源部</a></li>
+
+                            <li><a th:href="@{/route/front/operation/index}">运营中心</a></li>
+
+                            <li><a th:href="@{/route/front/finance/index}">财务部</a></li>
+
+                            <li><a th:href="@{/route/front/quality/index}">质量管理部</a></li>
+
+                            <li><a th:href="@{/route/front/confidentiality/index}">保密管理办公室</a></li>
+
+                            <li><a th:href="@{/route/front/office/index}">办公室</a></li>
+
+                        </ul>
+                    </li>
+                    <li><a><i class="fa fa-bar-chart-o"></i> 事业部门 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a th:href="@{/route/front/law/index}">政法事业部</a></li>
+
+                            <li><a th:href="@{/route/front/military/index}">军工事业部</a></li>
+
+                            <li><a th:href="@{/route/front/remote/index}">遥感事业部</a></li>
+
+                            <li><a th:href="@{/route/front/discipline/index}">纪检监察事业部</a></li>
+
+                            <li><a th:href="@{/route/front/beijing/index}">北京分公司</a></li>
+                        </ul>
+                    </li>
+                    <li shiro:authenticated="true">
+                    <li><a><i class="fa fa-bar-chart-o"></i> 我的管理部门 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <shiro:hasAnyRoles name="超级管理员,人力资源部管理员">
+                                <li><a th:href="@{/route/human/index}">人力资源部</a></li>
+                            </shiro:hasAnyRoles>
+                            <shiro:hasAnyRoles name="超级管理员,运营中心管理员">
+                                <li><a th:href="@{/route/operation/index}">运营中心</a></li>
+                            </shiro:hasAnyRoles>
+                            <shiro:hasAnyRoles name="超级管理员,财务部管理员">
+                                <li><a th:href="@{/route/finance/index}">财务部</a></li>
+                            </shiro:hasAnyRoles>
+                            <shiro:hasAnyRoles name="超级管理员,质量管理部管理员">
+                                <li><a th:href="@{/route/quality/index}">质量管理部</a></li>
+                            </shiro:hasAnyRoles>
+                            <shiro:hasAnyRoles name="超级管理员,保密管理办公室管理员">
+                                <li><a th:href="@{/route/confidentiality/index}">保密管理办公室</a></li>
+                            </shiro:hasAnyRoles>
+                            <shiro:hasAnyRoles name="超级管理员,办公室管理员">
+                                <li><a th:href="@{/route/office/index}">办公室</a></li>
+                            </shiro:hasAnyRoles>
+
+                            <shiro:hasAnyRoles name="超级管理员,政法事业部管理员">
+                                <li><a th:href="@{/route/law/index}">政法事业部</a></li>
+                            </shiro:hasAnyRoles>
+                            <shiro:hasAnyRoles name="超级管理员,军工事业部管理员">
+                                <li><a th:href="@{/route/military/index}">军工事业部</a></li>
+                            </shiro:hasAnyRoles>
+                            <shiro:hasAnyRoles name="超级管理员,遥感事业部管理员">
+                                <li><a th:href="@{/route/remote/index}">遥感事业部</a></li>
+                            </shiro:hasAnyRoles>
+                            <shiro:hasAnyRoles name="超级管理员,纪检监察事业部管理员">
+                                <li><a th:href="@{/route/discipline/index}">纪检监察事业部</a></li>
+                            </shiro:hasAnyRoles>
+                            <shiro:hasAnyRoles name="超级管理员,北京分公司管理员">
+                                <li><a th:href="@{/route/beijing/index}">北京分公司</a></li>
+                            </shiro:hasAnyRoles>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <!-- /sidebar menu -->
+
+        <!-- /menu footer buttons -->
+        <div class="sidebar-footer hidden-small">
+            <a data-toggle="tooltip" data-placement="top" title="Settings">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+            </a>
+            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+            </a>
+            <a data-toggle="tooltip" data-placement="top" title="Lock">
+                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+            </a>
+            <a data-toggle="tooltip" data-placement="top" title="Logout"
+               th:href="@{/permissionPage/login.html}">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+            </a>
+        </div>
+        <!-- /menu footer buttons -->
+    </div>
+</div>
+
+</html>

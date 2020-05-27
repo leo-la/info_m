@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>同方赛威讯 </title>
+
+    <!-- Bootstrap -->
+    <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/pagination.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+    <!-- NProgress -->
+    <link th:href="@{/vendors/nprogress/nprogress.css}" rel="stylesheet">
+    <!-- iCheck -->
+    <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link th:href="@{/vendors/google-code-prettify/bin/prettify.min.css}" rel="stylesheet">
+    <!-- Select2 -->
+    <link th:href="@{/vendors/select2/dist/css/select2.min.css}" rel="stylesheet">
+    <!-- Switchery -->
+    <link th:href="@{/vendors/switchery/dist/switchery.min.css}" rel="stylesheet">
+    <!-- starrr -->
+    <link th:href="@{/vendors/starrr/dist/starrr.css}" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link th:href="@{/vendors/bootstrap-daterangepicker/daterangepicker.css}" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div th:replace="~{commons/commons::sidebar}"></div>
+
+        <!-- top navigation -->
+        <div th:replace="~{commons/commons::topbar}"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left" style="padding-bottom: 8px;padding-left: 12px">
+                         <span style="font-size: 25px;">运营中心
+                            <span style="font-size: 16px;color: #668995;margin-top: 40px;">Operation department</span>
+
+
+                        </span>
+                    </div>
+
+
+                </div>
+                <div class="clearfix"></div>
+                <div class="" id="imgContent"></div>
+                <div class="col-md-12 col-sm-12  ">
+                    <input type="hidden" id="fileid" th:value="${fileid}">
+                    <input type="hidden" class="versionid" id="versionid" th:value="${versionid}">
+                    <input type="hidden" id="flag" th:value="${flag}">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <span style="font-size: 18px;color: #668995;padding-bottom: 0;width: 100px">版本分类
+                                <span style="font-size: 10px;color: #668995;margin-top: 40px;width: 100px">Document classification</span>
+
+                            </span>
+
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li style="float: right;margin-left:50px"><a class="collapse-link"><i
+                                        class="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li style="float: right;margin-left:10px"><a onclick="javascript:history.go(-1);"><i
+                                        class="fa fa-reply"></i></a>
+                                </li>
+
+                            </ul>
+
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="x_content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <div class="col-md-1" style="padding-top: 5px">
+                                            显示
+                                        </div>
+                                        <div class="col-md-2" style="padding-left: 0;padding-bottom: 20px;width:80px">
+                                            <select id="perPage" onchange="javascript:loadPageData()"
+                                                    name="datatable_length" aria-controls="datatable"
+                                                    class="form-control input-sm"
+                                                    style="width: 70px;height: 30px">
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2" style="padding-left: 0;padding-top: 5px">
+                                            条数据
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3"></div>
+                                <div class="col-md-3" style="float: right;">
+                                    <div class="col-md-12" style="float: right;">
+                                        <div class="form-group pull-right">
+                                            <form class="form-inline">
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="exampleInputAmount"
+                                                               style="height: 30px;font-size: 12px;width:240px"
+                                                               placeholder="搜索关键词">
+                                                        <button type="submit" class="btn btn-info btn-sm "
+                                                                style="height: 29px;">查找
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div style="">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th class="column-title" style="width: 15%">历史版本</th>
+                                        <th class="column-title" style="width: 15%">描述</th>
+                                        <th class="column-title" style="width: 15%">创建时间</th>
+                                        <th class="column-title no-link last" style="width: 10%"><span
+                                                class="nobr">操作</span>
+                                        </th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody id="pageTbody">
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="col-md-2" style="padding-top: 18px">
+                                         <span id="pageLeft" style="font-size: 18px;">
+                                         </span>
+                                </div>
+
+                                <div class="col-md-10">
+                                    <nav aria-label="..." style="float: right">
+                                        <ul id="pageRight" class="pagination">
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+
+
+                            <div class="accordion" id="accordion1" role="tablist" aria-multiselectable="true">
+                                <a class="panel-heading collapsed" role="tab" id="headingThree1"
+                                   data-toggle="collapse" data-parent="#accordion1" href="#collapseThree1"
+                                   aria-expanded="false" aria-controls="collapseThree">
+                                    <h4 class="panel-title">添加版本</h4>
+                                </a>
+                                <div id="collapseThree1" class="panel-collapse collapse" role="tabpanel"
+                                     aria-labelledby="headingThree">
+                                    <br>
+                                    <form method="post" enctype ="multipart/form-data">
+                                        <div class="panel-body">
+                                            <p><strong>上传文件</strong>
+                                            </p>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input"
+                                                               id="file" name="file">
+                                                        <label class="custom-file-label"
+                                                               for="file">选择文件</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <p><strong>版本描述</strong>
+                                        </p>
+                                        <textarea id="description" required="required" class="form-control" name="description"
+                                                  data-parsley-trigger="keyup" data-parsley-minlength="20"
+                                                  data-parsley-maxlength="100"
+                                                  data-parsley-minlength-message="Come on! You need to enter at least a 20 caracters long comment.."
+                                                  data-parsley-validation-threshold="10"></textarea>
+                                        <br>
+                                        <div class="">
+                                            <label>
+                                                <input type="checkbox" class="js-switch" id="checkb" name="download"/> 是否可下载
+                                            </label>
+                                        </div>
+                                        <div class="col-md-12" style="text-align: center">
+                                            <button onclick="javascript:uploadFile()" class="btn btn-info btn-sm" style="color: white" >确认</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+
+                            <br>
+                            <br>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /page content -->
+
+    <!-- footer content -->
+    <footer>
+        <div class="pull-right">
+            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+        </div>
+        <div class="clearfix"></div>
+    </footer>
+    <!-- /footer content -->
+</div>
+</div>
+
+<!-- jQuery -->
+<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+<!-- bootstrap-progressbar -->
+<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+<!-- iCheck -->
+<script th:src="@{/vendors/iCheck/icheck.min.js}"></script>
+<!-- bootstrap-daterangepicker -->
+<script th:src="@{/vendors/moment/min/moment.min.js}"></script>
+<script th:src="@{/vendors/bootstrap-daterangepicker/daterangepicker.js}"></script>
+<!-- bootstrap-wysiwyg -->
+<script th:src="@{/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js}"></script>
+<script th:src="@{/vendors/jquery.hotkeys/jquery.hotkeys.js}"></script>
+<script th:src="@{/vendors/google-code-prettify/src/prettify.js}"></script>
+<!-- jQuery Tags Input -->
+<script th:src="@{/vendors/jquery.tagsinput/src/jquery.tagsinput.js}"></script>
+<!-- Switchery -->
+<script th:src="@{/vendors/switchery/dist/switchery.min.js}"></script>
+<!-- Select2 -->
+<script th:src="@{/vendors/select2/dist/js/select2.full.min.js}"></script>
+<!-- Parsley -->
+<script th:src="@{/vendors/parsleyjs/dist/parsley.min.js}"></script>
+<!-- Autosize -->
+<script th:src="@{/vendors/autosize/dist/autosize.min.js}"></script>
+<!-- jQuery autocomplete -->
+<script th:src="@{/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js}"></script>
+<!-- starrr -->
+<script th:src="@{/vendors/starrr/dist/starrr.js}"></script>
+<!-- Custom Theme Scripts -->
+<script th:src="@{/build/js/custom.min.js}"></script>
+<!-- bs-custom-file-input -->
+<script th:src="@{/js/file-input/bs-custom-file-input.min.js}"></script>
+
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/layer.js}"></script>
+
+<script language='javascript' th:inline="javascript">
+
+    var versionid;
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    });
+    $(function () {
+        versionid =  $("#versionid").val();
+        loadPageData();
+
+    })
+
+
+    // 加载页面数据-fileid
+    function loadPageData(currentPage) {
+        var pageSize = $("#perPage").val();
+
+        var da = JSON.stringify({pageSize: pageSize, currentPage: currentPage, id: versionid});
+        $.ajax({
+            url: getContextPath() + "/operation/searchHistoryVersion",
+            contentType: "application/json;charset=UTF-8",
+            data: da,
+            dataType: "json",
+            type: "post",
+            success: function (data) {
+
+                //显示数据
+                var tbody = "";
+                for (var i = 0; i < data.pageData.length; i++) {
+                    var tr = '       <tr style="font-size: 14px;">\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].name + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].description + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;"> ' +
+                        '<a href="javascript:preview(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">预览</a>' +
+                        '<a href="javascript:deleteConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">删除</a>';
+                    var downloead = '';
+                    if (data.pageData[i].download == 1) {
+                        downloead =
+                            '<a href="javascript:downloadFile(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">下载</a>'
+                    }
+                    var tr2 =
+                        '</td>\n' +
+                        '            </tr>'
+                    tbody = tbody + tr + downloead + tr2;
+                }
+                $("#pageTbody").html(tbody);
+                //显示左侧页面信息
+                var page1 = '共<span style="color: #017ebc;"> ' + data.totalPage + ' </span> 页 <span style="color: #017ebc;"> ' + data.totalCount + ' </span>条'
+                $("#pageLeft").html(page1)
+
+                //显示右侧分页信息
+                var pager = ' <li><a href="javascript:loadPageData(' + (data.currentPage - 1) + ')">Previous</a></li>';
+                if (data.currentPage - 1 <= 0) {
+                    pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
+                }
+
+                for (var i = 0; i < data.totalPage; i++) {
+                    if (data.currentPage == (i + 1)) {
+                        var pagerli = '<li class="active"><a href="javascript:loadPageData(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
+                    } else {
+                        var pagerli = '<li><a href="javascript:loadPageData(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
+
+                    }
+                    pager += pagerli;
+                }
+                var pager2 = '<li><a href="javascript:loadPageData(' + (data.currentPage + 1) + ')">Next</a></li>';
+                if (data.currentPage + 1 > data.totalPage) {
+                    pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
+                }
+                pager += pager2;
+
+                $("#pageRight").html(pager);
+
+            }
+        });
+
+    }
+
+    function deleteConfirm(id) {
+        layer.confirm('确定删除该文件吗？', {
+                skin: 'layui-layer-molv', //样式类名
+                btn: ['确定', '取消']
+            }, function (index) {
+                layer.close(index);
+                deleteOne(id)
+            }, function () {
+            }
+        );
+    }
+
+    function deleteOne(id) {
+        var da = JSON.stringify({id: id})
+        var path = getContextPath() + "/operation/deleteFile"
+        $.ajax({
+            url: path,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            data: da,
+            type: "post",
+            beforeSend: function () {
+
+            },
+            success: function (data) {
+                if (data == true) {
+                    layer.msg('删除文件成功', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 1,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                    setTimeout(function () {
+                        loadPageData();
+                    }, 1000)
+                }
+            }
+        })
+    }
+    
+    function uploadFile() {
+        if(document.getElementById("file").files.length>0&&$("#description").val().length>0){
+        var file = document.getElementById("file").files[0];
+        var isSuccess = true;
+        var formData = new FormData();
+        formData.append("file",file);
+        formData.append("versionid",$("#versionid").val());
+        formData.append("description", $("#description").val());
+        formData.append("download", $("#checkb")[0].checked);
+        layer.msg('正在上传', {
+            skin: 'layui-layer-molv', //样式类名
+            closeBtn: 0,
+            icon: 1,
+            time: 10000 //2秒关闭（如果不配置，默认是3秒）
+        });
+        var path = getContextPath() +"/operation/addNewFile";
+        $.ajax({
+            url: path,
+            type: "POST",
+            data: formData,
+            /**
+             *必须false才会自动加上正确的Content-Type
+             */
+            contentType: false,
+            /**
+             * 必须false才会避开jQuery对 formdata 的默认处理
+             * XMLHttpRequest会对 formdata 进行正确的处理
+             */
+            processData: false,
+            cache: false,
+            async:false,
+            success: function (data) {
+                if(data!=true){
+                    isSuccess = false;
+                    return;
+                }
+            },error:function () {
+                isSuccess = false;
+            }
+        })
+        if(isSuccess){
+            layer.msg('上传成功', {
+                skin: 'layui-layer-molv', //样式类名
+                closeBtn: 0,
+                icon: 1,
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            setTimeout(function () {
+                window.location.href = getContextPath() + "/route/operation/fileVersions/{"+ versionid +"}";
+            },2000)
+        }else {
+            layer.msg('上传失败,请检查文件大小', {
+                skin: 'layui-layer-molv', //样式类名
+                closeBtn: 0,
+                icon: 2,
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            setTimeout(function () {
+                window.location.href = getContextPath() + "/route/operation/fileVersions/{"+ versionid +"}";
+            },2000)
+        }}
+    }
+
+    function preview(id) {
+        window.location.href = getContextPath() + '/operation/searchFilePreview/{' + id + '}'
+    }
+
+    function updateVersionFile() {
+        var id = $("#versionid").val();
+        window.location.href = getContextPath() + '/route/operation/updateFiles/{' + id + '}'
+    }
+    
+    function downloadFile(id) {
+        window.location.href = getContextPath() + '/operation/downloadFile/{' + id + '}'
+    }
+
+</script>
+
+</body>
+</html>

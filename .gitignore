@@ -1,0 +1,13 @@
+*.jar
+*.war
+*.tar.gz
+*.rar
+*.zip
+.idea/
+*.iml
+*.log
+classes/
+deploy/
+javadoc/
+*.class
+*.ctet

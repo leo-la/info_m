@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>同方赛威讯 </title>
+
+    <!-- Bootstrap -->
+    <link th:href="@{/vendors/bootstrap/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/pagination.css}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link th:href="@{/vendors/font-awesome/css/font-awesome.min.css}" rel="stylesheet">
+    <!-- NProgress -->
+    <link th:href="@{/vendors/nprogress/nprogress.css}" rel="stylesheet">
+    <!-- iCheck -->
+    <link th:href="@{/vendors/iCheck/skins/flat/green.css}" rel="stylesheet">
+    <!-- bootstrap-wysiwyg -->
+    <link th:href="@{/vendors/google-code-prettify/bin/prettify.min.css}" rel="stylesheet">
+    <!-- Select2 -->
+    <link th:href="@{/vendors/select2/dist/css/select2.min.css}" rel="stylesheet">
+    <!-- Switchery -->
+    <link th:href="@{/vendors/switchery/dist/switchery.min.css}" rel="stylesheet">
+    <!-- starrr -->
+    <link th:href="@{/vendors/starrr/dist/starrr.css}" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link th:href="@{/vendors/bootstrap-daterangepicker/daterangepicker.css}" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div th:replace="~{commons/commons::sidebar}"></div>
+
+        <!-- top navigation -->
+        <div th:replace="~{commons/commons::topbar}"></div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>用户信息</h3>
+                    </div>
+
+                    <div class="title_right">
+                        <div class="col-md-5 col-sm-5  form-group pull-right top_search">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search for...">
+                                <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-12 col-sm-12  ">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Table design
+                                <small>Custom design</small>
+                            </h2>
+
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="#">Settings 1</a>
+                                        <a class="dropdown-item" href="#">Settings 2</a>
+                                    </div>
+                                </li>
+                                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="x_content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <div class="col-md-1" style="padding-top: 5px">
+                                            显示
+                                        </div>
+                                        <div class="col-md-2" style="padding-left: 0;padding-bottom: 20px">
+                                            <select id="perPage" name="datatable_length" aria-controls="datatable" class="form-control input-sm"
+                                            style="width: 70px;height: 30px">
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2" style="padding-left: 0;padding-top: 5px">
+                                            条数据
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+
+                                </div>
+                            </div>
+
+
+                            <div class="table-responsive">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                    <tr class="headings">
+                                        <th class="column-title" style="width: 10%">序号</th>
+                                        <th class="column-title" style="width: 15%">姓名</th>
+                                        <th class="column-title" style="width: 15%">部门</th>
+                                        <th class="column-title" style="width: 15%">角色</th>
+                                        <th class="column-title no-link last" style="width: 20%"><span class="nobr">操作</span>
+                                        </th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody id="pageTbody">
+
+                                    </tbody>
+                                </table>
+                                <div class="col-md-2" style="padding-top: 18px">
+                                         <span id="pageLeft" style="font-size: 18px;">
+                                         </span>
+                                </div>
+
+                                <div class="col-md-10">
+                                    <nav aria-label="..." style="float: right">
+                                        <ul id="pageRight" class="pagination">
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<!-- jQuery -->
+<script th:src="@{/vendors/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script th:src="@{/vendors/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/vendors/fastclick/lib/fastclick.js}"></script>
+<!-- NProgress -->
+<script th:src="@{/vendors/nprogress/nprogress.js}"></script>
+<!-- bootstrap-progressbar -->
+<script th:src="@{/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js}"></script>
+<!-- iCheck -->
+<script th:src="@{/vendors/iCheck/icheck.min.js}"></script>
+<!-- bootstrap-daterangepicker -->
+<script th:src="@{/vendors/moment/min/moment.min.js}"></script>
+<script th:src="@{/vendors/bootstrap-daterangepicker/daterangepicker.js}"></script>
+<!-- bootstrap-wysiwyg -->
+<script th:src="@{/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js}"></script>
+<script th:src="@{/vendors/jquery.hotkeys/jquery.hotkeys.js}"></script>
+<script th:src="@{/vendors/google-code-prettify/src/prettify.js}"></script>
+<!-- jQuery Tags Input -->
+<script th:src="@{/vendors/jquery.tagsinput/src/jquery.tagsinput.js}"></script>
+<!-- Switchery -->
+<script th:src="@{/vendors/switchery/dist/switchery.min.js}"></script>
+<!-- Select2 -->
+<script th:src="@{/vendors/select2/dist/js/select2.full.min.js}"></script>
+<!-- Parsley -->
+<script th:src="@{/vendors/parsleyjs/dist/parsley.min.js}"></script>
+<!-- Autosize -->
+<script th:src="@{/vendors/autosize/dist/autosize.min.js}"></script>
+<!-- jQuery autocomplete -->
+<script th:src="@{/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js}"></script>
+<!-- starrr -->
+<script th:src="@{/vendors/starrr/dist/starrr.js}"></script>
+<!-- Custom Theme Scripts -->
+<script th:src="@{/build/js/custom.min.js}"></script>
+
+<script language='javascript' th:inline="javascript">
+    $(function () {
+        loadPageData();
+    })
+    // 加载页面数据
+    function loadPageData(currentPage) {
+        var pageSize = $("#perPage").val();
+
+        var da = JSON.stringify({pageSize:pageSize,currentPage:currentPage});
+        $.ajax({
+            url:"/tfswx/permission/user",
+            contentType:"application/json;charset=UTF-8",
+            data:da,
+            dataType:"json",
+            type:"post",
+            success:function (data) {
+                //显示数据
+                var tbody = "";
+                for(var i=0;i<data.pageData.length;i++){
+                    var tr= '       <tr>\n' +
+                        '                <td>'+((data.currentPage-1)*data.pageSize+(i+1))+'</td>\n' +
+                        '                <td>'+data.pageData[i].username+'</td>\n' +
+                        '                <td>'+data.pageData[i].depname+'</td>\n' +
+                        '                <td>'+data.pageData[i].role+'</td>\n' +
+                        '                <td > <a href="/back/weekly/searchWeekly/{'+data.pageData[i].id+'}" class="btn btn-info btn-sm" role="button">添加管理员</a>' +
+                        '<a href="/leo/weekly/searchWeekly/{'+data.pageData[i].id+'}" class="btn btn-info btn-sm" role="button">删除</a></td>\n' +
+                        '            </tr>'
+                    tbody += tr;
+                }
+                $("#pageTbody").html(tbody);
+                //显示左侧页面信息
+                var page1 = '共<span style="color: #017ebc;"> '+data.totalPage+' </span> 页 <span style="color: #017ebc;"> '+data.totalCount+' </span>条'
+                $("#pageLeft").html(page1)
+
+                //显示右侧分页信息
+                var pager = ' <li><a href="javascript:loadPageData('+(data.currentPage-1)+')">Previous</a></li>';
+                if(data.currentPage-1<=0){
+                    pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
+                }
+
+                for(var i=0;i<data.totalPage;i++){
+                    if(data.currentPage==(i+1)){
+                        var pagerli =   '<li class="active"><a href="javascript:loadPageData('+(i+1)+')">'+(i+1)+'</a></li>';
+                    }else{
+                        var pagerli =   '<li><a href="javascript:loadPageData('+(i+1)+')">'+(i+1)+'</a></li>';
+
+                    }
+                    pager += pagerli;
+                }
+                var pager2 = '<li><a href="javascript:loadPageData('+(data.currentPage+1)+')">Next</a></li>';
+                if(data.currentPage+1>data.totalPage){
+                    pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
+                }
+                pager += pager2;
+
+                $("#pageRight").html(pager);
+
+            }
+        });
+        return false;
+    }
+</script>
+
+</body>
+</html>

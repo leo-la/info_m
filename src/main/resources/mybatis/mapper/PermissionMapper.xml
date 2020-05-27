@@ -1,0 +1,131 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tfswx.dao.PermissionDao">
+
+    <select id="getUserById" resultType="user" parameterType="Integer">
+        SELECT a.id,a.username,b.depname,d.name AS role, d.id AS roleid, a.createtime FROM i_user a
+        JOIN i_dep b ON a.depid=b.id
+        JOIN i_user_role c ON a.id = c.userid
+        JOIN i_role d ON c.roleid = d.id
+        WHERE a.id=#{id}
+    </select>
+
+    <select id="listUserRoles" resultType="String" parameterType="Integer">
+        SELECT name FROM i_role r
+        WHERE r.id IN (
+        SELECT ur.roleid FROM i_user_role ur
+        WHERE ur.userid=#{userid})
+    </select>
+
+    <select id="listUserRole" resultType="role" parameterType="Integer">
+        SELECT name FROM i_role r
+        WHERE r.id IN (
+        SELECT ur.roleid FROM i_user_role ur
+        WHERE ur.userid=#{userid})
+    </select>
+
+    <select id="listRoles" resultType="role">
+        SELECT id,name,description FROM i_role
+    </select>
+
+    <select id="listDeps" resultType="dep">
+        SELECT id,depname FROM i_dep
+    </select>
+
+    <select id="getUserByName" resultType="user" parameterType="String">
+        SELECT id,username,password FROM i_user
+        WHERE username=#{username}
+    </select>
+
+    <select id="getRoleById" resultType="role" parameterType="Integer">
+       SELECT id,name,description FROM i_role
+       WHERE id=#{id}
+    </select>
+
+    <select id="countUsers" resultType="Integer">
+        SELECT count(id) FROM i_user
+    </select>
+
+    <select id="countManagers" resultType="Integer">
+        SELECT count(a.id) FROM i_user a
+        JOIN i_dep b ON a.depid=b.id
+        JOIN i_user_role c ON a.id = c.userid
+        JOIN i_role d ON c.roleid = d.id
+    </select>
+
+    <select id="countRoles" resultType="Integer">
+        SELECT count(id) FROM i_role
+    </select>
+
+    <select id="listUserPage" resultType="user">
+        SELECT a.id,a.username,b.depname,d.name AS role FROM i_user a
+        JOIN i_dep b ON a.depid=b.id
+        JOIN i_user_role c ON a.id = c.userid
+        JOIN i_role d ON c.roleid = d.id LIMIT #{param1},#{param2}
+
+    </select>
+
+    <select id="listManagerPage" resultType="user">
+       SELECT a.id,a.username,b.depname,d.name AS role, a.createtime FROM i_user a
+        JOIN i_dep b ON a.depid=b.id
+        JOIN i_user_role c ON a.id = c.userid
+        JOIN i_role d ON c.roleid = d.id LIMIT #{param1},#{param2}
+    </select>
+
+    <select id="listRolesPage" resultType="role">
+       SELECT id,name,description FROM i_role LIMIT #{param1},#{param2}
+    </select>
+
+    <insert id="insertUser">
+        INSERT INTO i_user (username,password,depid,createtime)
+        VALUES(#{param1},#{param2},#{param3},#{param4})
+    </insert>
+
+    <insert id="insertUserRole">
+        INSERT INTO i_user_role (userid,roleid)
+        VALUES(#{param1},#{param2})
+    </insert>
+
+    <insert id="insertRole">
+        INSERT INTO i_role (name,description) VALUES(#{param1},#{param2})
+    </insert>
+
+    <update id="updateUser" parameterType="user">
+        UPDATE i_user SET username=#{username},password=#{password}
+        WHERE id=#{id}
+    </update>
+
+    <update id="updateUserType">
+        UPDATE i_user SET usertype=#{param2}
+        WHERE id=#{param1}
+    </update>
+
+    <update id="updateUserRole">
+        UPDATE i_user_role SET roleid=#{param2}
+        WHERE userid=#{param1}
+    </update>
+
+    <update id="updateUserDep">
+        UPDATE i_user SET depid=#{param2}
+        WHERE id=#{param1}
+    </update>
+
+    <update id="updateRole">
+        UPDATE i_role SET name=#{param2},description=#{param3}
+        WHERE id=#{param1}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE i_user SET password=#{param2}
+        WHERE username=#{param1}
+    </update>
+
+    <delete id="deleteManager" parameterType="Integer">
+        DELETE FROM i_user WHERE id=#{userid}
+    </delete>
+
+    <delete id="deleteRole" parameterType="Integer">
+        DELETE FROM i_role WHERE id=#{id}
+    </delete>
+</mapper>

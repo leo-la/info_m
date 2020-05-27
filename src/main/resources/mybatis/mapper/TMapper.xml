@@ -1,0 +1,133 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tfswx.dao.Dao">
+
+    <select id="listDirectory" resultType="directory">
+        SELECT id,dirname,enname FROM i_dir
+        WHERE depid=#{depid}
+    </select>
+
+    <select id="listVersionFiles" resultType="versionfile">
+        SELECT a.id,a.name,b.dirname, a.createtime FROM i_fileversion a
+        JOIN i_dir b ON a.dirid=b.id
+        WHERE a.dirid=#{dirid}
+    </select>
+
+    <select id="countVersionFiles" resultType="Integer" parameterType="Integer">
+      SELECT count(id) FROM i_fileversion WHERE dirid=#{dirid}
+    </select>
+
+    <select id="listVersionFilesPage" resultType="versionfile">
+      SELECT a.id,a.name,b.dirname,a.createtime,a.versionnum FROM i_fileversion a
+      JOIN i_dir b ON a.dirid=b.id
+      WHERE dirid=#{param3} LIMIT #{param1},#{param2}
+    </select>
+
+    <select id="countHistoryVersionsByVersionid" resultType="Integer" parameterType="Integer">
+    SELECT count(id) FROM i_file
+    WHERE versionid=#{versionid}
+    </select>
+
+    <select id="listHistoryVersionPageByVersionid" resultType="fileinfo">
+      SELECT a.id,a.name,a.description,a.createtime,a.download,a.versionid FROM i_file a
+      JOIN i_fileversion b ON a.versionid=b.id
+      WHERE a.versionid=#{param3} order by a.id desc LIMIT #{param1},#{param2}
+    </select>
+
+    <select id="getVersionFIleMaxId" resultType="Integer">
+        SELECT MAX(id) FROM i_fileversion
+    </select>
+
+    <select id="getFileUrl" resultType="String" parameterType="Integer">
+        SELECT url FROM i_file WHERE id=#{id}
+    </select>
+
+    <select id="getFileById" resultType="fileinfo" parameterType="Integer">
+        SELECT id,name,description,versionid FROM i_file
+        WHERE id=#{id}
+    </select>
+
+    <select id="getFileByName" resultType="fileinfo" parameterType="String">
+        SELECT id,description,versionid FROM i_file
+        WHERE name=#{name}
+    </select>
+
+    <select id="getFileDir" resultType="versionfile" parameterType="Integer">
+        SELECT name,versionnum FROM i_fileversion
+        WHERE id=#{versionid}
+    </select>
+
+    <select id="getDirById" resultType="directory" parameterType="Integer">
+        SELECT dirname,enname FROM i_dir
+        WHERE id=#{id}
+    </select>
+
+    <select id="listNewFilePreview" resultType="fileinfo" parameterType="Integer">
+          SELECT a.id,a.name,a.createtime FROM i_file a
+          JOIN i_fileversion b ON a.versionid=b.id
+          WHERE b.dirid=#{dirid} ORDER BY a.id DESC limit 0,3
+
+
+    </select>
+
+
+    <insert id="insertNewVersionFile">
+      INSERT INTO i_fileversion (name,createtime,dirid) VALUES(#{param2},#{param3},#{param1})
+    </insert>
+
+    <insert id="insertNewFile" >
+      INSERT INTO i_file (name,createtime,description,versionid,url,download)
+      VALUES(#{param2},#{param3},#{param4},#{param1},#{param5},#{param6})
+    </insert>
+
+    <insert id="insertFileDir" >
+      INSERT INTO i_fileversion (name,createtime,dirid,versionnum)
+      VALUES(#{param1},#{param2},#{param3},#{param4})
+    </insert>
+
+    <insert id="insertTDir" >
+      INSERT INTO i_dir (dirname,enname,depid)
+      VALUES(#{param1},#{param2},#{param3})
+    </insert>
+
+
+    <update id="updateUserType">
+        UPDATE i_user SET usertype=#{param2}
+        WHERE id=#{param1}
+    </update>
+
+    <update id="updateVersionNum">
+        UPDATE i_fileversion SET versionnum=#{param2}
+        WHERE id=#{param1}
+    </update>
+
+    <update id="updateDirName">
+        UPDATE i_fileversion SET name=#{param2}
+        WHERE id=#{param1}
+    </update>
+
+    <update id="updateTDirName">
+        UPDATE i_dir SET dirname=#{param2},enname=#{param3}
+        WHERE id=#{param1}
+    </update>
+
+    <delete id="deleteUser" parameterType="Integer">
+        DELETE FROM i_user WHERE id=#{userid}
+    </delete>
+
+    <delete id="deleteFile" parameterType="Integer">
+        DELETE FROM i_file WHERE id=#{id}
+    </delete>
+
+    <delete id="deleteFileDir" parameterType="Integer">
+        DELETE FROM i_fileversion
+        WHERE id=#{id}
+    </delete>
+
+    <delete id="deleteTDir" parameterType="Integer">
+        DELETE FROM i_dir
+        WHERE id=#{id}
+    </delete>
+
+</mapper>
