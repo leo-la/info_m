@@ -4,7 +4,7 @@
 <mapper namespace="com.tfswx.dao.Dao">
 
     <select id="listDirectory" resultType="directory">
-        SELECT id,dirname,enname FROM i_dir
+        SELECT id,dirname,enname,sortnum FROM i_dir
         WHERE depid=#{depid}
     </select>
 
@@ -59,7 +59,7 @@
     </select>
 
     <select id="getDirById" resultType="directory" parameterType="Integer">
-        SELECT dirname,enname FROM i_dir
+        SELECT id,dirname,enname,sortnum FROM i_dir
         WHERE id=#{id}
     </select>
 
@@ -86,9 +86,9 @@
       VALUES(#{param1},#{param2},#{param3},#{param4})
     </insert>
 
-    <insert id="insertTDir" >
+    <insert id="insertTDir" useGeneratedKeys="true" keyProperty="id">
       INSERT INTO i_dir (dirname,enname,depid)
-      VALUES(#{param1},#{param2},#{param3})
+      VALUES(#{dirname},#{enname},#{depid})
     </insert>
 
 
@@ -110,6 +110,11 @@
     <update id="updateTDirName">
         UPDATE i_dir SET dirname=#{param2},enname=#{param3}
         WHERE id=#{param1}
+    </update>
+
+    <update id="updateDirSortNum">
+        UPDATE i_dir SET sortnum=#{sortnum}
+        WHERE id=#{id}
     </update>
 
     <delete id="deleteUser" parameterType="Integer">

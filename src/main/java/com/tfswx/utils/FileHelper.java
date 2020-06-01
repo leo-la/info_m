@@ -40,8 +40,6 @@ import com.itextpdf.tool.xml.html.HTML;
 
 /**
  * 
- * 类描述: 包括功能、用途、现存BUG，以及其它别人可能感兴趣的介绍。
- * 
  * @see
  * @version 1.0
  * @date 2016年7月27日
@@ -635,10 +633,10 @@ public class FileHelper {
     File srcFile = new File(srcFileName);
     // 判断源文件是否存在
     if (!srcFile.exists()) {
-      log.info("input file not null");
+      log.info("copyFile:["+srcFileName+"]not null");
       return false;
     } else if (!srcFile.isFile()) {
-      log.info("input file is not file");
+      log.info("copyFile:["+srcFileName+"] is not file");
       return false;
     }
 

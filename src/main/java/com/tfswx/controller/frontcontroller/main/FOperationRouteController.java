@@ -13,25 +13,20 @@ public class FOperationRouteController {
     @RequestMapping("operation/index")
     public String toIndex(Model model){
         model.addAttribute("id",2);
-        return "front/operation/index";
+        return "front/index";
     }
 
     @RequestMapping("operation/fileDir/{id}")
     public String toVersionDir(@PathVariable String id,Model model){
         model.addAttribute("dirid",CommonUtils.restFulConverter(id));
-        return "front/operation/dirFile";
+        model.addAttribute("id",2);
+        return "front/dirFile";
     }
 
     @RequestMapping("operation/fileVersions/{id}")
     public String toVersionFile2(@PathVariable String id, Model model){
         model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/operation/versionFile";
+       model.addAttribute("id",2);
+        return "front/versionFile";
     }
-
-    @RequestMapping("operation/updateFiles/{id}")
-    public String toUpdateFile(@PathVariable String id, Model model){
-        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/operation/addFiles";
-    }
-
 }

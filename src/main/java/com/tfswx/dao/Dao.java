@@ -109,12 +109,10 @@ public interface Dao extends BaseDao{
 
     /**
      * 创建一级目录
-     * @param name
-     * @param enname
-     * @param depid
+     * @param directory
      * @return
      */
-    Integer insertTDir(String name,String enname,Integer depid);
+    Integer insertTDir(Directory directory);
 
     /**
      * 更新文件版本数量
@@ -153,6 +151,13 @@ public interface Dao extends BaseDao{
      * @return
      */
     Integer updateTDirName(Integer id,String name, String enname);
+
+    /**
+     * 更新目录排序
+     * @param dir
+     * @return
+     */
+    Integer updateDirSortNum(Directory dir);
 
     /**
      * 查询文件路径

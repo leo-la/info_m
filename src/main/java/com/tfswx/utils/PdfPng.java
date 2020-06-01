@@ -1,6 +1,8 @@
 package com.tfswx.utils;
 
 
+import com.tfswx.utils.abstractOffice.AbstractPng;
+
 public class PdfPng implements AbstractPng {
 
   @Override

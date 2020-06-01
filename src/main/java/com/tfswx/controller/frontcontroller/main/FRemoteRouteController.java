@@ -13,25 +13,20 @@ public class FRemoteRouteController {
     @RequestMapping("remote/index")
     public String toIndex(Model model){
         model.addAttribute("id",11);
-        return "front/remote/index";
+        return "front/index";
     }
 
     @RequestMapping("remote/fileDir/{id}")
     public String toVersionDir(@PathVariable String id,Model model){
         model.addAttribute("dirid",CommonUtils.restFulConverter(id));
-        return "front/remote/dirFile";
+        model.addAttribute("id",11);
+        return "front/dirFile";
     }
 
     @RequestMapping("remote/fileVersions/{id}")
     public String toVersionFile2(@PathVariable String id, Model model){
         model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/remote/versionFile";
+        model.addAttribute("id",11);
+        return "front/versionFile";
     }
-
-    @RequestMapping("remote/updateFiles/{id}")
-    public String toUpdateFile(@PathVariable String id, Model model){
-        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/remote/addFiles";
-    }
-
 }

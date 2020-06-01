@@ -17,6 +17,7 @@ import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
 import com.tfswx.factory.UnicodeFontFactory;
 import com.tfswx.service.TService;
 import org.apache.tika.Tika;
+import org.slf4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,11 @@ import java.time.*;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * 通用工具类
+ */
 public class CommonUtils {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(CommonUtils.class);
     /**
      * restFul字符串参数转换
      *
@@ -107,7 +112,7 @@ public class CommonUtils {
             }
 
             String realPath = staticWordFilePath;
-            String filePath = realPath + "/" + filename;
+            String filePath = realPath + "\\" + filename;
 
             tService.addNewFile(versionid, filename, description, filePath, downl);
 
@@ -193,6 +198,7 @@ public class CommonUtils {
     public static void previewFile(String inputFile, HttpServletResponse response) throws Exception {
         String outputFile = "";
         String suffix = "";
+        //字符处理
         if(inputFile.contains(".")){
             int i = inputFile.lastIndexOf(".");
             outputFile = inputFile.substring(0,i);
@@ -305,5 +311,40 @@ public class CommonUtils {
         }
 
         return objects;
+    }
+
+    public static void deleteAllFilesOfDir(File path) {
+
+        if (null != path) {
+            if (!path.exists())
+                return;
+            if (path.isFile()) {
+                boolean result = path.delete();
+                int tryCount = 0;
+                while (!result && tryCount++ < 10) {
+                    System.gc(); // 回收资源
+                    result = path.delete();
+                }
+            }
+            File[] files = path.listFiles();
+            if (null != files) {
+                for (int i = 0; i < files.length; i++) {
+                    deleteAllFilesOfDir(files[i]);
+                }
+            }
+            path.delete();
+            log.info("["+path+"]已经被成功删除");
+        }
+    }
+
+    public static boolean deleteFile(String pathname){
+        boolean result = false;
+        File file = new File(pathname);
+        if (file.exists()) {
+            file.delete();
+            result = true;
+            log.info("["+pathname+"]已经被成功删除");
+        }
+        return result;
     }
 }

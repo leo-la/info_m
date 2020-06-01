@@ -69,5 +69,8 @@ function updatePassword() {
             }
         })
     }
+}
 
+function addTDir() {
+    $("#disbtn2").click();
 }

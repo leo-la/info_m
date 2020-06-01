@@ -9,10 +9,13 @@ import com.tfswx.pojo.PageBean;
 import com.tfswx.pojo.VersionFile;
 import com.tfswx.service.TService;
 import com.tfswx.template.PageSearchTemplate;
+import com.tfswx.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -22,12 +25,17 @@ import java.util.*;
 @Transactional
 public class TServiceImpl implements TService {
 
+    @Value("${web.upload-word-path}")
+    private String staticWordFilePath;
+
     @Autowired
     Dao firmDao;
 
     @Override
     public List<Directory> searchDirectory(Integer depid) {
-        return firmDao.listDirectory(depid);
+        List<Directory> directories = firmDao.listDirectory(depid);
+        Collections.sort(directories);
+        return directories;
     }
 
     @Override
@@ -49,6 +57,7 @@ public class TServiceImpl implements TService {
 
     @Override
     public Directory searchDirById(Integer id) {
+
         return firmDao.getDirById(id);
     }
 
@@ -104,8 +113,10 @@ public class TServiceImpl implements TService {
     }
 
     @Override
-    public Boolean addTDir(String name, String enname,Integer depid) {
-        Integer integer = firmDao.insertTDir(name,enname,depid);
+    public Boolean addTDir(Directory directory) {
+        firmDao.insertTDir(directory);
+        directory.setSortnum(directory.getId());
+        Integer integer = firmDao.updateDirSortNum(directory);
         if(integer==1){
             return true;
         }else{
@@ -120,6 +131,20 @@ public class TServiceImpl implements TService {
         VersionFile fileDir = firmDao.getFileDir(versionid);
         firmDao.updateVersionNum(versionid,fileDir.getVersionnum()-1);
         Integer integer = firmDao.deleteFile(id);
+
+        if(file.getName().contains(".")){
+            int i = file.getName().lastIndexOf(".");
+            String dirname = staticWordFilePath + "\\" + file.getName().substring(0,i);
+            CommonUtils.deleteAllFilesOfDir(new File(dirname));
+            CommonUtils.deleteFile(dirname+".pdf");
+            CommonUtils.deleteFile(dirname+".html");
+            CommonUtils.deleteFile(staticWordFilePath + "\\" + file.getName());
+            CommonUtils.deleteFile(dirname+".pdf");
+        }else {
+            String dirname = staticWordFilePath + "\\" + file.getName();
+            CommonUtils.deleteAllFilesOfDir(new File(dirname));
+            CommonUtils.deleteFile(dirname);
+        }
 
         if(integer==1){
             return true;
@@ -172,6 +197,40 @@ public class TServiceImpl implements TService {
     public String searchFileUrl(Integer id) {
 
         return firmDao.getFileUrl(id);
+    }
+
+    @Override
+    public Boolean sortFront(Integer lastid, Integer id) {
+        try{
+            Directory last = firmDao.getDirById(lastid);
+            Directory now = firmDao.getDirById(id);
+            Integer temp = last.getSortnum();
+            last.setSortnum(now.getSortnum());
+            now.setSortnum(temp);
+            firmDao.updateDirSortNum(last);
+            firmDao.updateDirSortNum(now);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public Boolean sortDown(Integer nextid, Integer id) {
+        try{
+            Directory next = firmDao.getDirById(nextid);
+            Directory now = firmDao.getDirById(id);
+            Integer temp = next.getSortnum();
+            next.setSortnum(now.getSortnum());
+            now.setSortnum(temp);
+            firmDao.updateDirSortNum(next);
+            firmDao.updateDirSortNum(now);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 }
 

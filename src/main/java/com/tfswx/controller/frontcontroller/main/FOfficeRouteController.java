@@ -13,25 +13,20 @@ public class FOfficeRouteController {
     @RequestMapping("office/index")
     public String toIndex(Model model){
         model.addAttribute("id",7);
-        return "front/office/index";
+        return "front/index";
     }
 
     @RequestMapping("office/fileDir/{id}")
     public String toVersionDir(@PathVariable String id,Model model){
         model.addAttribute("dirid",CommonUtils.restFulConverter(id));
-        return "front/office/dirFile";
+        model.addAttribute("id",7);
+        return "front/dirFile";
     }
 
     @RequestMapping("office/fileVersions/{id}")
     public String toVersionFile2(@PathVariable String id, Model model){
         model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/office/versionFile";
+        model.addAttribute("id",7);
+        return "front/versionFile";
     }
-
-    @RequestMapping("office/updateFiles/{id}")
-    public String toUpdateFile(@PathVariable String id, Model model){
-        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/office/addFiles";
-    }
-
 }

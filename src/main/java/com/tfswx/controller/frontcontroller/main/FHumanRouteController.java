@@ -13,25 +13,20 @@ public class FHumanRouteController {
     @RequestMapping("human/index")
     public String toIndex(Model model){
         model.addAttribute("id",3);
-        return "front/human/index";
+        return "front/index";
     }
 
     @RequestMapping("human/fileDir/{id}")
     public String toVersionDir(@PathVariable String id,Model model){
         model.addAttribute("dirid",CommonUtils.restFulConverter(id));
-        return "front/human/dirFile";
+        model.addAttribute("id",3);
+        return "front/dirFile";
     }
 
     @RequestMapping("human/fileVersions/{id}")
-    public String toVersionFile2(@PathVariable String id, Model model){
-        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/human/versionFile";
+    public String toVersionFile2(@PathVariable String id, Model model) {
+        model.addAttribute("versionid", CommonUtils.restFulConverter(id));
+        model.addAttribute("id",3);
+        return "front/versionFile";
     }
-
-    @RequestMapping("human/updateFiles/{id}")
-    public String toUpdateFile(@PathVariable String id, Model model){
-        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/human/addFiles";
-    }
-
 }

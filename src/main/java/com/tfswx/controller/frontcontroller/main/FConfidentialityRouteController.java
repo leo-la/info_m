@@ -13,25 +13,20 @@ public class FConfidentialityRouteController {
     @RequestMapping("confidentiality/index")
     public String toIndex(Model model){
         model.addAttribute("id",6);
-        return "front/confidentiality/index";
+        return "front/index";
     }
 
     @RequestMapping("confidentiality/fileDir/{id}")
     public String toVersionDir(@PathVariable String id,Model model){
         model.addAttribute("dirid",CommonUtils.restFulConverter(id));
-        return "front/confidentiality/dirFile";
+        model.addAttribute("id",6);
+        return "front/dirFile";
     }
 
     @RequestMapping("confidentiality/fileVersions/{id}")
     public String toVersionFile2(@PathVariable String id, Model model){
         model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/confidentiality/versionFile";
+        model.addAttribute("id",6);
+        return "front/versionFile";
     }
-
-    @RequestMapping("confidentiality/updateFiles/{id}")
-    public String toUpdateFile(@PathVariable String id, Model model){
-        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/confidentiality/addFiles";
-    }
-
 }

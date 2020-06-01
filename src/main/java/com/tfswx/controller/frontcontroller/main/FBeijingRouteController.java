@@ -13,25 +13,21 @@ public class FBeijingRouteController {
     @RequestMapping("beijing/index")
     public String toIndex(Model model){
         model.addAttribute("id",13);
-        return "front/beijing/index";
+        return "front/index";
     }
 
     @RequestMapping("beijing/fileDir/{id}")
     public String toVersionDir(@PathVariable String id,Model model){
         model.addAttribute("dirid",CommonUtils.restFulConverter(id));
-        return "front/beijing/dirFile";
+        model.addAttribute("id",13);
+        return "front/dirFile";
     }
 
     @RequestMapping("beijing/fileVersions/{id}")
     public String toVersionFile2(@PathVariable String id, Model model){
         model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/beijing/versionFile";
-    }
-
-    @RequestMapping("beijing/updateFiles/{id}")
-    public String toUpdateFile(@PathVariable String id, Model model){
-        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/beijing/addFiles";
+        model.addAttribute("id",13);
+        return "front/versionFile";
     }
 
 }

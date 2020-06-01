@@ -13,25 +13,20 @@ public class FLawRouteController {
     @RequestMapping("law/index")
     public String toIndex(Model model){
         model.addAttribute("id",8);
-        return "front/law/index";
+        return "front/index";
     }
 
     @RequestMapping("law/fileDir/{id}")
     public String toVersionDir(@PathVariable String id,Model model){
         model.addAttribute("dirid",CommonUtils.restFulConverter(id));
-        return "front/law/dirFile";
+        model.addAttribute("id",8);
+        return "front/dirFile";
     }
 
     @RequestMapping("law/fileVersions/{id}")
     public String toVersionFile2(@PathVariable String id, Model model){
         model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/law/versionFile";
+        model.addAttribute("id",8);
+        return "front/versionFile";
     }
-
-    @RequestMapping("law/updateFiles/{id}")
-    public String toUpdateFile(@PathVariable String id, Model model){
-        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/law/addFiles";
-    }
-
 }

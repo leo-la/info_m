@@ -13,25 +13,20 @@ public class FMilitaryRouteController {
     @RequestMapping("military/index")
     public String toIndex(Model model){
         model.addAttribute("id",9);
-        return "front/military/index";
+        return "front/index";
     }
 
     @RequestMapping("military/fileDir/{id}")
     public String toVersionDir(@PathVariable String id,Model model){
         model.addAttribute("dirid",CommonUtils.restFulConverter(id));
-        return "front/military/dirFile";
+        model.addAttribute("id",9);
+        return "front/dirFile";
     }
 
     @RequestMapping("military/fileVersions/{id}")
     public String toVersionFile2(@PathVariable String id, Model model){
         model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/military/versionFile";
+        model.addAttribute("id",9);
+        return "front/versionFile";
     }
-
-    @RequestMapping("military/updateFiles/{id}")
-    public String toUpdateFile(@PathVariable String id, Model model){
-        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/military/addFiles";
-    }
-
 }

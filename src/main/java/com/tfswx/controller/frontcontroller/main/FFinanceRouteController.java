@@ -13,25 +13,20 @@ public class FFinanceRouteController {
     @RequestMapping("finance/index")
     public String toIndex(Model model){
         model.addAttribute("id",4);
-        return "front/finance/index";
+        return "front/index";
     }
 
     @RequestMapping("finance/fileDir/{id}")
     public String toVersionDir(@PathVariable String id,Model model){
         model.addAttribute("dirid",CommonUtils.restFulConverter(id));
-        return "front/finance/dirFile";
+        model.addAttribute("id",4);
+        return "front/dirFile";
     }
 
     @RequestMapping("finance/fileVersions/{id}")
     public String toVersionFile2(@PathVariable String id, Model model){
         model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/finance/versionFile";
+        model.addAttribute("id",4);
+        return "front/versionFile";
     }
-
-    @RequestMapping("finance/updateFiles/{id}")
-    public String toUpdateFile(@PathVariable String id, Model model){
-        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
-        return "front/finance/addFiles";
-    }
-
 }

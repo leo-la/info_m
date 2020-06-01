@@ -2,6 +2,10 @@ package com.tfswx.factory;
 
 
 import com.tfswx.utils.*;
+import com.tfswx.utils.abstractOffice.AbstractHtml;
+import com.tfswx.utils.abstractOffice.AbstractPdf;
+import com.tfswx.utils.abstractOffice.AbstractPng;
+import com.tfswx.utils.abstractOffice.AbstractText;
 
 public class WordFactory implements AbstractFactory {
 

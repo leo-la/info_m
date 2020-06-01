@@ -1,5 +1,7 @@
 package com.tfswx.utils;
 
+import com.tfswx.utils.abstractOffice.AbstractText;
+
 public class WordText implements AbstractText {
 
   private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WordText.class);

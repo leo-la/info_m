@@ -1,6 +1,8 @@
 package com.tfswx.utils;
 
 
+import com.tfswx.utils.abstractOffice.AbstractPng;
+
 import java.util.logging.Logger;
 
 public class WordPng implements AbstractPng {

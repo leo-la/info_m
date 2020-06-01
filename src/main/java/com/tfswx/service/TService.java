@@ -21,7 +21,6 @@ public interface TService {
      */
     List<VersionFile> searchVersionFiles(Integer dirid);
 
-
     /**
      * 查找版本文件信息集
      * @param pageBean
@@ -82,11 +81,10 @@ public interface TService {
 
     /**
      * 添加一级目录
-     * @param name
-     * @param enname
+     * @param directory
      * @return
      */
-    Boolean addTDir(String name, String enname, Integer depid);
+    Boolean addTDir(Directory directory);
 
     /**
      * 删除文件
@@ -132,4 +130,20 @@ public interface TService {
      * @return
      */
     String searchFileUrl(Integer id);
+
+    /**
+     * 向前移动
+     * @param lastid
+     * @param id
+     * @return
+     */
+    Boolean sortFront(Integer lastid,Integer id);
+
+    /**
+     * 目录后移
+     * @param nextid
+     * @param id
+     * @return
+     */
+    Boolean sortDown(Integer nextid,Integer id);
 }

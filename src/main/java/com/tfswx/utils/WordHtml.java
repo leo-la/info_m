@@ -1,5 +1,6 @@
 package com.tfswx.utils;
 
+import com.tfswx.utils.abstractOffice.AbstractHtml;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.converter.PicturesManager;
 import org.apache.poi.hwpf.converter.WordToHtmlConverter;
@@ -32,7 +33,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-
+/**
+ * word-html转换对象
+ */
 public class WordHtml implements AbstractHtml {
 
   private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WordHtml.class);
