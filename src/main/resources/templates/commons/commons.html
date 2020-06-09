@@ -143,7 +143,7 @@
                         </li>
                     </shiro:hasRole>
                     <shiro:hasAnyRoles name="超级管理员,公司公告管理员">
-                        <li th:class="${active==1?'active':null}"><a th:href="@{/route/firm/index}"><i class="fa fa-desktop"></i> 公司公告 <span
+                        <li th:class="${active==1||active==101?'active':null}"><a th:href="@{/route/firm/index}"><i class="fa fa-desktop"></i> 公司公告 <span
                                 class="fa fa-chevron-down"></span></a>
                         </li>
                     </shiro:hasAnyRoles>
@@ -178,8 +178,8 @@
                         </ul>
                     </li>
                     <li shiro:authenticated="true">
-                    <li th:class="${active>100?'active':null}"><a><i class="fa fa-clipboard"></i> 我的管理部门 <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu" th:style="${active>100?'display: block;':null}">
+                    <li th:class="${active>101?'active':null}"><a><i class="fa fa-clipboard"></i> 我的管理部门 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu" th:style="${active>101?'display: block;':null}">
                             <shiro:hasAnyRoles name="超级管理员,人力资源部管理员">
                                 <li th:class="${active==103?'current-page':null}"><a th:href="@{/route/human/index}">人力资源部</a></li>
                             </shiro:hasAnyRoles>

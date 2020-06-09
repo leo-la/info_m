@@ -27,6 +27,17 @@ public class BeijingRouteController {
     public String toVersionFile2(@PathVariable String id, Model model){
         model.addAttribute("versionid",CommonUtils.restFulConverter(id));
         model.addAttribute("id",13);
+        model.addAttribute("fileLevel",1);
+        return "back/versionFile";
+    }
+
+    @RequestMapping("beijing/threeDirFiles/{id}")
+    public String threeDirFiles(@PathVariable String id, Model model){
+        model.addAttribute("threeDirid",CommonUtils.restFulConverter(id));
+        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
+        model.addAttribute("id",13);
+        model.addAttribute("dirLevel",3);
+        model.addAttribute("fileLevel",2);
         return "back/versionFile";
     }
 }

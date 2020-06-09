@@ -1,35 +1,20 @@
 package com.tfswx.utils;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
-import com.itextpdf.tool.xml.XMLWorker;
-import com.itextpdf.tool.xml.XMLWorkerHelper;
-import com.itextpdf.tool.xml.css.CssFile;
-import com.itextpdf.tool.xml.html.CssAppliers;
-import com.itextpdf.tool.xml.html.CssAppliersImpl;
-import com.itextpdf.tool.xml.html.Tags;
-import com.itextpdf.tool.xml.parser.XMLParser;
-import com.itextpdf.tool.xml.pipeline.css.CSSResolver;
-import com.itextpdf.tool.xml.pipeline.css.CssResolverPipeline;
-import com.itextpdf.tool.xml.pipeline.end.PdfWriterPipeline;
-import com.itextpdf.tool.xml.pipeline.html.HtmlPipeline;
-import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
-import com.tfswx.factory.UnicodeFontFactory;
-import com.tfswx.service.TService;
-import org.apache.tika.Tika;
+import com.tfswx.pojo.FileInfo;
+import com.tfswx.pojo.officePO.WordHtml;
 import org.slf4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.Date;
 import java.util.UUID;
+
+import static com.tfswx.utils.ItextUtils.createPdf;
 
 /**
  * 通用工具类
@@ -70,6 +55,7 @@ public class CommonUtils {
     }
 
     public static String periodTime(LocalDate oldDate) {
+
         LocalDate today = LocalDate.now();
 
         Period p = Period.between(oldDate, today);
@@ -88,21 +74,14 @@ public class CommonUtils {
      * 上传文件
      *
      * @param file
-     * @param versionid
-     * @param description
-     * @param download
      * @param staticWordFilePath
-     * @param tService
+     * @param isReupload 是否是重新上传
      */
-    public static void uploadFile(MultipartFile file, Integer versionid, String description, Boolean download, String staticWordFilePath, TService tService) {
-
-
-        Integer downl = 0;
-        if (null != download && download == true) {
-            downl = 1;
-        }
+    public static FileInfo uploadFile(MultipartFile file, FileInfo fileInfo, String staticWordFilePath, boolean isReupload) {
+        String filename = "";
         try {
-            String filename = file.getOriginalFilename();
+            //文件名唯一化处理
+            filename = file.getOriginalFilename();
             if (filename.contains(".")) {
                 int i = filename.lastIndexOf(".");
                 filename = filename.substring(0,i)+"_" + UUID.randomUUID().toString().replace("-", "")
@@ -111,10 +90,10 @@ public class CommonUtils {
                 filename = filename + "_" + UUID.randomUUID().toString().replace("-", "");
             }
 
-            String realPath = staticWordFilePath;
-            String filePath = realPath + "\\" + filename;
-
-            tService.addNewFile(versionid, filename, description, filePath, downl);
+            //存储路径
+            String filePath = staticWordFilePath + "/" + filename;
+            fileInfo.setUrl(filePath);
+            fileInfo.setName(filename);
 
             File targetFile = new File(filePath);
             if (!targetFile.exists()) {
@@ -125,6 +104,8 @@ public class CommonUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return fileInfo;
     }
 
     /**
@@ -152,8 +133,7 @@ public class CommonUtils {
             e.printStackTrace();
         }
 
-//            之后，初始化读入字节流和读出字节流，并设置响应response的输出属性。
-
+        // 初始化读入字节流和读出字节流，并设置响应response的输出属性。
         BufferedInputStream bis = null;
         OutputStream os = null;
         response.reset();
@@ -164,8 +144,8 @@ public class CommonUtils {
             response.setContentType("application/pdf"); // word格式
         }
         response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-//            接着调用inputStream和outputStream的read、write函数进行IO流读写操作。最后在写出操作完成后，一定要关闭输出流。
 
+        //调用inputStream和outputStream的read、write函数进行IO流读写操作。关闭输出流。
         try {
             bis = new BufferedInputStream(new FileInputStream(file));
             byte[] b = new byte[bis.available() + 1000];
@@ -189,13 +169,17 @@ public class CommonUtils {
         }
     }
 
+    public static void te(String path,HttpServletResponse response){
+
+    }
+
     /**
      * 预览文件
      *
      * @param inputFile
      * @param response
      */
-    public static void previewFile(String inputFile, HttpServletResponse response) throws Exception {
+    public static void previewFile(String inputFile, HttpServletResponse response,String staticpath) throws Exception {
         String outputFile = "";
         String suffix = "";
         //字符处理
@@ -206,113 +190,57 @@ public class CommonUtils {
         }
         if(suffix.equals(".doc")||suffix.equals(".docx")){
 
+            //word -> html
             WordHtml wordHtml = new WordHtml();
             wordHtml.createHtml(inputFile, outputFile);
+            FileTools.changeImageType(outputFile + ".html");//编辑html文件图片格式
+            FileTools.checkHtmlEndTag(outputFile + ".html");
 
-            FileHelper.changeImageType(outputFile + ".html");
-            FileHelper.checkHtmlEndTag(outputFile + ".html");
-
-            createPdf(outputFile + ".html", outputFile);
+            createPdf(outputFile + ".html",outputFile);
 
             response.setContentType("application/pdf");
-            FileInputStream in = new FileInputStream(new File(outputFile+".pdf"));
-            OutputStream out = response.getOutputStream();
-            byte[] b = new byte[512];
-            while ((in.read(b)) != -1) {
-                out.write(b);
+            //预览
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(new File(outputFile+".pdf")));//资源路径（相对/绝对）
+            BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());//输出路径
+            //中转站   一个字节(水杯)
+            //中转站使用 一个 字节数组  (水桶)
+            byte [] buf = new byte [1024];
+            int n = bis.read(buf);
+            while(n!=-1){
+                bos.write(buf,0,n);//写
+                n = bis.read(buf);//再读
             }
-            out.flush();
-            in.close();
-            out.close();
+            //手动刷新输出流的缓冲区
+            //bos.flush();
+            //关闭
+            FileTools.close(bos,bis);
+
         }else if(suffix.equals(".pdf")){
             response.setContentType("application/pdf");
-            FileInputStream in = new FileInputStream(new File(outputFile+".pdf"));
-            OutputStream out = response.getOutputStream();
-            byte[] b = new byte[512];
-            while ((in.read(b)) != -1) {
-                out.write(b);
+            //预览
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(outputFile+".pdf"));//资源路径（相对/绝对）
+            BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());//输出路径
+            //中转站   一个字节(水杯)
+            //中转站使用 一个 字节数组  (水桶)
+            byte [] buf = new byte [1024];
+            int n = bis.read(buf);
+            while(n!=-1){
+                bos.write(buf,0,n);//写
+                n = bis.read(buf);//再读
             }
-            out.flush();
-            in.close();
-            out.close();
+            //手动刷新输出流的缓冲区
+            //bos.flush();
+            //关闭
+            FileTools.close(bos,bis);
         }else {
             return;
         }
     }
 
-    public static void createPdf(String HTML, String file) {
-        // step 1
-        Document document = null;
-        InputStream is = null;
-        PdfWriter writer = null;
-        try {
-            Object[] objects = getDocument(file);
-            document = (Document) objects[0];
-            writer = (PdfWriter) objects[1];
-            // step 4
-            // CSS
-            CSSResolver cssResolver = XMLWorkerHelper.getInstance().getDefaultCssResolver(true);
-            StringBuffer cssBuffer = FileHelper.getHtmlCss(HTML);
-            CssFile cssFile =
-                    XMLWorkerHelper.getCSS(new ByteArrayInputStream(cssBuffer.toString().getBytes()));
-            cssResolver.addCss(cssFile);
-
-            // HTML
-            CssAppliers cssAppliers = new CssAppliersImpl(new UnicodeFontFactory());
-            HtmlPipelineContext htmlContext = new HtmlPipelineContext(cssAppliers);
-            htmlContext.setTagFactory(Tags.getHtmlTagProcessorFactory());
-            htmlContext.setImageProvider(new ItextUtils.Base64ImageProvider());
-
-            // Pipelines
-            PdfWriterPipeline pdf = new PdfWriterPipeline(document, writer);
-            HtmlPipeline html = new HtmlPipeline(htmlContext, pdf);
-            CssResolverPipeline css = new CssResolverPipeline(cssResolver, html);
-
-            // XML Worker
-            XMLWorker worker = new XMLWorker(css, true);
-            XMLParser p = new XMLParser(worker);
-            StringBuffer buffer = FileHelper.readFile(HTML);
-            p.parse(new ByteArrayInputStream(buffer.toString().getBytes()));
-            p.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                // step 5
-                if (null != document) document.close();
-                if (null != is) is.close();
-                if (null != writer) writer.close();
-            } catch (Exception e) {
-
-            }
-        }
-    }
-
-    public static final Object[] getDocument(String file) {
-        Document document = null;
-        PdfWriter writer = null;
-        Object[] objects = new Object[2];
-        try {
-            // Step 1—Create a Document.
-            document = new Document(PageSize.A4.rotate());
-            // Step 2—Get a PdfWriter instance.
-            writer = PdfWriter.getInstance(document, new FileOutputStream(file + ".pdf"));
-            // Step 3—Open the Document.
-            document.open();
-            objects[0] = document;
-            objects[1] = writer;
-        } catch (Exception e) {
-            try {
-                if (null != document) document.close();
-                if (null != writer) writer.close();
-            } finally {
-
-            }
-        }
-
-        return objects;
-    }
-
+    /**
+     * 删除文件夹
+     * @param path
+     */
     public static void deleteAllFilesOfDir(File path) {
 
         if (null != path) {
@@ -337,6 +265,11 @@ public class CommonUtils {
         }
     }
 
+    /**
+     * 删除文件
+     * @param pathname
+     * @return
+     */
     public static boolean deleteFile(String pathname){
         boolean result = false;
         File file = new File(pathname);
@@ -347,4 +280,5 @@ public class CommonUtils {
         }
         return result;
     }
+
 }

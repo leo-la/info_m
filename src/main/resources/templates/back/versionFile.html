@@ -58,6 +58,8 @@
                     <input type="hidden" id="fileid" th:value="${fileid}">
                     <input type="hidden" class="versionid" id="versionid" th:value="${versionid}">
                     <input type="hidden" id="flag" th:value="${flag}">
+                    <input type="hidden" id="dirLevel" th:value="${dirLevel}">
+                    <input type="hidden" id="fileLevel" th:value="${fileLevel}">
                     <div class="x_panel">
                         <div class="x_title">
                             <span style="font-size: 18px;color: #668995;padding-bottom: 0;width: 100px">版本分类
@@ -86,7 +88,7 @@
                                             显示
                                         </div>
                                         <div class="col-md-2" style="padding-left: 0;padding-bottom: 20px;width:80px">
-                                            <select id="perPage" onchange="javascript:loadPageData()"
+                                            <select id="perPage" onchange="javascript:loadPageData2()"
                                                     name="datatable_length" aria-controls="datatable"
                                                     class="form-control input-sm"
                                                     style="width: 70px;height: 30px">
@@ -123,7 +125,7 @@
                                 </div>
                             </div>
 
-
+                            <!--表格内容-->
                             <div style="">
                                 <table class="table table-striped jambo_table bulk_action">
                                     <thead>
@@ -162,7 +164,7 @@
                             <br>
                             <br>
 
-
+                            <!--上传文件-->
                             <div class="accordion" id="accordion1" role="tablist" aria-multiselectable="true">
                                 <a class="panel-heading collapsed" role="tab" id="headingThree1"
                                    data-toggle="collapse" data-parent="#accordion1" href="#collapseThree1"
@@ -209,8 +211,162 @@
                                 </div>
                             </div>
 
+                            <!--添加文件夹-->
+                            <div class="accordion" id="accordion2" role="tablist" aria-multiselectable="true" style="display: block">
+                                <a class="panel-heading collapsed" role="tab" id="headingThree2"
+                                   data-toggle="collapse" data-parent="#accordion1" href="#collapseThree2"
+                                   aria-expanded="false" aria-controls="collapseThree2">
+                                    <h4 class="panel-title">添加文件夹</h4>
+                                </a>
+                                <div id="collapseThree2" class="panel-collapse collapse" role="tabpanel"
+                                     aria-labelledby="headingThree">
+                                    <br>
+                                    <div class="modal-body">
+
+                                        <form id="addFourDir" method="post">
+                                            <div class="panel-body">
+                                                <p><strong>名称</strong>
+                                                </p>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input type="hidden" th:value="${id}" name="depid">
+                                                            <input type="hidden" th:value="${dirid}" name="dirid">
+                                                            <input type="hidden" name="versionid"  th:value="${versionid}">
+                                                            <input type="hidden" name="level"  th:value="${fileLevel}">
+                                                            <input type="hidden" id="fileDirid" name="id">
+                                                            <input type="text" class="form-control" name="name" required="required">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <p><strong>描述</strong>
+                                            </p>
+                                            <textarea class="form-control" name="description"
+                                                      data-parsley-trigger="keyup" data-parsley-minlength="20"
+                                                      data-parsley-maxlength="100"
+                                                      data-parsley-minlength-message="Come on! You need to enter at least a 20 caracters long comment.."
+                                                      data-parsley-validation-threshold="10"></textarea>
+                                            <br>
+
+                                            <div style="text-align: center">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">取消</button>
+                                                <button type="submit" class="btn btn-info btn-sm">保存</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+
                             <br>
                             <br>
+                            <!--更新文件弹窗-->
+                            <button data-toggle="modal" data-target=".bs-example-modal-sm" style="display: none" id="updateVersionFileBtn"></button>
+                            <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content" style="width: 500px">
+
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabel">更新文件</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <form id="updateFileForm" method="post">
+                                                <input type="hidden" id="updateid">
+                                                <div class="panel-body">
+                                                    <p><strong>上传文件</strong>
+                                                    </p>
+                                                    <div class="form-group">
+                                                        <div class="input-group">
+                                                            <div class="custom-file">
+                                                                <input type="file" class="custom-file-input"
+                                                                       id="updatefile" name="file" required="required">
+                                                                <label class="custom-file-label"
+                                                                       for="file">选择文件</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <p><strong>版本描述</strong>
+                                                </p>
+                                                <textarea id="updatedescription" required="required" class="form-control" name="description"
+                                                          data-parsley-trigger="keyup" data-parsley-minlength="20"
+                                                          data-parsley-maxlength="100"
+                                                          data-parsley-minlength-message="Come on! You need to enter at least a 20 caracters long comment.."
+                                                          data-parsley-validation-threshold="10"></textarea>
+                                                <br>
+                                                <div class="">
+                                                    <label>
+                                                        <input type="checkbox" class="js-switch" id="updatecheckb" name="download"/> 是否可下载
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-12" style="text-align: center">
+                                                    <button onclick="javascript:reuploadFile()" class="btn btn-info btn-sm" style="color: white" >确认</button>
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">取消
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--更新文件夹弹窗-->
+                            <button data-toggle="modal" data-target=".bs-example-modal-sm2" style="display: none" id="updateThreeLevelBtn"></button>
+                            <div class="modal fade bs-example-modal-sm2" tabindex="-1" role="dialog" aria-hidden="true" >
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content" style="width: 500px">
+
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="myModalLabe2">更新文件夹</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="updateFourDirForm" method="post">
+                                                <input type="hidden" id="formthreeDirid" name="id">
+                                                <input type="hidden" name="depid" th:value="${id}">
+                                                <input type="hidden" class="versionid" name="versionid" th:value="${versionid}">
+                                                <div class="panel-body">
+                                                    <p><strong>名称</strong>
+                                                    </p>
+                                                    <div class="form-group">
+                                                        <div class="input-group">
+                                                            <div class="custom-file">
+                                                                <input type="text" class="form-control"
+                                                                       name="name" required="required">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <p><strong>描述</strong>
+                                                </p>
+                                                <textarea id="update3DirDescription" required="required" class="form-control" name="description"
+                                                          data-parsley-trigger="keyup" data-parsley-minlength="20"
+                                                          data-parsley-maxlength="100"
+                                                          data-parsley-minlength-message="Come on! You need to enter at least a 20 caracters long comment.."
+                                                          data-parsley-validation-threshold="10"></textarea>
+                                                <br>
+                                                <div class="col-md-12" style="text-align: center">
+                                                    <button type="submit" class="btn btn-info btn-sm" style="color: white" >确认</button>
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">取消
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
 

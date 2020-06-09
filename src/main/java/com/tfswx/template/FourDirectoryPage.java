@@ -4,7 +4,6 @@ import com.tfswx.dao.BaseDao;
 import com.tfswx.dao.Dao;
 import com.tfswx.pojo.FileInfo;
 import com.tfswx.pojo.PageBean;
-import com.tfswx.pojo.VersionFile;
 import com.tfswx.utils.FileTools;
 
 import java.util.List;
@@ -12,12 +11,12 @@ import java.util.List;
 /**
  * 公司信息管理历史版本文件数据查询模板
  */
-public class ThreeDirectoryPage extends PageSearchTemplate {
+public class FourDirectoryPage extends PageSearchTemplate {
 
     @Override
     public PageBean getTotalCount(PageBean pageBean, BaseDao dao) {
         Dao Dao = (Dao) dao;
-        pageBean.setTotalCount(Dao.countHistoryVersionsByVersionid(pageBean.getId()));
+        pageBean.setTotalCount(Dao.countFilesByThreeDirid(pageBean.getId()));
         return pageBean;
     }
 
@@ -42,7 +41,7 @@ public class ThreeDirectoryPage extends PageSearchTemplate {
         Dao Dao = (Dao) dao;
         Integer start = (pageBean.getCurrentPage()-1) * pageBean.getPageSize();
         Integer size = pageBean.getPageSize();
-        List<FileInfo> fileInfos = Dao.listHistoryVersionPageByVersionid(start, size, pageBean.getId());
+        List<FileInfo> fileInfos = Dao.listFilesByThreeDirid(start, size, pageBean.getId());
         for (FileInfo fileInfo : fileInfos) {
             fileInfo.setName(FileTools.operateFileNames(fileInfo.getName()));
         }

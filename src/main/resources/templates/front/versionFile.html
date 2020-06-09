@@ -58,6 +58,8 @@
                     <input type="hidden" id="fileid" th:value="${fileid}">
                     <input type="hidden" class="versionid" id="versionid" th:value="${versionid}">
                     <input type="hidden" id="flag" th:value="${flag}">
+                    <input type="hidden" id="dirLevel" th:value="${dirLevel}">
+                    <input type="hidden" id="fileLevel" th:value="${fileLevel}">
                     <div class="x_panel">
                         <div class="x_title">
                             <span style="font-size: 18px;color: #668995;padding-bottom: 0;width: 100px">版本分类
@@ -86,7 +88,7 @@
                                             显示
                                         </div>
                                         <div class="col-md-2" style="padding-left: 0;padding-bottom: 20px;width:80px">
-                                            <select id="perPage" onchange="javascript:loadPageData()"
+                                            <select id="perPage" onchange="javascript:loadPageData2()"
                                                     name="datatable_length" aria-controls="datatable"
                                                     class="form-control input-sm"
                                                     style="width: 70px;height: 30px">

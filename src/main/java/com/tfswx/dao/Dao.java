@@ -6,6 +6,7 @@ import com.tfswx.pojo.VersionFile;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -57,12 +58,18 @@ public interface Dao extends BaseDao{
     Integer countHistoryVersionsByVersionid(Integer versionid);
 
     /**
+     * 统计四级目录数据
+     * @param id
+     * @return
+     */
+    Integer countFilesByThreeDirid(Integer id);
+
+    /**
      * 查找文件
      * @param id
      * @return
      */
     FileInfo getFileById(Integer id);
-
 
     /**
      * 查询公司信息管理文件历史版本信息
@@ -72,6 +79,31 @@ public interface Dao extends BaseDao{
      * @return
      */
     List<FileInfo> listHistoryVersionPageByVersionid(Integer start,Integer size, Integer id);
+
+    /**
+     * 查询四级目录页面信息
+     * @param start
+     * @param size
+     * @param id
+     * @return
+     */
+    List<FileInfo> listFilesByThreeDirid(Integer start,Integer size, Integer id);
+
+    /**
+     * 查询2级目录下文件
+     * @param id
+     * @param id
+     * @return
+     */
+    List<Integer> listFileBy2Dirid(Integer id);
+
+    /**
+     * 查询1级目录下文件
+     * @param id
+     * @param id
+     * @return
+     */
+    List<Integer> listFileBy1Dirid(Integer id);
 
     /**
      * 插入公司信息管理新版本文件信息
@@ -90,14 +122,10 @@ public interface Dao extends BaseDao{
 
     /**
      * 插入文件信息
-     * @param versionid
-     * @param name
-     * @param createtime
-     * @param description
-     * @param filePath
+     * @param fileInfo
      * @return
      */
-    Integer insertNewFile(Integer versionid,String name,Date createtime,String description,String filePath,Integer download);
+    Integer insertNewFile(FileInfo fileInfo);
 
     /**
      * 创建文件目录
@@ -115,6 +143,13 @@ public interface Dao extends BaseDao{
     Integer insertTDir(Directory directory);
 
     /**
+     * 创建三级级目录
+     * @param fileInfo
+     * @return
+     */
+    Integer insertFourDir(FileInfo fileInfo);
+
+    /**
      * 更新文件版本数量
      * @param versionnum
      * @return
@@ -128,6 +163,20 @@ public interface Dao extends BaseDao{
      * @return
      */
     Integer updateDirName(Integer dirid,String name);
+
+    /**
+     * 更新3级目录名称
+     * @param fileInfo
+     * @return
+     */
+    Integer update3Dir(FileInfo fileInfo);
+
+    /**
+     * 更新文件
+     * @param fileInfo
+     * @return
+     */
+    Integer updateFile(FileInfo fileInfo);
 
     /**
      * 查询文件目录
@@ -181,6 +230,13 @@ public interface Dao extends BaseDao{
     Integer deleteFile(Integer id);
 
     /**
+     * 删除文件
+     * @param ids
+     * @return
+     */
+    Integer deleteFiles(List<Integer> ids);
+
+    /**
      * 删除目录
      * @param id
      * @return
@@ -192,5 +248,6 @@ public interface Dao extends BaseDao{
      * @return
      */
     Integer deleteTDir(Integer id);
+
 
 }

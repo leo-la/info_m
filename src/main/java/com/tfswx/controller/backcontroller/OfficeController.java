@@ -39,7 +39,7 @@ public class OfficeController extends BaseController {
     public String addTDir(Directory directory,Model model){
         officeService.addTDir(directory);
         model.addAttribute("id",7);
-        return "officePage/index";
+        return "back/index";
     }
 
     /**
@@ -52,7 +52,7 @@ public class OfficeController extends BaseController {
     public String updateTDirName(Integer id,String name,String enname,Model model){
         officeService.updateTDirName(id,name,enname);
         model.addAttribute("id",7);
-        return "officePage/index";
+        return "back/index";
     }
 
     /**

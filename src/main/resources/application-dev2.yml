@@ -16,8 +16,8 @@ spring:
   #数据源
   datasource:
     username: root
-    password: ni89039635
-    url: jdbc:mysql://localhost:3306/information_manager?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    password: 123456
+    url: jdbc:mysql://192.168.1.173:3306/information_manager?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     #druid 数据源专有配置
@@ -67,5 +67,5 @@ mybatis:
   mapper-locations: classpath:mybatis/mapper/*.xml
 
 web:
-  upload-word-path: D:/C/information/word3
+  upload-word-path: E:\info\files
 

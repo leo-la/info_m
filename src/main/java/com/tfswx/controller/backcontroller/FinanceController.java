@@ -39,7 +39,7 @@ public class FinanceController extends BaseController {
     public String addTDir(Directory directory,Model model){
         financeService.addTDir(directory);
         model.addAttribute("id",4);
-        return "financePage/index";
+        return "back/index";
     }
 
     /**
@@ -52,7 +52,7 @@ public class FinanceController extends BaseController {
     public String updateTDirName(Integer id,String name,String enname,Model model){
         financeService.updateTDirName(id,name,enname);
         model.addAttribute("id",4);
-        return "financePage/index";
+        return "back/index";
     }
     /**
      * 排序-目录前移

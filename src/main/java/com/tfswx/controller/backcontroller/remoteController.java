@@ -39,7 +39,7 @@ public class remoteController extends BaseController {
     public String addTDir(Directory directory,Model model){
         remoteService.addTDir(directory);
         model.addAttribute("id",11);
-        return "remotePage/index";
+        return "back/index";
     }
 
     /**
@@ -52,7 +52,7 @@ public class remoteController extends BaseController {
     public String updateTDirName(Integer id,String name,String enname,Model model){
         remoteService.updateTDirName(id,name,enname);
         model.addAttribute("id",11);
-        return "remotePage/index";
+        return "back/index";
     }
 
     /**

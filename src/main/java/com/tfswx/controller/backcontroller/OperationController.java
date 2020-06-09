@@ -39,7 +39,7 @@ public class OperationController extends BaseController {
     public String addTDir(Directory directory,Model model){
         operationService.addTDir(directory);
         model.addAttribute("id",2);
-        return "operationPage/index";
+        return "back/index";
     }
 
     /**
@@ -52,7 +52,7 @@ public class OperationController extends BaseController {
     public String updateTDirName(Integer id,String name,String enname,Model model){
         operationService.updateTDirName(id,name,enname);
         model.addAttribute("id",2);
-        return "operationPage/index";
+        return "back/index";
     }
 
     /**

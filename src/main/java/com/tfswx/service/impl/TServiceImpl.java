@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -74,30 +75,42 @@ public class TServiceImpl implements TService {
     }
 
     @Override
-    public String addNewVersionFile(Integer dirid, String filename,String description,String filePath,Integer download) {
+    public PageBean searchFourLevelDirPage(PageBean pageBean) {
+        PageSearchTemplate template = PageTemplateFactory.createTemplate(PageTemplateType.Four_DIRECTORY_PAGE);
+        return template.run(pageBean,firmDao);
+    }
+
+    @Override
+    public String addNewFile(FileInfo fileInfo) {
         Date date = new Date();
-        Integer integer = firmDao.insertNewVersionFile(dirid,filename,date);
-        Integer versionid = firmDao.getVersionFIleMaxId();
-        Integer integer1 = firmDao.insertNewFile(versionid, filename, date, description,filePath,download);
-        if(integer==0||integer1==0){
-            return "插入失败!";
-        }else{
+        SimpleDateFormat format = CommonUtils.timeFormater();
+        fileInfo.setCreatetime(format.format(date));
+        fileInfo.setType(0);
+        Integer integer = firmDao.insertNewFile(fileInfo);
+
+        if(integer==1){
+            VersionFile fileDir = firmDao.getFileDir(fileInfo.getVersionid());
+            if(fileDir!=null){
+                fileDir.setVersionnum(fileDir.getVersionnum()+1);
+                firmDao.updateVersionNum(fileInfo.getVersionid(),fileDir.getVersionnum());
+            }
+
             return "插入成功!";
+        }else{
+            return "插入失败!";
         }
     }
 
     @Override
-    public String addNewFile(Integer versionid, String filename,String description, String filePath,Integer download) {
+    public String reuploadFile(FileInfo fileInfo) {
         Date date = new Date();
-        Integer integer = firmDao.insertNewFile(versionid, filename, date, description,filePath,download);
-
+        SimpleDateFormat format = CommonUtils.timeFormater();
+        fileInfo.setCreatetime(format.format(date));
+        Integer integer = firmDao.updateFile(fileInfo);
         if(integer==1){
-            VersionFile fileDir = firmDao.getFileDir(versionid);
-            fileDir.setVersionnum(fileDir.getVersionnum()+1);
-            firmDao.updateVersionNum(versionid,fileDir.getVersionnum());
-            return "插入成功!";
+            return "更新成功!";
         }else{
-            return "插入失败!";
+            return "更新失败!";
         }
     }
 
@@ -125,11 +138,37 @@ public class TServiceImpl implements TService {
     }
 
     @Override
+    public Boolean addFourDir(FileInfo fileInfo) {
+        Date date = new Date();
+        SimpleDateFormat format = CommonUtils.timeFormater();
+        fileInfo.setCreatetime(format.format(date));
+        fileInfo.setType(1);
+        fileInfo.setDownload(0);
+        if(fileInfo.getDescription().length()==0){
+            fileInfo.setDescription(null);
+        }
+        Integer integer =  firmDao.insertFourDir(fileInfo);
+        if(integer==1){
+            VersionFile fileDir = firmDao.getFileDir(fileInfo.getVersionid());
+            if(fileDir!=null){
+                fileDir.setVersionnum(fileDir.getVersionnum()+1);
+                firmDao.updateVersionNum(fileInfo.getVersionid(),fileDir.getVersionnum());
+            }
+
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
     public Boolean deleteFile(Integer id) {
         FileInfo file = firmDao.getFileById(id);
         Integer versionid = file.getVersionid();
         VersionFile fileDir = firmDao.getFileDir(versionid);
-        firmDao.updateVersionNum(versionid,fileDir.getVersionnum()-1);
+        if(fileDir!=null){
+            firmDao.updateVersionNum(versionid,fileDir.getVersionnum()-1);
+        }
         Integer integer = firmDao.deleteFile(id);
 
         if(file.getName().contains(".")){
@@ -155,6 +194,16 @@ public class TServiceImpl implements TService {
 
     @Override
     public Boolean deleteFileDir(Integer id) {
+        List<Integer> ids = new ArrayList<>();
+        List<Integer> id2s = firmDao.listFileBy2Dirid(id);
+        ids.addAll(id2s);
+        for (Integer id2 : id2s) {
+            List<Integer> id3s = firmDao.listFileBy2Dirid(id2);
+            ids.addAll(id3s);
+        }
+        for (Integer integer : ids) {
+            firmDao.deleteFile(integer);
+        }
         Integer integer = firmDao.deleteFileDir(id);
         if(integer==1){
             return true;
@@ -165,6 +214,22 @@ public class TServiceImpl implements TService {
 
     @Override
     public Boolean deleteTDir(Integer id) {
+        List<Integer> ids = new ArrayList<>();
+        List<Integer> id2s = firmDao.listFileBy1Dirid(id);
+        for (Integer id2 : id2s) {
+            List<Integer> id3s = firmDao.listFileBy2Dirid(id2);
+            ids.addAll(id3s);
+            for (Integer id3 : id3s) {
+                List<Integer> id4s = firmDao.listFileBy2Dirid(id3);
+                ids.addAll(id4s);
+            }
+        }
+        for (Integer i : ids) {
+            firmDao.deleteFile(i);
+        }
+        for (Integer id2 : id2s) {
+            firmDao.deleteFileDir(id2);
+        }
         Integer integer = firmDao.deleteTDir(id);
         if(integer==1){
             return true;
@@ -186,6 +251,16 @@ public class TServiceImpl implements TService {
     @Override
     public Boolean updateTDirName(Integer id, String name, String enname) {
         Integer integer = firmDao.updateTDirName(id,name,enname);
+        if(integer==1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
+    public Boolean update3Dir(FileInfo fileInfo) {
+        Integer integer = firmDao.update3Dir(fileInfo);
         if(integer==1){
             return true;
         }else{

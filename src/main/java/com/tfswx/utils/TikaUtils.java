@@ -63,19 +63,16 @@ public class TikaUtils {
       stream = new FileInputStream(new File(fileName));
       parser.parse(stream, handler, metadata);
 
-      FileHelper.writeFile(handler.toString(), outPutFile + ".html");
+      FileTools.writeFile(handler.toString(), outPutFile + ".html");
 
-      FileHelper.parse(outPutFile + ".html");
+      FileTools.parse(outPutFile + ".html");
       return null;
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
 
     }
-
     return null;
   }
-
-
 }
 

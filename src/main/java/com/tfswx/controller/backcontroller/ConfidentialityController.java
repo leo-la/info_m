@@ -39,7 +39,7 @@ public class ConfidentialityController extends BaseController {
     public String addTDir(Directory directory,Model model){
         confidentialityService.addTDir(directory);
         model.addAttribute("id",6);
-        return "confidentialityPage/index";
+        return "back/index";
     }
 
     /**
@@ -52,7 +52,7 @@ public class ConfidentialityController extends BaseController {
     public String updateTDirName(Integer id,String name,String enname,Model model){
         confidentialityService.updateTDirName(id,name,enname);
         model.addAttribute("id",6);
-        return "confidentialityPage/index";
+        return "back/index";
     }
 
     /**

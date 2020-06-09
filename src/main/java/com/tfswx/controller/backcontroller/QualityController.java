@@ -39,7 +39,7 @@ public class QualityController extends BaseController {
     public String addTDir(Directory directory,Model model){
         qualityService.addTDir(directory);
         model.addAttribute("id",5);
-        return "qualityPage/index";
+        return "back/index";
     }
 
     /**
@@ -52,7 +52,7 @@ public class QualityController extends BaseController {
     public String updateTDirName(Integer id,String name,String enname,Model model){
         qualityService.updateTDirName(id,name,enname);
         model.addAttribute("id",5);
-        return "qualityPage/index";
+        return "back/index";
     }
 
     /**

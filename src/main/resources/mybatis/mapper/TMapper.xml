@@ -26,13 +26,33 @@
 
     <select id="countHistoryVersionsByVersionid" resultType="Integer" parameterType="Integer">
     SELECT count(id) FROM i_file
-    WHERE versionid=#{versionid}
+    WHERE versionid=#{versionid} AND level=1
+    </select>
+
+    <select id="countFilesByThreeDirid" resultType="Integer" parameterType="Integer">
+    SELECT count(id) FROM i_file
+    WHERE versionid=#{id} AND level=2
     </select>
 
     <select id="listHistoryVersionPageByVersionid" resultType="fileinfo">
-      SELECT a.id,a.name,a.description,a.createtime,a.download,a.versionid FROM i_file a
+      SELECT a.id,a.name,a.description,a.createtime,a.download,a.versionid,a.type FROM i_file a
       JOIN i_fileversion b ON a.versionid=b.id
-      WHERE a.versionid=#{param3} order by a.id desc LIMIT #{param1},#{param2}
+      WHERE a.versionid=#{param3} AND level=1 order by a.id desc LIMIT #{param1},#{param2}
+    </select>
+
+    <select id="listFilesByThreeDirid" resultType="fileinfo">
+      SELECT id,name,description,createtime,download,versionid FROM i_file
+      WHERE versionid=#{param3} AND level=2 order by id desc LIMIT #{param1},#{param2}
+    </select>
+
+    <select id="listFileBy1Dirid" resultType="Integer" parameterType="Integer">
+      SELECT id FROM i_fileversion
+      WHERE dirid=#{id}
+    </select>
+
+    <select id="listFileBy2Dirid" resultType="Integer" parameterType="Integer">
+      SELECT id FROM i_file
+      WHERE versionid=#{id}
     </select>
 
     <select id="getVersionFIleMaxId" resultType="Integer">
@@ -76,9 +96,9 @@
       INSERT INTO i_fileversion (name,createtime,dirid) VALUES(#{param2},#{param3},#{param1})
     </insert>
 
-    <insert id="insertNewFile" >
-      INSERT INTO i_file (name,createtime,description,versionid,url,download)
-      VALUES(#{param2},#{param3},#{param4},#{param1},#{param5},#{param6})
+    <insert id="insertNewFile" parameterType="fileinfo">
+      INSERT INTO i_file (name,createtime,description,versionid,url,download,type,level)
+      VALUES(#{name},#{createtime},#{description},#{versionid},#{url},#{download},#{type},#{level})
     </insert>
 
     <insert id="insertFileDir" >
@@ -89,6 +109,11 @@
     <insert id="insertTDir" useGeneratedKeys="true" keyProperty="id">
       INSERT INTO i_dir (dirname,enname,depid)
       VALUES(#{dirname},#{enname},#{depid})
+    </insert>
+
+    <insert id="insertFourDir" parameterType="fileinfo">
+      INSERT INTO i_file (name,createtime,description,versionid,download,type,level)
+      VALUES(#{name},#{createtime},#{description},#{versionid},#{download},#{type},#{level})
     </insert>
 
 
@@ -107,6 +132,11 @@
         WHERE id=#{param1}
     </update>
 
+    <update id="update3Dir">
+        UPDATE i_file SET name=#{name},description=#{description}
+        WHERE id=#{id}
+    </update>
+
     <update id="updateTDirName">
         UPDATE i_dir SET dirname=#{param2},enname=#{param3}
         WHERE id=#{param1}
@@ -117,12 +147,25 @@
         WHERE id=#{id}
     </update>
 
+    <update id="updateFile" parameterType="fileinfo">
+        UPDATE i_file SET name=#{name},createtime=#{createtime},description=#{description},
+        versionid=#{versionid},url=#{url},download=#{download}
+        WHERE id=#{id}
+    </update>
+
     <delete id="deleteUser" parameterType="Integer">
         DELETE FROM i_user WHERE id=#{userid}
     </delete>
 
     <delete id="deleteFile" parameterType="Integer">
         DELETE FROM i_file WHERE id=#{id}
+    </delete>
+
+    <delete id="deleteFiles" parameterType="java.util.List">
+        DELETE FROM i_file WHERE id IN
+            <foreach collection="list" item="item" index="no" >
+             #{item}
+            </foreach>
     </delete>
 
     <delete id="deleteFileDir" parameterType="Integer">

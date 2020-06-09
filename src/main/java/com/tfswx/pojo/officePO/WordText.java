@@ -1,15 +1,15 @@
-package com.tfswx.utils;
+package com.tfswx.pojo.officePO;
 
-import com.tfswx.utils.abstractOffice.AbstractText;
+import com.tfswx.utils.FileTools;
+import com.tfswx.utils.TikaUtils;
 
-public class WordText implements AbstractText {
+public class WordText{
 
   private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WordText.class);
 
-  @Override
   public void createTxt(String inputFile, String outputFile) throws Exception {
     String content = TikaUtils.parse(inputFile);
-    FileHelper.writeFile(content, outputFile + ".txt");
+    FileTools.writeFile(content, outputFile + ".txt");
   }
 
 }

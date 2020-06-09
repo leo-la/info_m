@@ -39,7 +39,7 @@ public class LawController extends BaseController {
     public String addTDir(Directory directory,Model model){
         lawService.addTDir(directory);
         model.addAttribute("id",8);
-        return "lawPage/index";
+        return "back/index";
     }
 
     /**
@@ -52,7 +52,7 @@ public class LawController extends BaseController {
     public String updateTDirName(Integer id,String name,String enname,Model model){
         lawService.updateTDirName(id,name,enname);
         model.addAttribute("id",8);
-        return "lawPage/index";
+        return "back/index";
     }
 
     /**

@@ -39,7 +39,7 @@ public class MilitaryController extends BaseController {
     public String addTDir(Directory directory,Model model){
         militaryService.addTDir(directory);
         model.addAttribute("id",9);
-        return "militaryPage/index";
+        return "back/index";
     }
 
     /**
@@ -52,7 +52,7 @@ public class MilitaryController extends BaseController {
     public String updateTDirName(Integer id,String name,String enname,Model model){
         militaryService.updateTDirName(id,name,enname);
         model.addAttribute("id",9);
-        return "militaryPage/index";
+        return "back/index";
     }
 
     /**

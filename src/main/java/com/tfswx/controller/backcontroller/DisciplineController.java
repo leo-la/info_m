@@ -39,7 +39,7 @@ public class DisciplineController extends BaseController {
     public String addTDir(Directory directory,Model model){
         disciplineService.addTDir(directory);
         model.addAttribute("id",12);
-        return "disciplinePage/index";
+        return "back/index";
     }
 
     /**
@@ -52,7 +52,7 @@ public class DisciplineController extends BaseController {
     public String updateTDirName(Integer id,String name,String enname,Model model){
         disciplineService.updateTDirName(id,name,enname);
         model.addAttribute("id",12);
-        return "disciplinePage/index";
+        return "back/index";
     }
     /**
      * 排序-目录前移

@@ -40,7 +40,7 @@ public class BeijingController extends BaseController {
     public String addTDir(Directory directory, Model model) {
         beijingService.addTDir(directory);
         model.addAttribute("id", 13);
-        return "beijingPage/index";
+        return "back/index";
     }
 
     /**
@@ -54,7 +54,7 @@ public class BeijingController extends BaseController {
     public String updateTDirName(Integer id, String name, String enname, Model model) {
         beijingService.updateTDirName(id, name, enname);
         model.addAttribute("id", 13);
-        return "beijingPage/index";
+        return "back/index";
     }
 
     /**

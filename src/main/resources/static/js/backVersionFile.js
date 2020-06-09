@@ -1,6 +1,9 @@
 var loadDirDataPath;
 var swxtitle;
 var versionid =  $("#versionid").val();
+var updateAction;
+var addThreeDirAction;
+var updateThreeDirAction;
 
 // 加载页面数据-fileid
 function loadPageData2(currentPage) {
@@ -84,8 +87,16 @@ function loadPageData2(currentPage) {
 
     var pageSize = $("#perPage").val();
     var da = JSON.stringify({pageSize: pageSize, currentPage: currentPage, id: versionid});
+    var dirLevel = $("#dirLevel").val();
+    var path = '';
+    if(dirLevel==3){
+        path = getContextPath() + loadDirDataPath + "searchThreeDirPage";
+    }else{
+        path = getContextPath() + loadDirDataPath + "searchHistoryVersion";
+    }
+
     $.ajax({
-        url: getContextPath() + loadDirDataPath + "searchHistoryVersion",
+        url: path,
         contentType: "application/json;charset=UTF-8",
         data: da,
         dataType: "json",
@@ -95,21 +106,41 @@ function loadPageData2(currentPage) {
             var tbody = "";
             for (var i = 0; i < data.pageData.length; i++) {
                 var tr = '       <tr style="font-size: 14px;">\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].name + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].description + '</td>\n' +
+                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].name + '</td>\n';
+                var tr2 = '';
+                if(data.pageData[i].description==null){
+                    tr2 = '                <td style="display: table-cell;vertical-align: middle;">无</td>'+
                     '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;"> ' +
-                    '<a href="javascript:preview(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">预览</a>' +
-                    '<a href="javascript:deleteConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">删除</a>';
+                    '                <td style="display: table-cell;vertical-align: middle;"> ';
+                }else{
+                    tr2 =  '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].description + '</td>'+
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;"> ';
+                }
+                   tr += tr2;
+
+                var tr3 = '';
+                if(data.pageData[i].type==1){
+                    tr3 =
+                        '<a href="javascript:openDir(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">打开</a>' +
+                        '<a href="javascript:updateDirConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">编辑</a>' +
+                        '<a href="javascript:deleteConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">删除</a>';
+                }else {
+                    tr3 =
+                        '<a href="javascript:preview(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">预览</a>' +
+                        '<a href="javascript:updateConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">更新</a>' +
+                        '<a href="javascript:deleteConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">删除</a>';
+                }
+                tr += tr3;
                 var downloead = '';
                 if (data.pageData[i].download == 1) {
                     downloead =
                         '<a href="javascript:downloadFile(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">下载</a>'
                 }
-                var tr2 =
+                var tr4 =
                     '</td>\n' +
                     '            </tr>'
-                tbody = tbody + tr + downloead + tr2;
+                tbody = tbody + tr + downloead + tr4;
             }
             $("#pageTbody").html(tbody);
             //显示左侧页面信息
@@ -139,6 +170,14 @@ function loadPageData2(currentPage) {
 
             $("#pageRight").html(pager);
             $(".title_left").html(swxtitle);
+
+            updateAction = getContextPath()+ loadDirDataPath + 'updateVersionFile';
+            addThreeDirAction = getContextPath()+ loadDirDataPath + 'addFourDir';
+            $("#addFourDir").attr("action",addThreeDirAction);
+            $("#updateFourDirForm").attr("action",addThreeDirAction);
+            if($("#dirLevel").val()==3){
+                $("#accordion2").css("display","none");
+            }
         }
     });
 
@@ -184,17 +223,21 @@ function deleteOne(id) {
     })
 }
 
+// 上传文件
 function uploadFile() {
     if(document.getElementById("file").files.length>0&&$("#description").val().length>0){
-
-
         var file = document.getElementById("file").files[0];
         var isSuccess = true;
         var formData = new FormData();
+        var download = 0;
+        if($("#checkb")[0].checked){
+            download = 1;
+        }
         formData.append("file",file);
         formData.append("versionid",$("#versionid").val());
         formData.append("description", $("#description").val());
-        formData.append("download", $("#checkb")[0].checked);
+        formData.append("download", download);
+        formData.append("level", $("#fileLevel").val());
         layer.msg('正在上传', {
             skin: 'layui-layer-molv', //样式类名
             closeBtn: 0,
@@ -250,15 +293,117 @@ function uploadFile() {
     }
 }
 
+// 重新上传文件
+function reuploadFile() {
+    if(document.getElementById("updatefile").files.length>0&&$("#updatedescription").val().length>0){
+        var updatefile = document.getElementById("updatefile").files[0];
+        var isSuccess = true;
+        var formData = new FormData();
+        var download = 0;
+        if($("#updatecheckb")[0].checked){
+            download = 1;
+        }
+        formData.append("updatefile",updatefile);
+        formData.append("versionid",$("#versionid").val());
+        formData.append("description", $("#updatedescription").val());
+        formData.append("download",download);
+        formData.append("id",$("#updateid").val());
+        layer.msg('正在上传', {
+            skin: 'layui-layer-molv', //样式类名
+            closeBtn: 0,
+            icon: 1,
+            time: 10000 //2秒关闭（如果不配置，默认是3秒）
+        });
+        var path = getContextPath() + loadDirDataPath + "reuploadFile";
+        $.ajax({
+            url: path,
+            type: "POST",
+            data: formData,
+            /**
+             *必须false才会自动加上正确的Content-Type
+             */
+            contentType: false,
+            /**
+             * 必须false才会避开jQuery对 formdata 的默认处理
+             * XMLHttpRequest会对 formdata 进行正确的处理
+             */
+            processData: false,
+            cache: false,
+            async:false,
+            success: function (data) {
+                if(data!=true){
+                    isSuccess = false;
+                    return;
+                }
+            },error:function () {
+                isSuccess = false;
+            }
+        })
+        if(isSuccess){
+            layer.msg('上传成功', {
+                skin: 'layui-layer-molv', //样式类名
+                closeBtn: 0,
+                icon: 1,
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            setTimeout(function () {
+                window.location.href = getContextPath() + "/route" + loadDirDataPath + "fileVersions/{"+ versionid +"}";
+            },2000)
+        }else {
+            layer.msg('上传失败,请检查文件大小', {
+                skin: 'layui-layer-molv', //样式类名
+                closeBtn: 0,
+                icon: 2,
+                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+            });
+            setTimeout(function () {
+                window.location.href = getContextPath() + "/route" + loadDirDataPath + "fileVersions/{"+ versionid +"}";
+            },2000)
+        }
+    }
+}
+
 function preview(id) {
     window.location.href = getContextPath() + loadDirDataPath + 'searchFilePreview/{' + id + '}/pdf预览';
 }
 
-function updateVersionFile() {
-    var id = $("#versionid").val();
-    window.location.href = getContextPath() + '/route' + loadDirDataPath + 'updateFiles/{' + id + '}';
+function updateConfirm(id) {
+    layer.confirm('重新上传文件将覆盖原文件，确定更新吗?', {
+            skin: 'layui-layer-molv', //样式类名
+            btn: ['确定', '取消']
+        }, function (index) {
+            layer.close(index);
+        updateVersionFile(id)
+        }, function () {
+        }
+    );
+}
+
+function updateDirConfirm(id) {
+    layer.confirm('编辑文件夹信息?', {
+            skin: 'layui-layer-molv', //样式类名
+            btn: ['确定', '取消']
+        }, function (index) {
+            layer.close(index);
+        updateThreeDir(id)
+        }, function () {
+        }
+    );
+}
+
+function updateVersionFile(id) {
+    $("#updateid").attr("value",id);
+    $("#updateVersionFileBtn").click();
+}
+function updateThreeDir(id) {
+    $("#formthreeDirid").val(id);
+    $("#updateThreeLevelBtn").click();
 }
 
 function downloadFile(id) {
     window.location.href = getContextPath() + loadDirDataPath + 'downloadFile/{' + id + '}';
+}
+
+function openDir(id) {
+    window.location.href = getContextPath() + '/route' + loadDirDataPath + 'threeDirFiles/{' + id + '}'
 }

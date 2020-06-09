@@ -27,6 +27,17 @@ public class MilitaryRouteController {
     public String toVersionFile2(@PathVariable String id, Model model){
         model.addAttribute("versionid",CommonUtils.restFulConverter(id));
         model.addAttribute("id",9);
+        model.addAttribute("fileLevel",1);
+        return "back/versionFile";
+    }
+
+    @RequestMapping("military/threeDirFiles/{id}")
+    public String threeDirFiles(@PathVariable String id, Model model){
+        model.addAttribute("threeDirid",CommonUtils.restFulConverter(id));
+        model.addAttribute("versionid",CommonUtils.restFulConverter(id));
+        model.addAttribute("id",9);
+        model.addAttribute("dirLevel",3);
+        model.addAttribute("fileLevel",2);
         return "back/versionFile";
     }
 }

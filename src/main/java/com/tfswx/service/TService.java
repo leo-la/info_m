@@ -57,19 +57,25 @@ public interface TService {
     PageBean searchHistoryVersionPage(PageBean pageBean);
 
     /**
-     * 上传新版本文件
+     * 查询四级分类目录页面信息
+     * @param pageBean
      * @return
      */
-    String addNewVersionFile(Integer dirid, String filename, String description, String filePath, Integer download);
+    PageBean searchFourLevelDirPage(PageBean pageBean);
 
     /**
-     * 多文件上传
-     * @param versionid
-     * @param filename
-     * @param filePath
+     * 文件上传
+     * @param fileInfo
      * @return
      */
-    String addNewFile(Integer versionid, String filename, String description, String filePath, Integer download);
+    String addNewFile(FileInfo fileInfo);
+
+    /**
+     * 文件重新上传
+     * @param fileInfo
+     * @return
+     */
+    String reuploadFile(FileInfo fileInfo);
 
     /**
      * 增加文件目录
@@ -85,6 +91,13 @@ public interface TService {
      * @return
      */
     Boolean addTDir(Directory directory);
+
+    /**
+     * 添加三级级目录
+     * @param fileInfo
+     * @return
+     */
+    Boolean addFourDir(FileInfo fileInfo);
 
     /**
      * 删除文件
@@ -125,6 +138,13 @@ public interface TService {
     Boolean updateTDirName(Integer id, String name, String enname);
 
     /**
+     * 更新3级目录名
+     * @param fileInfo
+     * @return
+     */
+    Boolean update3Dir(FileInfo fileInfo);
+
+    /**
      * 查询文件路径
      * @param id
      * @return
@@ -146,4 +166,5 @@ public interface TService {
      * @return
      */
     Boolean sortDown(Integer nextid,Integer id);
+
 }

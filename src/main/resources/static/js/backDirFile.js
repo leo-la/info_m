@@ -187,18 +187,6 @@ function deleteOne(id) {
     })
 }
 
-function preview(id) {
-    window.location.href = getContextPath() + loadDirDataPath + 'searchFilePreview/{' + id + '}';
-}
-
-function updateVersionFile() {
-    var id = $("#versionid").val();
-    window.location.href = getContextPath() + '/route' + loadDirDataPath + 'updateFiles/{' + id + '}';
-}
-
-function downloadFile(id) {
-    window.location.href = getContextPath() + loadDirDataPath + 'downloadFile/{' + id + '}';
-}
 
 function updateName(id) {
     $("#fileDirid").val(id);

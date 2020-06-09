@@ -17,6 +17,8 @@ public class PageTemplateFactory {
                 return new ThreeDirectoryPage();
             case ROLE_PAGE:
                 return  new RolePage();
+            case Four_DIRECTORY_PAGE:
+                return  new FourDirectoryPage();
                 default:
                     return null;
         }

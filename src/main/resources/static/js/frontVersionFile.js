@@ -85,8 +85,17 @@ function loadPageData2(currentPage) {
     var pageSize = $("#perPage").val();
 
     var da = JSON.stringify({pageSize: pageSize, currentPage: currentPage, id: versionid});
+
+    var path = '';
+    var dirLevel = $("#dirLevel").val();
+    if(dirLevel==3){
+        path = getContextPath() + loadDirDataPath + "searchThreeDirPage";
+    }else{
+        path = getContextPath() + loadDirDataPath + "searchHistoryVersion";
+    }
+
     $.ajax({
-        url: getContextPath() + loadDirDataPath + "searchHistoryVersion",
+        url: path,
         contentType: "application/json;charset=UTF-8",
         data: da,
         dataType: "json",
@@ -97,20 +106,37 @@ function loadPageData2(currentPage) {
             var tbody = "";
             for (var i = 0; i < data.pageData.length; i++) {
                 var tr = '       <tr style="font-size: 14px;">\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].name + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].description + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;"> ' +
-                    '<a href="javascript:preview(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">预览</a>'
+                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].name + '</td>\n';
+                var tr2 = '';
+                if(data.pageData[i].description==null){
+                    tr2 = '                <td style="display: table-cell;vertical-align: middle;">无</td>'+
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;"> ';
+                }else{
+                    tr2 =  '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].description + '</td>'+
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;"> ';
+                }
+                tr += tr2;
+
+                var tr3 = '';
+                if(data.pageData[i].type==1){
+                    tr3 =
+                        '<a href="javascript:openDir(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">打开</a>';
+                }else {
+                    tr3 =
+                        '<a href="javascript:preview(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">预览</a>';
+                }
+                tr += tr3;
                 var downloead = '';
                 if (data.pageData[i].download == 1) {
                     downloead =
                         '<a href="javascript:downloadFile(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">下载</a>'
                 }
-                var tr2 =
+                var tr4 =
                     '</td>\n' +
                     '            </tr>'
-                tbody = tbody + tr + downloead + tr2;
+                tbody = tbody + tr + downloead + tr4;
             }
             $("#pageTbody").html(tbody);
             //显示左侧页面信息
@@ -149,4 +175,8 @@ function preview(id) {
 }
 function downloadFile(id) {
     window.location.href = getContextPath() + loadDirDataPath + 'downloadFile/{' + id + '}';
+}
+
+function openDir(id) {
+    window.location.href = getContextPath() + '/route/front' + loadDirDataPath + 'threeDirFiles/{' + id + '}'
 }

@@ -39,7 +39,7 @@ public class HumanController extends BaseController {
     public String addTDir(Directory directory,Model model){
         humanService.addTDir(directory);
         model.addAttribute("id",3);
-        return "humanPage/index";
+        return "back/index";
     }
 
     /**
@@ -52,7 +52,7 @@ public class HumanController extends BaseController {
     public String updateTDirName(Integer id,String name,String enname,Model model){
         humanService.updateTDirName(id,name,enname);
         model.addAttribute("id",3);
-        return "humanPage/index";
+        return "back/index";
     }
 
     /**
