@@ -49,6 +49,12 @@ public class ItextUtils {
     private final static String[] IMAGE_FORMAT =
             {"PNG", "png", "JPG", "jpg", "JPEG", "jpeg", "BMP", "bmp"};
 
+    /**
+     * 创建文档对象
+     *
+     * @param file
+     * @return
+     */
     public static final Object[] getDocument(String file) {
         Document document = null;
         PdfWriter writer = null;
@@ -72,7 +78,6 @@ public class ItextUtils {
 
             }
         }
-
         return objects;
     }
 
@@ -127,7 +132,15 @@ public class ItextUtils {
         }
     }
 
-
+    /**
+     * 添加所有图片
+     * @param inputFile
+     * @param document
+     * @throws BadElementException
+     * @throws MalformedURLException
+     * @throws IOException
+     * @throws DocumentException
+     */
     public static void addAllImage(String inputFile, Document document)
             throws BadElementException, MalformedURLException, IOException, DocumentException {
         File file = new File(inputFile);
@@ -149,6 +162,8 @@ public class ItextUtils {
 
 
     /**
+     * 添加图片
+     *
      * @param inputFile
      * @param document
      * @throws BadElementException
@@ -156,7 +171,6 @@ public class ItextUtils {
      * @throws IOException
      * @throws DocumentException
      */
-
     private static void addImage(String inputFile, Document document)
             throws BadElementException, MalformedURLException, IOException, DocumentException {
         Image img = Image.getInstance(inputFile);
@@ -197,6 +211,12 @@ public class ItextUtils {
         document.add(img);
     }
 
+    /**
+     * 设置字体
+     * @return
+     * @throws DocumentException
+     * @throws IOException
+     */
     public static Font setFont() throws DocumentException, IOException {
         BaseFont baseFont =
                 BaseFont.createFont("STSong-Light", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
@@ -204,6 +224,10 @@ public class ItextUtils {
         return font;
     }
 
+    /**
+     * 设置中文字体
+     * @return
+     */
     public static Font setChineseFont() {
         BaseFont bf = null;
         Font fontChinese = null;
@@ -218,8 +242,8 @@ public class ItextUtils {
         return fontChinese;
     }
 
-    static class Base64ImageProvider extends AbstractImageProvider {
 
+    static class Base64ImageProvider extends AbstractImageProvider {
         @Override
         public Image retrieve(String src) {
             int pos = src.indexOf("base64,");
@@ -236,7 +260,6 @@ public class ItextUtils {
                 return null;
             }
         }
-
         @Override
         public String getImageRootPath() {
             return null;
@@ -392,26 +415,6 @@ public class ItextUtils {
             } catch (Exception e) {
             }
         }
-    }
-
-    public static void main(String[] args)
-            throws MalformedURLException, IOException, DocumentException {
-        createPdf("D:\\home\\RmadFile\\html\\2016\\07\\28\\csv\\shujuxuqiujilu\\shujuxuqiujilu.html",
-                "D:\\home\\RmadFile\\html\\2016\\07\\28\\csv\\shujuxuqiujilu\\shujuxuqiujilu");
-        /*
-         * try { //createPdf(
-         * "D:\\home\\RmadFile\\html\\2016\\07\\27\\word\\1468896723716\\1468896723716.html",
-         * "D:\\home\\RmadFile\\html\\2016\\07\\27\\word\\1468896723716\\1468896723716.pdf");
-         * waterMark("D:\\home\\RmadFile\\html\\2016\\07\\28\\csv\\shujuxuqiujilu\\shujuxuqiujilu.pdf",
-         * "D:\\pic\\20150909140815.jpg",
-         * "D:\\home\\RmadFile\\html\\2016\\07\\28\\csv\\shujuxuqiujilu\\shujuxuqiujilu_2.pdf", "正版授权",
-         * 16 ); addWaterMark(
-         * "D:\\home\\RmadFile\\html\\2016\\07\\28\\csv\\shujuxuqiujilu\\shujuxuqiujilu.pdf",
-         * "D:\\home\\RmadFile\\html\\2016\\07\\28\\csv\\shujuxuqiujilu\\shujuxuqiujilu_3.pdf", "正版授权",
-         * "D:\\pic\\20150909140815.jpg", 200, 300 ); } catch (Exception e) { e.printStackTrace(); }
-         */
-
-
     }
 
 }

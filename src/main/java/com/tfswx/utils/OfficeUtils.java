@@ -1,32 +1,39 @@
-package com.tfswx.pojo.officePO;
+package com.tfswx.utils;
 
-import com.tfswx.utils.FileTools;
-import com.tfswx.utils.TikaUtils;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorker;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.itextpdf.tool.xml.css.CssFile;
+import com.itextpdf.tool.xml.html.CssAppliers;
+import com.itextpdf.tool.xml.html.CssAppliersImpl;
+import com.itextpdf.tool.xml.html.Tags;
+import com.itextpdf.tool.xml.parser.XMLParser;
+import com.itextpdf.tool.xml.pipeline.css.CSSResolver;
+import com.itextpdf.tool.xml.pipeline.css.CssResolverPipeline;
+import com.itextpdf.tool.xml.pipeline.end.PdfWriterPipeline;
+import com.itextpdf.tool.xml.pipeline.html.HtmlPipeline;
+import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
+import com.tfswx.factory.UnicodeFontFactory;
+import com.tfswx.pojo.officePO.WordHtml;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.converter.PicturesManager;
 import org.apache.poi.hwpf.converter.WordToHtmlConverter;
-import org.apache.poi.hwpf.model.SEPX;
 import org.apache.poi.hwpf.usermodel.Picture;
 import org.apache.poi.hwpf.usermodel.PictureType;
-import org.apache.poi.hwpf.usermodel.Section;
 import org.apache.poi.xwpf.converter.core.FileImageExtractor;
 import org.apache.poi.xwpf.converter.core.IURIResolver;
 import org.apache.poi.xwpf.converter.core.IXWPFConverter;
-import org.apache.poi.xwpf.converter.core.XWPFConverterException;
 import org.apache.poi.xwpf.converter.xhtml.XHTMLConverter;
 import org.apache.poi.xwpf.converter.xhtml.XHTMLOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.w3c.dom.Document;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -36,13 +43,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+import java.util.List;
 
-/**
- * word-html转换对象
- */
-public class WordHtml {
+public class OfficeUtils {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WordHtml.class);
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OfficeUtils.class);
 
     /**
      * 创建html文档
@@ -75,13 +81,7 @@ public class WordHtml {
                 TikaUtils.parseToHTML(inputFile, outputFile);
             }
         } finally {
-            try {
-                if (null != is) {
-                    is.close();
-                }
-            } catch (Exception e) {
-
-            }
+            InfoFileUtil.close(is);
         }
         log.info("创建[ " + outputFile + ".html]文件，耗时[" + (System.currentTimeMillis() - startTime)
                 + " ms].");
@@ -152,9 +152,7 @@ public class WordHtml {
             // FileHelper.parseCharset(outPutFile + ".html");
             // System.out.println(new String(out.toByteArray()));
         } finally {
-            if (null != out) {
-                out.close();
-            }
+            InfoFileUtil.close(out);
         }
     }
 
@@ -205,5 +203,164 @@ public class WordHtml {
             FileTools.close(out,document);
         }
     }
-}
 
+    /**
+     * 更改html文件图片格式
+     *
+     * @param htmFilePath
+     * @throws IOException
+     */
+    public static void changeImageType(String htmFilePath) throws IOException {
+        File htmFile = new File(htmFilePath);
+        // 以GB2312读取文件
+        org.jsoup.nodes.Document doc = Jsoup.parse(htmFile, "utf-8");
+        Elements div = doc.getElementsByTag("div");
+        div.attr("style", "width:100%;margin-bottom:72.0pt;margin-top:72.0pt;margin-left:0%;margin-right:86.0pt;");
+
+        Elements table = doc.getElementsByTag("table");
+        table.attr("style", "width:100.0%;border-collapse:collapse;");
+
+        Elements elements = doc.getElementsByTag("img");
+        String imgPath = "";
+        for (Element element : elements) {
+            String src = element.attr("src");
+            String[] sp = src.split("\\.");
+            String newSrc = htmFile.getParent() + File.separator + sp[0] + ".png";
+            imgPath = src;
+            element.attr("src", newSrc);
+        }
+        FileUtils.writeStringToFile(htmFile, doc.html(), "utf-8");
+    }
+
+    /**
+     *
+     * @param htmFilePath
+     * @throws IOException
+     */
+    public static void checkHtmlEndTag(String htmFilePath) throws IOException {
+        File htmFile = new File(htmFilePath);
+        // 以GB2312读取文件
+        org.jsoup.nodes.Document doc = Jsoup.parse(htmFile, "utf-8");
+        Elements all = doc.getElementsByTag("html");
+        for (Element element : all) {
+            parseElements(all, element);
+        }
+        FileUtils.writeStringToFile(htmFile, doc.html(), "utf-8");
+    }
+
+    /**
+     * 解析元素
+     * @param elements
+     * @param element
+     */
+    public static void parseElements(Elements elements, Element element) {
+        int childNodeSize = elements.size();
+        if (0 < childNodeSize) {
+            for (int offset = 0; offset < childNodeSize; offset++) {
+                parseElements(elements.get(offset).children(), elements.get(offset));
+            }
+        } else {
+            String tagName = element.tagName();
+            String content = element.toString();
+            if (tagName.length() + 3 > content.length()) {
+                element.text("");
+            } else {
+                try {
+                    String endTag =
+                            content.substring(content.length() - tagName.length() - 3, content.length());
+                    if (!("</" + tagName + ">").equals(endTag)) {
+                        element.text("");
+                    }
+                } catch (Exception w) {
+                }
+            }
+        }
+    }
+
+    /**
+     * 创建文档对象
+     *
+     * @param file
+     * @return
+     */
+    public static final Object[] getDocument(String file) {
+        com.itextpdf.text.Document document = null;
+        PdfWriter writer = null;
+        Object[] objects = new Object[2];
+        try {
+            // Step 1—Create a Document.
+            Rectangle pageSize = new Rectangle(PageSize.A4); // 页面大小设置为A4
+            document = new com.itextpdf.text.Document(pageSize); // 创建doc对象并设置边距
+            // Step 2—Get a PdfWriter instance.
+            writer = PdfWriter.getInstance(document, new FileOutputStream(file + ".pdf"));
+            // Step 3—Open the Document.
+            document.open();
+            document.newPage();
+            objects[0] = document;
+            objects[1] = writer;
+        } catch (Exception e) {
+            try {
+                if (null != document) document.close();
+                if (null != writer) writer.close();
+            } finally {
+
+            }
+        }
+        return objects;
+    }
+
+    /**
+     *html -> pdf
+     * @param file
+     * @throws IOException
+     * @throws DocumentException
+     */
+    public static void createPdf(String HTML, String file) throws IOException, DocumentException {
+        // step 1
+        com.itextpdf.text.Document document = null;
+        InputStream is = null;
+        PdfWriter writer = null;
+        try {
+            Object[] objects = getDocument(file);
+            document = (com.itextpdf.text.Document) objects[0];
+            writer = (PdfWriter) objects[1];
+            // step 4
+            // CSS
+            CSSResolver cssResolver = XMLWorkerHelper.getInstance().getDefaultCssResolver(true);
+            StringBuffer cssBuffer = FileTools.getHtmlCss(HTML);
+            CssFile cssFile =
+                    XMLWorkerHelper.getCSS(new ByteArrayInputStream(cssBuffer.toString().getBytes()));
+            cssResolver.addCss(cssFile);
+
+            // HTML
+            CssAppliers cssAppliers = new CssAppliersImpl(new UnicodeFontFactory());
+            HtmlPipelineContext htmlContext = new HtmlPipelineContext(cssAppliers);
+            htmlContext.setTagFactory(Tags.getHtmlTagProcessorFactory());
+            htmlContext.setImageProvider(new ItextUtils.Base64ImageProvider());
+
+            // Pipelines
+            PdfWriterPipeline pdf = new PdfWriterPipeline(document, writer);
+            HtmlPipeline html = new HtmlPipeline(htmlContext, pdf);
+            CssResolverPipeline css = new CssResolverPipeline(cssResolver, html);
+
+            // XML Worker
+            XMLWorker worker = new XMLWorker(css, true);
+            XMLParser p = new XMLParser(worker);
+            StringBuffer buffer = FileTools.readFile(HTML);
+            p.parse(new ByteArrayInputStream(buffer.toString().getBytes()));
+            p.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+            try {
+                // step 5
+                if (null != document) document.close();
+                if (null != is) is.close();
+                if (null != writer) writer.close();
+            } catch (Exception e) {
+
+            }
+        }
+    }
+}

@@ -245,6 +245,12 @@ public class FileTools {
         writeFile(buffer.toString(), path + ".html");
     }
 
+    /**
+     * 将图片写成html文件
+     *
+     * @param path     保存html文件全路径
+     * @param fileName 图片路径
+     */
     public static void writeHtmlFile(String path, String fileName) {
         StringBuffer buffer = new StringBuffer();
         buffer.append("<!DOCTYPE html><html><head>");
@@ -270,6 +276,12 @@ public class FileTools {
         writeFile(buffer.toString(), path + ".html");
     }
 
+    /**
+     * 将内容写入html文件
+     *
+     * @param content 写入内容
+     * @param path    保存html文件全路径
+     */
     public static void write2Html(StringBuffer content, String path) {
 
         StringBuffer buffer = new StringBuffer();
@@ -281,6 +293,12 @@ public class FileTools {
         writeFile(buffer.toString(), path + ".html");
     }
 
+    /**
+     * 创建文件目录
+     *
+     * @param filePath
+     * @param fileType
+     */
     public static void mkdirFiles(String filePath, String fileType) {
         File file = new File(filePath + "/" + fileType);
         if (!file.exists()) {
@@ -332,6 +350,8 @@ public class FileTools {
     }
 
     /**
+     * 设置html文件的编码
+     *
      * @param htmFilePath
      * @throws IOException
      */
@@ -358,6 +378,8 @@ public class FileTools {
     }
 
     /**
+     * 设置html文件
+     *
      * @param htmFilePath
      * @throws IOException
      */
@@ -494,6 +516,12 @@ public class FileTools {
 
     }
 
+    /**
+     * nio复制文件
+     *
+     * @param source
+     * @param target
+     */
     public static void nioTransferCopy(File source, File target) {
         FileChannel in = null;
         FileChannel out = null;
@@ -515,7 +543,13 @@ public class FileTools {
         }
     }
 
-
+    /**
+     * nio复制文件
+     *
+     * @param source
+     * @param target
+     * @return
+     */
     private static boolean nioBufferCopy(File source, File target) {
         FileChannel in = null;
         FileChannel out = null;
@@ -545,7 +579,12 @@ public class FileTools {
         return true;
     }
 
-
+    /**
+     * 传统方式复制文件
+     *
+     * @param source
+     * @param target
+     */
     public static void customBufferStreamCopy(File source, File target) {
         InputStream fis = null;
         OutputStream fos = null;
@@ -677,27 +716,6 @@ public class FileTools {
 
     /**
      * 关闭资源
-     *
-     * @param object 需要关闭的对象
-     */
-    public static void close(Object object) {
-        if (null == object) {
-            return;
-        }
-        try {
-            if (object instanceof InputStream) {
-                ((InputStream) object).close();
-            } else if (object instanceof OutputStream) {
-                ((OutputStream) object).close();
-            } else if (object instanceof Channel) {
-                ((Channel) object).close();
-            }
-        } catch (Exception exce) {
-            System.err.println(exce.getMessage());
-        }
-    }
-    /**
-     * 关闭流
      * @param io
      */
     public static void close(Closeable...io){

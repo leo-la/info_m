@@ -34,43 +34,6 @@ public class CommonUtils {
     }
 
     /**
-     * 时间转换器
-     *
-     * @return
-     */
-    public static SimpleDateFormat timeFormater() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return format;
-    }
-
-    /**
-     * Date转LocalDate
-     */
-    public static LocalDate DateToLocalDate(Date date) {
-        Instant instant = date.toInstant();
-        ZoneId zone = ZoneId.systemDefault();
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
-        LocalDate localDate = localDateTime.toLocalDate();
-        return localDate;
-    }
-
-    public static String periodTime(LocalDate oldDate) {
-
-        LocalDate today = LocalDate.now();
-
-        Period p = Period.between(oldDate, today);
-        if (p.getYears() > 0) {
-            return p.getYears() + "年前";
-        } else if (p.getYears() == 0 && p.getMonths() > 0) {
-            return p.getMonths() + "个月前";
-        } else if (p.getMonths() == 0 && p.getDays() > 0) {
-            return p.getDays() + "天前";
-        } else {
-            return "今天";
-        }
-    }
-
-    /**
      * 上传文件
      *
      * @param file
