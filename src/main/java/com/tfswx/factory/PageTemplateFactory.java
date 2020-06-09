@@ -1,13 +1,13 @@
 package com.tfswx.factory;
 
-import com.tfswx.common.PageTemplateType;
+import com.tfswx.common.Templates;
 import com.tfswx.template.*;
 
 /**
  * 页面数据模板工厂
  */
 public class PageTemplateFactory {
-    public static PageSearchTemplate createTemplate(PageTemplateType type){
+    public static PageSearchTemplate createTemplate(Templates type){
         switch (type){
             case MEMBER_PAGE:
                 return new ManagerPage();

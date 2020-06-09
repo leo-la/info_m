@@ -3,7 +3,7 @@ package com.tfswx.common;
 /**
  * 页面模板工厂生产类型
  */
-public enum PageTemplateType {
+public enum Templates {
     /**
      * 管理员页面
      */

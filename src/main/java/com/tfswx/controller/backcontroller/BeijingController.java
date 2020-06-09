@@ -58,31 +58,16 @@ public class BeijingController extends BaseController {
     }
 
     /**
-     * 排序-目录前移
-     * @param lastId
+     * 排序-目录
+     * @param op
      * @param id
      * @param model
      * @return
      */
-    @RequestMapping("sortFront/{lastId}/{id}")
-    public String sortFront(@PathVariable String lastId,@PathVariable String id,Model model){
-        beijingService.sortFront(CommonUtils.restFulConverter(lastId),CommonUtils.restFulConverter(id));
+    @RequestMapping("sortDir/{op}/{id}")
+    public String sortFront(@PathVariable String op,@PathVariable String id,Model model){
+        beijingService.sortDir(CommonUtils.restFulConverter(op),CommonUtils.restFulConverter(id));
         model.addAttribute("id",13);
         return "back/index";
     }
-
-    /**
-     * 排序-目录后移
-     * @param nextid
-     * @param id
-     * @param model
-     * @return
-     */
-    @RequestMapping("sortDown/{nextid}/{id}")
-    public String sortDown(@PathVariable String nextid,@PathVariable String id,Model model){
-        beijingService.sortDown(CommonUtils.restFulConverter(nextid),CommonUtils.restFulConverter(id));
-        model.addAttribute("id",13);
-        return "back/index";
-    }
-
 }

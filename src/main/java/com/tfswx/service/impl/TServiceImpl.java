@@ -1,6 +1,6 @@
 package com.tfswx.service.impl;
 
-import com.tfswx.common.PageTemplateType;
+import com.tfswx.common.Templates;
 import com.tfswx.dao.Dao;
 import com.tfswx.factory.PageTemplateFactory;
 import com.tfswx.pojo.Directory;
@@ -9,14 +9,14 @@ import com.tfswx.pojo.PageBean;
 import com.tfswx.pojo.VersionFile;
 import com.tfswx.service.TService;
 import com.tfswx.template.PageSearchTemplate;
-import com.tfswx.utils.CommonUtils;
+import com.tfswx.utils.DateUtils;
+import com.tfswx.utils.InfoFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -46,7 +46,7 @@ public class TServiceImpl implements TService {
 
     @Override
     public PageBean searchVersionFilesPage(PageBean pageBean) {
-        PageSearchTemplate template = PageTemplateFactory.createTemplate(PageTemplateType.TWO_DIRECTORY_PAGE);
+        PageSearchTemplate template = PageTemplateFactory.createTemplate(Templates.TWO_DIRECTORY_PAGE);
         return template.run(pageBean,firmDao);
     }
 
@@ -70,21 +70,19 @@ public class TServiceImpl implements TService {
 
     @Override
     public PageBean searchHistoryVersionPage(PageBean pageBean) {
-        PageSearchTemplate template = PageTemplateFactory.createTemplate(PageTemplateType.THREE_DIRECTORY_PAGE);
+        PageSearchTemplate template = PageTemplateFactory.createTemplate(Templates.THREE_DIRECTORY_PAGE);
         return template.run(pageBean,firmDao);
     }
 
     @Override
     public PageBean searchFourLevelDirPage(PageBean pageBean) {
-        PageSearchTemplate template = PageTemplateFactory.createTemplate(PageTemplateType.Four_DIRECTORY_PAGE);
+        PageSearchTemplate template = PageTemplateFactory.createTemplate(Templates.Four_DIRECTORY_PAGE);
         return template.run(pageBean,firmDao);
     }
 
     @Override
     public String addNewFile(FileInfo fileInfo) {
-        Date date = new Date();
-        SimpleDateFormat format = CommonUtils.timeFormater();
-        fileInfo.setCreatetime(format.format(date));
+        fileInfo.setCreatetime(DateUtils.getNowDate());
         fileInfo.setType(0);
         Integer integer = firmDao.insertNewFile(fileInfo);
 
@@ -103,9 +101,7 @@ public class TServiceImpl implements TService {
 
     @Override
     public String reuploadFile(FileInfo fileInfo) {
-        Date date = new Date();
-        SimpleDateFormat format = CommonUtils.timeFormater();
-        fileInfo.setCreatetime(format.format(date));
+        fileInfo.setCreatetime(DateUtils.getNowDate());
         Integer integer = firmDao.updateFile(fileInfo);
         if(integer==1){
             return "更新成功!";
@@ -139,9 +135,7 @@ public class TServiceImpl implements TService {
 
     @Override
     public Boolean addFourDir(FileInfo fileInfo) {
-        Date date = new Date();
-        SimpleDateFormat format = CommonUtils.timeFormater();
-        fileInfo.setCreatetime(format.format(date));
+        fileInfo.setCreatetime(DateUtils.getNowDate());
         fileInfo.setType(1);
         fileInfo.setDownload(0);
         if(fileInfo.getDescription().length()==0){
@@ -174,15 +168,15 @@ public class TServiceImpl implements TService {
         if(file.getName().contains(".")){
             int i = file.getName().lastIndexOf(".");
             String dirname = staticWordFilePath + "\\" + file.getName().substring(0,i);
-            CommonUtils.deleteAllFilesOfDir(new File(dirname));
-            CommonUtils.deleteFile(dirname+".pdf");
-            CommonUtils.deleteFile(dirname+".html");
-            CommonUtils.deleteFile(staticWordFilePath + "\\" + file.getName());
-            CommonUtils.deleteFile(dirname+".pdf");
+            InfoFileUtil.deleteAllFilesOfDir(new File(dirname));
+            InfoFileUtil.deleteFile(dirname+".pdf");
+            InfoFileUtil.deleteFile(dirname+".html");
+            InfoFileUtil.deleteFile(staticWordFilePath + "\\" + file.getName());
+            InfoFileUtil.deleteFile(dirname+".pdf");
         }else {
             String dirname = staticWordFilePath + "\\" + file.getName();
-            CommonUtils.deleteAllFilesOfDir(new File(dirname));
-            CommonUtils.deleteFile(dirname);
+            InfoFileUtil.deleteAllFilesOfDir(new File(dirname));
+            InfoFileUtil.deleteFile(dirname);
         }
 
         if(integer==1){
@@ -275,31 +269,14 @@ public class TServiceImpl implements TService {
     }
 
     @Override
-    public Boolean sortFront(Integer lastid, Integer id) {
+    public Boolean sortDir(Integer op, Integer id) {
         try{
-            Directory last = firmDao.getDirById(lastid);
+            Directory opp = firmDao.getDirById(op);
             Directory now = firmDao.getDirById(id);
-            Integer temp = last.getSortnum();
-            last.setSortnum(now.getSortnum());
+            Integer temp = opp.getSortnum();
+            opp.setSortnum(now.getSortnum());
             now.setSortnum(temp);
-            firmDao.updateDirSortNum(last);
-            firmDao.updateDirSortNum(now);
-            return true;
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public Boolean sortDown(Integer nextid, Integer id) {
-        try{
-            Directory next = firmDao.getDirById(nextid);
-            Directory now = firmDao.getDirById(id);
-            Integer temp = next.getSortnum();
-            next.setSortnum(now.getSortnum());
-            now.setSortnum(temp);
-            firmDao.updateDirSortNum(next);
+            firmDao.updateDirSortNum(opp);
             firmDao.updateDirSortNum(now);
             return true;
         }catch (Exception e){

@@ -1,9 +1,9 @@
 package com.tfswx.utils;
 
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.codec.Base64;
 import com.itextpdf.tool.xml.XMLWorker;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import com.itextpdf.tool.xml.css.CssFile;
@@ -14,10 +14,9 @@ import com.itextpdf.tool.xml.parser.XMLParser;
 import com.itextpdf.tool.xml.pipeline.css.CSSResolver;
 import com.itextpdf.tool.xml.pipeline.css.CssResolverPipeline;
 import com.itextpdf.tool.xml.pipeline.end.PdfWriterPipeline;
+import com.itextpdf.tool.xml.pipeline.html.AbstractImageProvider;
 import com.itextpdf.tool.xml.pipeline.html.HtmlPipeline;
 import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
-import com.tfswx.factory.UnicodeFontFactory;
-import com.tfswx.pojo.officePO.WordHtml;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.converter.PicturesManager;
@@ -30,10 +29,16 @@ import org.apache.poi.xwpf.converter.core.IXWPFConverter;
 import org.apache.poi.xwpf.converter.xhtml.XHTMLConverter;
 import org.apache.poi.xwpf.converter.xhtml.XHTMLOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.ToHTMLContentHandler;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.w3c.dom.Document;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -57,7 +62,7 @@ public class OfficeUtils {
      * @param outputFile
      * @throws Exception
      */
-    public void createHtml(String inputFile, String outputFile) throws Exception {
+    public static void createHtml(String inputFile, String outputFile) throws Exception {
         long startTime = System.currentTimeMillis();
         InputStream is = null;
         try {
@@ -78,13 +83,45 @@ public class OfficeUtils {
             } else if (FileTools.isWord2007(input)) {
                 convertDocx2Html(is, outputFile);
             } else {
-                TikaUtils.parseToHTML(inputFile, outputFile);
+                parseToHTML(inputFile, outputFile);
             }
         } finally {
             InfoFileUtil.close(is);
         }
         log.info("创建[ " + outputFile + ".html]文件，耗时[" + (System.currentTimeMillis() - startTime)
                 + " ms].");
+    }
+
+
+    /**
+     * 解析转换html
+     *
+     * @param fileName
+     * @param outPutFile
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     * @throws TikaException
+     */
+    public static String parseToHTML(String fileName, String outPutFile){
+        ContentHandler handler = new ToHTMLContentHandler();
+        AutoDetectParser parser = new AutoDetectParser();
+        Metadata metadata = new Metadata();
+        InputStream stream = null;
+        try {
+            stream = new FileInputStream(new File(fileName));
+            parser.parse(stream, handler, metadata);
+
+            FileTools.writeFile(handler.toString(), outPutFile + ".html");
+
+            FileTools.parse(outPutFile + ".html");
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+        return null;
     }
 
     /**
@@ -333,10 +370,20 @@ public class OfficeUtils {
             cssResolver.addCss(cssFile);
 
             // HTML
-            CssAppliers cssAppliers = new CssAppliersImpl(new UnicodeFontFactory());
+            CssAppliers cssAppliers = new CssAppliersImpl(new FontProvider() {
+                @Override
+                public boolean isRegistered(String s) {
+                    return false;
+                }
+
+                @Override
+                public Font getFont(String s, String s1, boolean b, float v, int i, BaseColor baseColor) {
+                    return setChineseFont();
+                }
+            });
             HtmlPipelineContext htmlContext = new HtmlPipelineContext(cssAppliers);
             htmlContext.setTagFactory(Tags.getHtmlTagProcessorFactory());
-            htmlContext.setImageProvider(new ItextUtils.Base64ImageProvider());
+            htmlContext.setImageProvider(new Base64ImageProvider());
 
             // Pipelines
             PdfWriterPipeline pdf = new PdfWriterPipeline(document, writer);
@@ -352,7 +399,6 @@ public class OfficeUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-
             try {
                 // step 5
                 if (null != document) document.close();
@@ -362,5 +408,48 @@ public class OfficeUtils {
 
             }
         }
+    }
+
+    static class Base64ImageProvider extends AbstractImageProvider {
+        @Override
+        public Image retrieve(String src) {
+            int pos = src.indexOf("base64,");
+            try {
+                if (src.startsWith("data") && pos > 0) {
+                    byte[] img = Base64.decode(src.substring(pos + 7));
+                    return Image.getInstance(img);
+                } else {
+                    return Image.getInstance(src);
+                }
+            } catch (BadElementException ex) {
+                return null;
+            } catch (IOException ex) {
+                return null;
+            }
+        }
+        @Override
+        public String getImageRootPath() {
+            return null;
+        }
+    }
+
+
+
+    /**
+     * 设置中文字体
+     * @return
+     */
+    public static Font setChineseFont() {
+        BaseFont bf = null;
+        Font fontChinese = null;
+        try {
+            bf = BaseFont.createFont("SIMKAI.TTF", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            fontChinese = new Font(bf, 12, Font.NORMAL);
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fontChinese;
     }
 }

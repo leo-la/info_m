@@ -21,6 +21,13 @@ public class DateUtils {
 	 */
 	private static final String DEFAULT_FORMAT = "yyyy-MM-dd";
 
+	public static String getNowTime() {
+		Date date = new Date();
+		SimpleDateFormat f = new SimpleDateFormat(DEFAULT_FORMAT);
+		String sDate = f.format(date);
+		return sDate;
+	}
+
 	/**
 	 * 格式化日期
 	 * 

@@ -5,13 +5,9 @@ import com.tfswx.pojo.FileInfo;
 import com.tfswx.pojo.PageBean;
 import com.tfswx.service.TService;
 import com.tfswx.utils.CommonUtils;
-import com.tfswx.utils.FileTools;
+import com.tfswx.utils.InfoFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -100,7 +95,10 @@ public class BaseController {
     @ResponseBody
     public Boolean addNewFile(MultipartFile file, FileInfo fileInfo, Model model){
         try{
-            fileInfo = CommonUtils.uploadFile(file, fileInfo, staticWordFilePath, false);
+            String filename = CommonUtils.filenameUnique(file);
+            fileInfo.setName(filename);
+            String url = InfoFileUtil.uploadFile(file, fileInfo.getName(), staticWordFilePath);
+            fileInfo.setUrl(url);
             tService.addNewFile(fileInfo);
             model.addAttribute("versionid",fileInfo.getVersionid());
             return true;
@@ -136,7 +134,10 @@ public class BaseController {
     @ResponseBody
     public Boolean reuploadFile(MultipartFile updatefile,FileInfo fileInfo, Model model){
         try{
-            CommonUtils.uploadFile(updatefile,fileInfo,staticWordFilePath,true);
+            String filename = CommonUtils.filenameUnique(updatefile);
+            fileInfo.setName(filename);
+            String url = InfoFileUtil.uploadFile(updatefile, fileInfo.getName(), staticWordFilePath);
+            fileInfo.setUrl(url);
             tService.reuploadFile(fileInfo);
             model.addAttribute("versionid",fileInfo.getVersionid());
             return true;
@@ -234,7 +235,7 @@ public class BaseController {
     @ResponseBody
     public void searchFilePreview(@PathVariable String id, HttpServletResponse response) throws Exception {
         String fileUrl = tService.searchFileUrl(CommonUtils.restFulConverter(id));
-        CommonUtils.previewFile(fileUrl,response,staticWordFilePath);
+        InfoFileUtil.previewFile(fileUrl,response,staticWordFilePath);
     }
 
     /**
@@ -248,7 +249,7 @@ public class BaseController {
     @ResponseBody
     public void downloadFile(@PathVariable String id, HttpServletRequest request, HttpServletResponse response){
         String fileUrl = tService.searchFileUrl(CommonUtils.restFulConverter(id));
-        CommonUtils.downloadFile(fileUrl,request,response);
+        InfoFileUtil.downloadFile(fileUrl,request,response);
     }
 
 

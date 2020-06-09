@@ -1,13 +1,15 @@
 package com.tfswx.utils;
 
+import org.slf4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 
 public class InfoFileUtil {
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(CommonUtils.class);
 
     /**
      * 上传文件
@@ -87,6 +89,112 @@ public class InfoFileUtil {
         } finally {
            close(os);
         }
+    }
+    /**
+     * 预览文件
+     *
+     * @param inputFile
+     * @param response
+     */
+    public static void previewFile(String inputFile, HttpServletResponse response,String staticpath) throws Exception {
+        String outputFile = "";
+        String suffix = "";
+        //字符处理
+        if(inputFile.contains(".")){
+            int i = inputFile.lastIndexOf(".");
+            outputFile = inputFile.substring(0,i);
+            suffix = inputFile.substring(i,inputFile.length());
+        }
+        if(suffix.equals(".doc")||suffix.equals(".docx")){
+
+            //word -> html
+            OfficeUtils.createHtml(inputFile, outputFile);
+            OfficeUtils.changeImageType(outputFile + ".html");//编辑html文件图片格式
+            OfficeUtils.checkHtmlEndTag(outputFile + ".html");
+
+            OfficeUtils.createPdf(outputFile + ".html",outputFile);
+
+            response.setContentType("application/pdf");
+            //预览
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(new File(outputFile+".pdf")));//资源路径（相对/绝对）
+            BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());//输出路径
+            //中转站   一个字节(水杯)
+            //中转站使用 一个 字节数组  (水桶)
+            byte [] buf = new byte [1024];
+            int n = bis.read(buf);
+            while(n!=-1){
+                bos.write(buf,0,n);//写
+                n = bis.read(buf);//再读
+            }
+            //手动刷新输出流的缓冲区
+            //bos.flush();
+            //关闭
+            close(bos,bis);
+
+        }else if(suffix.equals(".pdf")){
+            response.setContentType("application/pdf");
+            //预览
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(outputFile+".pdf"));//资源路径（相对/绝对）
+            BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());//输出路径
+            //中转站   一个字节(水杯)
+            //中转站使用 一个 字节数组  (水桶)
+            byte [] buf = new byte [1024];
+            int n = bis.read(buf);
+            while(n!=-1){
+                bos.write(buf,0,n);//写
+                n = bis.read(buf);//再读
+            }
+            //手动刷新输出流的缓冲区
+            //bos.flush();
+            //关闭
+            close(bos,bis);
+        }else {
+            return;
+        }
+    }
+
+    /**
+     * 删除文件夹
+     * @param path
+     */
+    public static void deleteAllFilesOfDir(File path) {
+
+        if (null != path) {
+            if (!path.exists())
+                return;
+            if (path.isFile()) {
+                boolean result = path.delete();
+                int tryCount = 0;
+                while (!result && tryCount++ < 10) {
+                    System.gc(); // 回收资源
+                    result = path.delete();
+                }
+            }
+            File[] files = path.listFiles();
+            if (null != files) {
+                for (int i = 0; i < files.length; i++) {
+                    deleteAllFilesOfDir(files[i]);
+                }
+            }
+            path.delete();
+            log.info("["+path+"]已经被成功删除");
+        }
+    }
+
+    /**
+     * 删除文件
+     * @param pathname
+     * @return
+     */
+    public static boolean deleteFile(String pathname){
+        boolean result = false;
+        File file = new File(pathname);
+        if (file.exists()) {
+            file.delete();
+            result = true;
+            log.info("["+pathname+"]已经被成功删除");
+        }
+        return result;
     }
 
     /**

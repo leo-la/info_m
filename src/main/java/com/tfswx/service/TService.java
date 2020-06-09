@@ -152,19 +152,12 @@ public interface TService {
     String searchFileUrl(Integer id);
 
     /**
-     * 向前移动
+     * 排序目录
      * @param lastid
      * @param id
      * @return
      */
-    Boolean sortFront(Integer lastid,Integer id);
+    Boolean sortDir(Integer lastid,Integer id);
 
-    /**
-     * 目录后移
-     * @param nextid
-     * @param id
-     * @return
-     */
-    Boolean sortDown(Integer nextid,Integer id);
 
 }
