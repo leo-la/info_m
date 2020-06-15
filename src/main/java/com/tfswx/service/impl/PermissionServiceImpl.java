@@ -1,6 +1,6 @@
 package com.tfswx.service.impl;
 
-import com.tfswx.common.Templates;
+import com.tfswx.template.Templates;
 import com.tfswx.dao.PermissionDao;
 import com.tfswx.factory.PageTemplateFactory;
 import com.tfswx.pojo.Dep;

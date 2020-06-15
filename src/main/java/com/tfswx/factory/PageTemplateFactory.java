@@ -1,6 +1,6 @@
 package com.tfswx.factory;
 
-import com.tfswx.common.Templates;
+import com.tfswx.template.Templates;
 import com.tfswx.template.*;
 
 /**

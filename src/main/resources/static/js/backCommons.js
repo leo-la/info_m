@@ -1,3 +1,4 @@
+
 // 加载目录信息
 function loadNo_1DirPage() {
     var da = JSON.stringify({id: $("#parentDirId").val()})
@@ -8,45 +9,51 @@ function loadNo_1DirPage() {
         type: "post",
         data:da,
         success: function (data) {
-            if(data.length==0){
-                nodata();
+            if (data.code == "200") {
+                if(data.result.length==0){
+                    nodata();
+                }
+                var content = '';
+                //显示数据
+                for (var i = 0; i < data.result.length; i++) {
+                    list = data.result;
+                    var content1 =
+                        '        <div class="col-md-6 col-sm-6  ">\n' +
+                        '                        <div class="x_panel">\n' +
+                        '                            <div class="x_title">\n' +
+                        '                                <h2>\n' +
+                        '                                    <i class="fa fa-bars"></i>\n' +
+
+                        data.result[i].dirname +
+                        '                                    <small>'+data.result[i].enname+'</small>\n' +
+                        '                                </h2>\n' +
+                        '                                <ul class="nav navbar-right panel_toolbox">\n' +
+                        '                                    <li style="float: right;margin-left:50px"><a class="collapse-link" href="javascript:sortFront(' + data.result[i].id + ')" data-toggle="tooltip" data-placement="top" title="向前移动" ><i class="fa fa-caret-up" ></i></a>\n' +
+                        '                                    </li>\n' +
+                        '                                    <li style="float: right;margin-left:2px"><a class="collapse-link" href="javascript:sortDown(' + data.result[i].id + ')" data-toggle="tooltip" data-placement="top" title="向后移动"><i class="fa fa-caret-down"></i></a>\n' +
+                        '                                    </li>\n' +
+                        '                                    <li style="float: right;margin-left:2px"><a class="collapse-link" href="javascript:updateNo_1DirInit(' + data.result[i].id + ')" data-toggle="tooltip" data-placement="top" title="编辑"><i class="fa fa-cog"></i></a>\n' +
+                        '                                    </li>\n' +
+                        '                                    <li style="float: right;margin-left:2px"><a class="collapse-link" href="javascript:deleteNo_1DirConfirm(' + data.result[i].id + ')" data-toggle="tooltip" data-placement="top" title="删除"><i class="fa fa-close"></i></a>\n' +
+                        '                                    </li>\n' +
+                        '                                </ul>\n' +
+                        '                                <div class="clearfix"></div>\n' +
+                        '                            </div>\n' +
+                        '                            <a href="javascript:searchNo_2Details('+data.result[i].id+')" style="float: right;padding-right: 20px">查看详情>></a>\n' +
+                        '                        </div>\n' +
+                        '                    </div>';
+
+                    content += content1;
+                }
+                $("#dirContent").html(content);
+            }else{
+                layer.msg(data.message, {
+                    skin: 'layui-layer-molv', //样式类名
+                    closeBtn: 0,
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                })
             }
-            var content = '';
-            //显示数据
-            for (var i = 0; i < data.length; i++) {
-                list = data;
-                var content1 =
-                    '        <div class="col-md-6 col-sm-6  ">\n' +
-                    '                        <div class="x_panel">\n' +
-                    '                            <div class="x_title">\n' +
-                    '                                <h2>\n' +
-                    '                                    <i class="fa fa-bars"></i>\n' +
-
-                    data[i].dirname +
-                    '                                    <small>'+data[i].enname+'</small>\n' +
-                    '                                </h2>\n' +
-                    '                                <ul class="nav navbar-right panel_toolbox">\n' +
-                    '                                    <li style="float: right;margin-left:50px"><a class="collapse-link" href="javascript:sortFront(' + data[i].id + ')" data-toggle="tooltip" data-placement="top" title="向前移动" ><i class="fa fa-caret-up" ></i></a>\n' +
-                    '                                    </li>\n' +
-                    '                                    <li style="float: right;margin-left:2px"><a class="collapse-link" href="javascript:sortDown(' + data[i].id + ')" data-toggle="tooltip" data-placement="top" title="向后移动"><i class="fa fa-caret-down"></i></a>\n' +
-                    '                                    </li>\n' +
-                    '                                    <li style="float: right;margin-left:2px"><a class="collapse-link" href="javascript:updateNo_1DirInit(' + data[i].id + ')" data-toggle="tooltip" data-placement="top" title="编辑"><i class="fa fa-cog"></i></a>\n' +
-                    '                                    </li>\n' +
-                    '                                    <li style="float: right;margin-left:2px"><a class="collapse-link" href="javascript:deleteNo_1DirConfirm(' + data[i].id + ')" data-toggle="tooltip" data-placement="top" title="删除"><i class="fa fa-close"></i></a>\n' +
-                    '                                    </li>\n' +
-                    '                                </ul>\n' +
-                    '                                <div class="clearfix"></div>\n' +
-                    '                            </div>\n' +
-                    '                            <a href="javascript:searchNo_2Details('+data[i].id+')" style="float: right;padding-right: 20px">查看详情>></a>\n' +
-                    '                        </div>\n' +
-                    '                    </div>';
-
-                content += content1;
-
-            }
-
-            $("#dirContent").html(content);
-            $(".title_left").html(swxtitle);
 
         }
     })
@@ -61,49 +68,59 @@ function loadNo_2DirPage(currentPage){
         dataType: "json",
         type: "post",
         success: function (data) {
-            //显示数据
-            var tbody = "";
-            for (var i = 0; i < data.pageData.length; i++) {
-                var tr = '       <tr style="font-size: 14px;">\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].name + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].versionnum + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;"> ' +
-                    '<a href="javascript:searchNo_3Details(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">查看</a>' +
-                    '<a href="javascript:updateNo_2DirInit(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px" >编辑</a>' +
-                    '<a href="javascript:deleteNo_2DirConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">删除</a>' +
-                    '</td>\n' +
-                    '            </tr>'
-                tbody = tbody + tr ;
-            }
-            $("#pageTbody").html(tbody);
-            //显示左侧页面信息
-            var page1 = '共<span style="color: #017ebc;"> ' + data.totalPage + ' </span> 页 <span style="color: #017ebc;"> ' + data.totalCount + ' </span>条'
-            $("#pageLeft").html(page1)
-
-            //显示右侧分页信息
-            var pager = ' <li><a href="javascript:loadNo_2DirPage(' + (data.currentPage - 1) + ')">Previous</a></li>';
-            if (data.currentPage - 1 <= 0) {
-                pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
-            }
-
-            for (var i = 0; i < data.totalPage; i++) {
-                if (data.currentPage == (i + 1)) {
-                    var pagerli = '<li class="active"><a href="javascript:loadNo_2DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
-                } else {
-                    var pagerli = '<li><a href="javascript:loadNo_2DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
-
+            if (data.code == "200") {
+                //显示数据
+                var tbody = "";
+                for (var i = 0; i < data.result.pageData.length; i++) {
+                    var tr = '       <tr style="font-size: 14px;">\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].name + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].createtime + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].versionnum + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;"> ' +
+                        '<a href="javascript:searchNo_3Details(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">查看</a>' +
+                        '<a href="javascript:updateNo_2DirInit(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px" >编辑</a>' +
+                        '<a href="javascript:deleteNo_2DirConfirm(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">删除</a>' +
+                        '</td>\n' +
+                        '            </tr>'
+                    tbody = tbody + tr ;
                 }
-                pager += pagerli;
-            }
-            var pager2 = '<li><a href="javascript:loadNo_2DirPage(' + (data.currentPage + 1) + ')">Next</a></li>';
-            if (data.currentPage + 1 > data.totalPage) {
-                pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
-            }
-            pager += pager2;
+                $("#pageTbody").html(tbody);
+                //显示左侧页面信息
+                var page1 = '共<span style="color: #017ebc;"> ' + data.result.totalPage + ' </span> 页 <span style="color: #017ebc;"> ' + data.result.totalCount + ' </span>条'
+                $("#pageLeft").html(page1)
 
-            $("#pageRight").html(pager);
-            $(".title_left").html(swxtitle);
+                //显示右侧分页信息
+                var pager = ' <li><a href="javascript:loadNo_2DirPage(' + (data.result.currentPage - 1) + ')">Previous</a></li>';
+                if (data.result.currentPage - 1 <= 0) {
+                    pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
+                }
+
+                for (var i = 0; i < data.result.totalPage; i++) {
+                    if (data.result.currentPage == (i + 1)) {
+                        var pagerli = '<li class="active"><a href="javascript:loadNo_2DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
+                    } else {
+                        var pagerli = '<li><a href="javascript:loadNo_2DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
+
+                    }
+                    pager += pagerli;
+                }
+                var pager2 = '<li><a href="javascript:loadNo_2DirPage(' + (data.result.currentPage + 1) + ')">Next</a></li>';
+                if (data.result.currentPage + 1 > data.result.totalPage) {
+                    pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
+                }
+                pager += pager2;
+
+                $("#pageRight").html(pager);
+                $(".title_left").html(swxtitle);
+            }else{
+                layer.msg(data.message, {
+                    skin: 'layui-layer-molv', //样式类名
+                    closeBtn: 0,
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                })
+            }
+
         }
     });
 
@@ -125,82 +142,83 @@ function loadNo_3DirPage(currentPage) {
         dataType: "json",
         type: "post",
         success: function (data) {
-            //显示数据
-            var tbody = "";
-            for (var i = 0; i < data.pageData.length; i++) {
-                var tr = '       <tr style="font-size: 14px;">\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].name + '</td>\n';
-                var tr2 = '';
-                if(data.pageData[i].description==null){
-                    tr2 = '                <td style="display: table-cell;vertical-align: middle;">无</td>'+
-                        '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
-                        '                <td style="display: table-cell;vertical-align: middle;"> ';
-                }else{
-                    tr2 =  '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].description + '</td>'+
-                        '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
-                        '                <td style="display: table-cell;vertical-align: middle;"> ';
+            if (data.code == "200") {
+                //显示数据
+                var tbody = "";
+                for (var i = 0; i < data.result.pageData.length; i++) {
+                    var tr = '       <tr style="font-size: 14px;">\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].name + '</td>\n';
+                    var tr2 = '';
+                    if(data.result.pageData[i].description==null){
+                        tr2 = '                <td style="display: table-cell;vertical-align: middle;">无</td>'+
+                            '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].createtime + '</td>\n' +
+                            '                <td style="display: table-cell;vertical-align: middle;"> ';
+                    }else{
+                        tr2 =  '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].description + '</td>'+
+                            '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].createtime + '</td>\n' +
+                            '                <td style="display: table-cell;vertical-align: middle;"> ';
+                    }
+                    tr += tr2;
+
+                    var tr3 = '';
+                    if(data.result.pageData[i].type==1){
+                        tr3 =
+                            '<a href="javascript:searchNo_4Details(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">打开</a>' +
+                            '<a href="javascript:updateNo_3DirConfirm(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">编辑</a>' +
+                            '<a href="javascript:deleteNo_3DirConfirm(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">删除</a>';
+                    }else {
+                        tr3 =
+                            '<a href="javascript:preview(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">预览</a>' +
+                            '<a href="javascript:updateNo_3fileConfirm(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">更新</a>' +
+                            '<a href="javascript:deleteNo_3DirConfirm(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">删除</a>';
+                    }
+                    tr += tr3;
+                    var downloead = '';
+                    if (data.result.pageData[i].download == 1) {
+                        downloead =
+                            '<a href="javascript:downloadFile(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">下载</a>'
+                    }
+                    var tr4 =
+                        '</td>\n' +
+                        '            </tr>'
+                    tbody = tbody + tr + downloead + tr4;
                 }
-                tr += tr2;
+                $("#pageTbody").html(tbody);
+                //显示左侧页面信息
+                var page1 = '共<span style="color: #017ebc;"> ' + data.result.totalPage + ' </span> 页 <span style="color: #017ebc;"> ' + data.result.totalCount + ' </span>条'
+                $("#pageLeft").html(page1)
 
-                var tr3 = '';
-                if(data.pageData[i].type==1){
-                    tr3 =
-                        '<a href="javascript:searchNo_4Details(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">打开</a>' +
-                        '<a href="javascript:updateNo_3DirConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">编辑</a>' +
-                        '<a href="javascript:deleteNo_3DirConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">删除</a>';
-                }else {
-                    tr3 =
-                        '<a href="javascript:preview(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">预览</a>' +
-                        '<a href="javascript:updateNo_3fileConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">更新</a>' +
-                        '<a href="javascript:deleteNo_3DirConfirm(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">删除</a>';
+                //显示右侧分页信息
+                var pager = ' <li><a href="javascript:loadNo_3DirPage(' + (data.result.currentPage - 1) + ')">Previous</a></li>';
+                if (data.result.currentPage - 1 <= 0) {
+                    pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
                 }
-                tr += tr3;
-                var downloead = '';
-                if (data.pageData[i].download == 1) {
-                    downloead =
-                        '<a href="javascript:downloadFile(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">下载</a>'
+
+                for (var i = 0; i < data.result.totalPage; i++) {
+                    if (data.result.currentPage == (i + 1)) {
+                        var pagerli = '<li class="active"><a href="javascript:loadNo_3DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
+                    } else {
+                        var pagerli = '<li><a href="javascript:loadNo_3DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
+
+                    }
+                    pager += pagerli;
                 }
-                var tr4 =
-                    '</td>\n' +
-                    '            </tr>'
-                tbody = tbody + tr + downloead + tr4;
-            }
-            $("#pageTbody").html(tbody);
-            //显示左侧页面信息
-            var page1 = '共<span style="color: #017ebc;"> ' + data.totalPage + ' </span> 页 <span style="color: #017ebc;"> ' + data.totalCount + ' </span>条'
-            $("#pageLeft").html(page1)
-
-            //显示右侧分页信息
-            var pager = ' <li><a href="javascript:loadNo_3DirPage(' + (data.currentPage - 1) + ')">Previous</a></li>';
-            if (data.currentPage - 1 <= 0) {
-                pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
-            }
-
-            for (var i = 0; i < data.totalPage; i++) {
-                if (data.currentPage == (i + 1)) {
-                    var pagerli = '<li class="active"><a href="javascript:loadNo_3DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
-                } else {
-                    var pagerli = '<li><a href="javascript:loadNo_3DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
-
+                var pager2 = '<li><a href="javascript:loadNo_3DirPage(' + (data.result.currentPage + 1) + ')">Next</a></li>';
+                if (data.result.currentPage + 1 > data.result.totalPage) {
+                    pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
                 }
-                pager += pagerli;
-            }
-            var pager2 = '<li><a href="javascript:loadNo_3DirPage(' + (data.currentPage + 1) + ')">Next</a></li>';
-            if (data.currentPage + 1 > data.totalPage) {
-                pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
-            }
-            pager += pager2;
+                pager += pager2;
 
-            $("#pageRight").html(pager);
-            $(".title_left").html(swxtitle);
-
-            updateAction = getContextPath() + '/updateVersionFile';
-            addThreeDirAction = getContextPath() + '/addFourDir';
-            $("#addFourDir").attr("action",addThreeDirAction);
-            $("#updateFourDirForm").attr("action",addThreeDirAction);
-            if($("#dirLevel").val()==3){
-                $("#accordion2").css("display","none");
+                $("#pageRight").html(pager);
+            }else{
+                layer.msg(data.message, {
+                    skin: 'layui-layer-molv', //样式类名
+                    closeBtn: 0,
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                })
             }
+
         }
     });
 
@@ -267,7 +285,7 @@ function deleteNo_1Dir(id) {
         data: da,
         type: "post",
         success: function (data) {
-            if (data.status == 200) {
+            if (data == true) {
                 layer.msg('删除成功', {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
@@ -278,7 +296,7 @@ function deleteNo_1Dir(id) {
                     loadNo_1DirPage();
                 },1000)
             }else{
-                layer.msg('服务器维护中，请稍后再试', {
+                layer.msg(data.message, {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
                     icon: 2,
@@ -327,7 +345,7 @@ function deleteNo_3Dir(id) {
         data: da,
         type: "post",
         success: function (data) {
-            if (data.status == 200) {
+            if (data == true) {
                 layer.msg('删除成功', {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
@@ -338,7 +356,7 @@ function deleteNo_3Dir(id) {
                     loadNo_3DirPage();
                 },1000)
             }else{
-                layer.msg('服务器维护中，请稍后再试', {
+                layer.msg(data.message, {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
                     icon: 2,
@@ -360,8 +378,17 @@ function updateNo_1DirInit(id) {
         dataType: "json",
         type: "post",
         success: function (data) {
-            $("#oneName").val(data.dirname);
-            $("#twoName").val(data.enname);
+            if(data.code == "200"){
+                $("#oneName").val(data.result.dirname);
+                $("#twoName").val(data.result.enname);
+            }else{
+                layer.msg(data.message, {
+                    skin: 'layui-layer-molv', //样式类名
+                    closeBtn: 0,
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                })
+            }
         }
     })
     $("#updateNo_1Btn").click();
@@ -408,7 +435,7 @@ $("#updateNO_1Dir").bind("click",function () {
         dataType: "json",
         type: "post",
         success: function (data) {
-            if (data.status == 200) {
+            if (data == true) {
                 layer.msg('更新成功', {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
@@ -420,7 +447,7 @@ $("#updateNO_1Dir").bind("click",function () {
                     loadNo_1DirPage();
                 },1000)
             }else{
-                layer.msg('服务器维护中，请稍后再试', {
+                layer.msg(data.message, {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
                     icon: 2,
@@ -441,7 +468,7 @@ $("#updateNo_2Dir").bind("click",function () {
         data: da,
         type: "post",
         success: function (data) {
-            if (data.status == 200) {
+            if (data == true) {
                 layer.msg('更新成功', {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
@@ -453,7 +480,7 @@ $("#updateNo_2Dir").bind("click",function () {
                     $("#cancelUpdateNo_2Dir").click();
                 }, 1000)
             }else {
-                layer.msg('服务器维护中，请稍后再试', {
+                layer.msg(data.message, {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
                     icon: 2,
@@ -477,7 +504,7 @@ $("#updateNo_3Dir").bind("click",function () {
         data: da,
         type: "post",
         success: function (data) {
-            if (data.status == 200) {
+            if (data == true) {
                 layer.msg('更新成功', {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
@@ -488,7 +515,7 @@ $("#updateNo_3Dir").bind("click",function () {
                     loadNo_3DirPage();
                 }, 1000)
             }else {
-                layer.msg('服务器维护中，请稍后再试', {
+                layer.msg(data.message, {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
                     icon: 2,
@@ -535,7 +562,7 @@ $("#reuploadFile").bind("click",function () {
             cache: false,
             async: false,
             success: function (data) {
-                if (data.status == 200) {
+                if (data == true) {
                     layer.msg('添加成功', {
                         skin: 'layui-layer-molv', //样式类名
                         closeBtn: 0,
@@ -547,7 +574,7 @@ $("#reuploadFile").bind("click",function () {
                         loadNo_3DirPage();
                     }, 1000)
                 } else {
-                    layer.msg('服务器维护中，请稍后再试', {
+                    layer.msg(data.message, {
                         skin: 'layui-layer-molv', //样式类名
                         closeBtn: 0,
                         icon: 2,
@@ -606,10 +633,10 @@ function sortDir(opid,id) {
 
         },
         success: function (data) {
-            if (data.status == 200) {
+            if (data == true) {
                 loadNo_1DirPage();
             }else{
-                layer.msg('服务器维护中，请稍后再试', {
+                layer.msg(data.message, {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
                     icon: 2,
@@ -638,7 +665,7 @@ $("#addNo_1dir").bind("click",function () {
 
         },
         success: function (data) {
-            if (data.status == 200) {
+            if (data == true) {
                 layer.msg('创建成功', {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
@@ -650,7 +677,7 @@ $("#addNo_1dir").bind("click",function () {
                     loadNo_1DirPage();
                     },1000)
             }else{
-                layer.msg('服务器维护中，请稍后再试', {
+                layer.msg(data.message, {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
                     icon: 2,
@@ -671,7 +698,7 @@ $("#addNo_2Dir").bind("click",function () {
         data: da,
         type: "post",
         success: function (data) {
-            if (data.status == 200) {
+            if (data == true) {
                 layer.msg('创建成功', {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
@@ -683,7 +710,7 @@ $("#addNo_2Dir").bind("click",function () {
                     $("#headingThree1").click();
                 }, 1000)
             }else {
-                layer.msg('服务器维护中，请稍后再试', {
+                layer.msg(data.message, {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
                     icon: 2,
@@ -708,7 +735,7 @@ $("#addNo_3Dir").bind("click",function () {
         data: da,
         type: "post",
         success: function (data) {
-            if (data.status == 200) {
+            if (data == true) {
                 layer.msg('创建成功', {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
@@ -720,7 +747,7 @@ $("#addNo_3Dir").bind("click",function () {
                     $("#addNo_3WindowDir").click();
                 }, 1000)
             }else {
-                layer.msg('服务器维护中，请稍后再试', {
+                layer.msg(data.message, {
                     skin: 'layui-layer-molv', //样式类名
                     closeBtn: 0,
                     icon: 2,
@@ -766,7 +793,7 @@ $("#uploadfile").bind("click",function uploadFile() {
             cache: false,
             async:false,
             success: function (data) {
-                if (data.status == 200) {
+                if (data == true) {
                     layer.msg('上传成功', {
                         skin: 'layui-layer-molv', //样式类名
                         closeBtn: 0,
@@ -778,7 +805,7 @@ $("#uploadfile").bind("click",function uploadFile() {
                         loadNo_3DirPage();
                     }, 1000)
                 } else {
-                    layer.msg('服务器维护中，请稍后再试', {
+                    layer.msg(data.message, {
                         skin: 'layui-layer-molv', //样式类名
                         closeBtn: 0,
                         icon: 2,

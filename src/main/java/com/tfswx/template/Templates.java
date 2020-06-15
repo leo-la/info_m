@@ -1,4 +1,4 @@
-package com.tfswx.common;
+package com.tfswx.template;
 
 /**
  * 页面模板工厂生产类型

@@ -1,5 +1,6 @@
 package com.tfswx.service;
 
+import com.tfswx.exception.ResultBody;
 import com.tfswx.pojo.*;
 
 import java.util.List;
@@ -65,14 +66,14 @@ public interface TService {
      * @param fileInfo
      * @return
      */
-    RequestResult addNo_3File(FileInfo fileInfo);
+    void addNo_3File(FileInfo fileInfo);
 
     /**
      * 文件重新上传
      * @param fileInfo
      * @return
      */
-    RequestResult reuploadFile(FileInfo fileInfo);
+    void reuploadFile(FileInfo fileInfo);
 
     /**
      * 增加文件目录
@@ -80,42 +81,42 @@ public interface TService {
      * @param dirid
      * @return
      */
-    RequestResult addNo_2Dir(String name, Integer dirid);
+    void addNo_2Dir(String name, Integer dirid);
 
     /**
      * 添加一级目录
      * @param directory
      * @return
      */
-    RequestResult addNO_1Dir(Directory directory);
+    void addNO_1Dir(Directory directory);
 
     /**
      * 添加三级级目录
      * @param fileInfo
      * @return
      */
-    RequestResult addNo_3Dir(FileInfo fileInfo);
+    void addNo_3Dir(FileInfo fileInfo);
 
     /**
      * 删除文件
      * @param id
      * @return
      */
-    RequestResult deleteNo_3File(Integer id);
+    void deleteNo_3File(Integer id);
 
     /**
      * 删除目录
      * @param id
      * @return
      */
-    Boolean deleteFileDir(Integer id);
+    void deleteFileDir(Integer id);
 
     /**
      * 删除一级目录
      * @param id
      * @return
      */
-    RequestResult deleteNo_1Dir(Integer id);
+    void deleteNo_1Dir(Integer id);
 
     /**
      * 更新目录名
@@ -123,21 +124,21 @@ public interface TService {
      * @param name
      * @return
      */
-    RequestResult updateNo_2Dir(Integer id, String name);
+    void updateNo_2Dir(Integer id, String name);
 
     /**
      * 更新一级目录名
      * @param directory
      * @return
      */
-    RequestResult updateNO_1Dir(Directory directory);
+    void updateNO_1Dir(Directory directory);
 
     /**
      * 更新3级目录名
      * @param fileInfo
      * @return
      */
-    RequestResult updateNo_3Dir(FileInfo fileInfo);
+    void updateNo_3Dir(FileInfo fileInfo);
 
     /**
      * 查询文件路径
@@ -152,7 +153,7 @@ public interface TService {
      * @param id
      * @return
      */
-    RequestResult sortDir(Integer opid,Integer id);
+    void sortDir(Integer opid,Integer id);
 
 
 }

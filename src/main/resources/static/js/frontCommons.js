@@ -8,38 +8,44 @@ function loadNo_1DirPage() {
         type: "post",
         data:da,
         success: function (data) {
-            if(data.length==0){
-                nodata();
+            if (data.code == "200") {
+                if(data.result.length==0){
+                    nodata();
+                }
+                var content = '';
+                //显示数据
+                for (var i = 0; i < data.result.length; i++) {
+                    list = data;
+                    var content1 =
+                        '        <div class="col-md-6 col-sm-6  ">\n' +
+                        '                        <div class="x_panel">\n' +
+                        '                            <div class="x_title">\n' +
+                        '                                <h2>\n' +
+                        '                                    <i class="fa fa-bars"></i>\n' +
+
+                        data.result[i].dirname +
+                        '                                    <small>'+data.result[i].enname+'</small>\n' +
+                        '                                </h2>\n' +
+                        '                                <ul class="nav navbar-right panel_toolbox">\n' +
+                        '                                </ul>\n' +
+                        '                                <div class="clearfix"></div>\n' +
+                        '                            </div>\n' +
+                        '                            <a href="javascript:searchNo_2Details('+data.result[i].id+')" style="float: right;padding-right: 20px">查看详情>></a>\n' +
+                        '                        </div>\n' +
+                        '                    </div>';
+
+                    content += content1;
+                }
+                $("#dirContent").html(content);
+
+            }else{
+                layer.msg(data.message, {
+                    skin: 'layui-layer-molv', //样式类名
+                    closeBtn: 0,
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                })
             }
-            var content = '';
-            //显示数据
-            for (var i = 0; i < data.length; i++) {
-                list = data;
-                var content1 =
-                    '        <div class="col-md-6 col-sm-6  ">\n' +
-                    '                        <div class="x_panel">\n' +
-                    '                            <div class="x_title">\n' +
-                    '                                <h2>\n' +
-                    '                                    <i class="fa fa-bars"></i>\n' +
-
-                    data[i].dirname +
-                    '                                    <small>'+data[i].enname+'</small>\n' +
-                    '                                </h2>\n' +
-                    '                                <ul class="nav navbar-right panel_toolbox">\n' +
-                    '                                </ul>\n' +
-                    '                                <div class="clearfix"></div>\n' +
-                    '                            </div>\n' +
-                    '                            <a href="javascript:searchNo_2Details('+data[i].id+')" style="float: right;padding-right: 20px">查看详情>></a>\n' +
-                    '                        </div>\n' +
-                    '                    </div>';
-
-                content += content1;
-
-            }
-
-            $("#dirContent").html(content);
-            $(".title_left").html(swxtitle);
-
         }
     })
 }
@@ -53,47 +59,56 @@ function loadNo_2DirPage(currentPage){
         dataType: "json",
         type: "post",
         success: function (data) {
-            //显示数据
-            var tbody = "";
-            for (var i = 0; i < data.pageData.length; i++) {
-                var tr = '       <tr style="font-size: 14px;">\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].name + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].versionnum + '</td>\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;"> ' +
-                    '<a href="javascript:searchNo_3Details(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">查看</a>' +
-                    '</td>\n' +
-                    '            </tr>'
-                tbody = tbody + tr ;
-            }
-            $("#pageTbody").html(tbody);
-            //显示左侧页面信息
-            var page1 = '共<span style="color: #017ebc;"> ' + data.totalPage + ' </span> 页 <span style="color: #017ebc;"> ' + data.totalCount + ' </span>条'
-            $("#pageLeft").html(page1)
-
-            //显示右侧分页信息
-            var pager = ' <li><a href="javascript:loadNo_2DirPage(' + (data.currentPage - 1) + ')">Previous</a></li>';
-            if (data.currentPage - 1 <= 0) {
-                pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
-            }
-
-            for (var i = 0; i < data.totalPage; i++) {
-                if (data.currentPage == (i + 1)) {
-                    var pagerli = '<li class="active"><a href="javascript:loadNo_2DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
-                } else {
-                    var pagerli = '<li><a href="javascript:loadNo_2DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
-
+            if (data.code == "200") {
+                //显示数据
+                var tbody = "";
+                for (var i = 0; i < data.result.pageData.length; i++) {
+                    var tr = '       <tr style="font-size: 14px;">\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].name + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].createtime + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].versionnum + '</td>\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;"> ' +
+                        '<a href="javascript:searchNo_3Details(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">查看</a>' +
+                        '</td>\n' +
+                        '            </tr>'
+                    tbody = tbody + tr ;
                 }
-                pager += pagerli;
-            }
-            var pager2 = '<li><a href="javascript:loadNo_2DirPage(' + (data.currentPage + 1) + ')">Next</a></li>';
-            if (data.currentPage + 1 > data.totalPage) {
-                pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
-            }
-            pager += pager2;
+                $("#pageTbody").html(tbody);
+                //显示左侧页面信息
+                var page1 = '共<span style="color: #017ebc;"> ' + data.result.totalPage + ' </span> 页 <span style="color: #017ebc;"> ' + data.result.totalCount + ' </span>条'
+                $("#pageLeft").html(page1)
 
-            $("#pageRight").html(pager);
-            $(".title_left").html(swxtitle);
+                //显示右侧分页信息
+                var pager = ' <li><a href="javascript:loadNo_2DirPage(' + (data.result.currentPage - 1) + ')">Previous</a></li>';
+                if (data.currentPage - 1 <= 0) {
+                    pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
+                }
+
+                for (var i = 0; i < data.result.totalPage; i++) {
+                    if (data.currentPage == (i + 1)) {
+                        var pagerli = '<li class="active"><a href="javascript:loadNo_2DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
+                    } else {
+                        var pagerli = '<li><a href="javascript:loadNo_2DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
+
+                    }
+                    pager += pagerli;
+                }
+                var pager2 = '<li><a href="javascript:loadNo_2DirPage(' + (data.result.currentPage + 1) + ')">Next</a></li>';
+                if (data.currentPage + 1 > data.result.totalPage) {
+                    pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
+                }
+                pager += pager2;
+
+                $("#pageRight").html(pager);
+            } else {
+                layer.msg(data.message, {
+                    skin: 'layui-layer-molv', //样式类名
+                    closeBtn: 0,
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                })
+            }
+
         }
     });
 
@@ -115,73 +130,80 @@ function loadNo_3DirPage(currentPage) {
         dataType: "json",
         type: "post",
         success: function (data) {
-            //显示数据
-            var tbody = "";
-            for (var i = 0; i < data.pageData.length; i++) {
-                var tr = '       <tr style="font-size: 14px;">\n' +
-                    '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].name + '</td>\n';
-                var tr2 = '';
-                if(data.pageData[i].description==null){
-                    tr2 = '                <td style="display: table-cell;vertical-align: middle;">无</td>'+
-                        '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
-                        '                <td style="display: table-cell;vertical-align: middle;"> ';
-                }else{
-                    tr2 =  '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].description + '</td>'+
-                        '                <td style="display: table-cell;vertical-align: middle;">' + data.pageData[i].createtime + '</td>\n' +
-                        '                <td style="display: table-cell;vertical-align: middle;"> ';
+            if (data.code == "200") {
+                //显示数据
+                var tbody = "";
+                for (var i = 0; i < data.result.pageData.length; i++) {
+                    var tr = '       <tr style="font-size: 14px;">\n' +
+                        '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].name + '</td>\n';
+                    var tr2 = '';
+                    if(data.result.pageData[i].description==null){
+                        tr2 = '                <td style="display: table-cell;vertical-align: middle;">无</td>'+
+                            '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].createtime + '</td>\n' +
+                            '                <td style="display: table-cell;vertical-align: middle;"> ';
+                    }else{
+                        tr2 =  '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].description + '</td>'+
+                            '                <td style="display: table-cell;vertical-align: middle;">' + data.result.pageData[i].createtime + '</td>\n' +
+                            '                <td style="display: table-cell;vertical-align: middle;"> ';
+                    }
+                    tr += tr2;
+
+                    var tr3 = '';
+                    if(data.result.pageData[i].type==1){
+                        tr3 =
+                            '<a href="javascript:searchNo_4Details(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">打开</a>';
+                    }else {
+                        tr3 =
+                            '<a href="javascript:preview(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">预览</a>';
+                    }
+                    tr += tr3;
+                    var downloead = '';
+                    if (data.result.pageData[i].download == 1) {
+                        downloead =
+                            '<a href="javascript:downloadFile(' + data.result.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">下载</a>'
+                    }
+                    var tr4 =
+                        '</td>\n' +
+                        '            </tr>'
+                    tbody = tbody + tr + downloead + tr4;
                 }
-                tr += tr2;
+                $("#pageTbody").html(tbody);
+                //显示左侧页面信息
+                var page1 = '共<span style="color: #017ebc;"> ' + data.result.totalPage + ' </span> 页 <span style="color: #017ebc;"> ' + data.result.totalCount + ' </span>条'
+                $("#pageLeft").html(page1)
 
-                var tr3 = '';
-                if(data.pageData[i].type==1){
-                    tr3 =
-                        '<a href="javascript:searchNo_4Details(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">打开</a>';
-                }else {
-                    tr3 =
-                        '<a href="javascript:preview(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">预览</a>';
+                //显示右侧分页信息
+                var pager = ' <li><a href="javascript:loadNo_3DirPage(' + (data.result.currentPage - 1) + ')">Previous</a></li>';
+                if (data.result.currentPage - 1 <= 0) {
+                    pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
                 }
-                tr += tr3;
-                var downloead = '';
-                if (data.pageData[i].download == 1) {
-                    downloead =
-                        '<a href="javascript:downloadFile(' + data.pageData[i].id + ')" class="btn btn-info btn-sm" role="button" style="width: 45px;height: 28px;font-size: 12px">下载</a>'
+
+                for (var i = 0; i < data.result.totalPage; i++) {
+                    if (data.result.currentPage == (i + 1)) {
+                        var pagerli = '<li class="active"><a href="javascript:loadNo_3DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
+                    } else {
+                        var pagerli = '<li><a href="javascript:loadNo_3DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
+
+                    }
+                    pager += pagerli;
                 }
-                var tr4 =
-                    '</td>\n' +
-                    '            </tr>'
-                tbody = tbody + tr + downloead + tr4;
-            }
-            $("#pageTbody").html(tbody);
-            //显示左侧页面信息
-            var page1 = '共<span style="color: #017ebc;"> ' + data.totalPage + ' </span> 页 <span style="color: #017ebc;"> ' + data.totalCount + ' </span>条'
-            $("#pageLeft").html(page1)
-
-            //显示右侧分页信息
-            var pager = ' <li><a href="javascript:loadNo_3DirPage(' + (data.currentPage - 1) + ')">Previous</a></li>';
-            if (data.currentPage - 1 <= 0) {
-                pager = ' <li><a href="javascript:void(0)">Previous</a></li>';
-            }
-
-            for (var i = 0; i < data.totalPage; i++) {
-                if (data.currentPage == (i + 1)) {
-                    var pagerli = '<li class="active"><a href="javascript:loadNo_3DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
-                } else {
-                    var pagerli = '<li><a href="javascript:loadNo_3DirPage(' + (i + 1) + ')">' + (i + 1) + '</a></li>';
-
+                var pager2 = '<li><a href="javascript:loadNo_3DirPage(' + (data.result.currentPage + 1) + ')">Next</a></li>';
+                if (data.result.currentPage + 1 > data.result.totalPage) {
+                    pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
                 }
-                pager += pagerli;
-            }
-            var pager2 = '<li><a href="javascript:loadNo_3DirPage(' + (data.currentPage + 1) + ')">Next</a></li>';
-            if (data.currentPage + 1 > data.totalPage) {
-                pager2 = '<li><a href="javascript:void(0))">Next</a></li>';
-            }
-            pager += pager2;
+                pager += pager2;
 
-            $("#pageRight").html(pager);
+                $("#pageRight").html(pager);
 
-            if($("#dirLevel").val()==3){
-                $("#accordion2").css("display","none");
+            }else {
+                layer.msg(data.message, {
+                    skin: 'layui-layer-molv', //样式类名
+                    closeBtn: 0,
+                    icon: 2,
+                    time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                })
             }
+
         }
     });
 

@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class UserRealm extends AuthorizingRealm {
 
-    final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AuthorizationInfo.class);
+    private final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UserRealm.class);
 
     @Autowired
     PermissionDao queryUser;
@@ -39,7 +39,7 @@ public class UserRealm extends AuthorizingRealm {
         User principal = (User) subject.getPrincipal();
         List<String> userRoles = queryUser.listUserRoles(principal.getId());
         info.addRoles(userRoles);
-        log.info("["+principal.getUsername()+"]登录了系统，具有角色：["+userRoles.get(0)+"]");
+        log.info("[{}] 登录了系统，拥有角色：[{}]",principal.getUsername(),userRoles.get(0));
         return info;
     }
     //认证

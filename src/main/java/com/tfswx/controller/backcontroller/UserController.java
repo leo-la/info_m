@@ -21,6 +21,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("user")
 public class UserController {
+
+    private final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     PermissionService permissionService;
 
@@ -36,6 +39,7 @@ public class UserController {
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword(),rememberMe);
         try{
             subject.login(token);
+            log.info("用户 [{}] 登录了系统",token.getUsername());
             return "index";
         }catch (UnknownAccountException e){
             model.addAttribute("login_msg","用户名错误");

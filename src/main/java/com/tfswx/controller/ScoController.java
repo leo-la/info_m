@@ -1,16 +1,15 @@
 package com.tfswx.controller;
 
+import com.tfswx.exception.ResultBody;
 import com.tfswx.pojo.Directory;
 import com.tfswx.pojo.FileInfo;
 import com.tfswx.pojo.PageBean;
-import com.tfswx.pojo.RequestResult;
 import com.tfswx.service.TService;
 import com.tfswx.utils.CommonUtils;
 import com.tfswx.utils.InfoFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class ScoController extends ResultHandler {
+public class ScoController {
     private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(ScoController.class);
 
     @Autowired
@@ -36,73 +35,72 @@ public class ScoController extends ResultHandler {
     private String staticWordFilePath;
 
     /**
-     * 查询一级目录分类
+     * 查询一级目录页面
      * @return
      */
     @RequestMapping("searchNo_1DirPage")
     @ResponseBody
-    public List<Directory> searchNo_1DirPage(@RequestBody Map<String,Integer> map){
-
-        return tService.searchNo_1DirPage(map.get("id")==null?1:map.get("id"));
+    public ResultBody searchNo_1DirPage(@RequestBody Map<String,Integer> map){
+        return ResultBody.success(tService.searchNo_1DirPage(map.get("id")==null?1:map.get("id")));
     }
 
     /**
-     * 查询一级目录分类页面
+     * 查询二级目录页面
      * @return
      */
     @RequestMapping("searchNo_2DirPage")
     @ResponseBody
-    public PageBean searchNo_2DirPage(@RequestBody PageBean pageBean){
-        return tService.searchNo_2DirPage(pageBean);
+    public ResultBody searchNo_2DirPage(@RequestBody PageBean pageBean){
+        return ResultBody.success(tService.searchNo_2DirPage(pageBean));
     }
 
     /**
-     * 查询三级分类-文件版本分类页面（versionid）
+     * 查询三级目录页面
      * @param pageBean
      * @return
      */
     @RequestMapping("searchNo_3DirPage")
     @ResponseBody
-    public PageBean searchNo_3DirPage(@RequestBody PageBean pageBean){
-        return tService.searchNo_3DirPage(pageBean);
+    public ResultBody searchNo_3DirPage(@RequestBody PageBean pageBean){
+        return ResultBody.success(tService.searchNo_3DirPage(pageBean));
     }
 
     /**
-     * 查询四级目录页面信息
+     * 查询四级目录页面
      * @param pageBean
      * @return
      */
     @RequestMapping("searchNo_4DirPage")
     @ResponseBody
-    public PageBean searchNo_4DirPage(@RequestBody PageBean pageBean){
-        return tService.searchNo_4DirPage(pageBean);
+    public ResultBody searchNo_4DirPage(@RequestBody PageBean pageBean){
+        return ResultBody.success(tService.searchNo_4DirPage(pageBean));
     }
 
     /**
-     * 查询一级目录
+     * 查询一级目录信息
      * @param map
      * @return
      */
     @RequestMapping("getNo_1DirInfo")
     @ResponseBody
-    public Directory getNo_1DirInfo(@RequestBody Map<String,Integer> map){
-        return tService.searchDirById(map.get("id"));
+    public ResultBody getNo_1DirInfo(@RequestBody Map<String,Integer> map){
+        return ResultBody.success(tService.searchDirById(map.get("id")));
     }
 
     /**
-     * 添加文件(三级)
+     * 添加三级目录文件
      * @param file
      * @return
      */
     @RequestMapping("addNo_3File")
     @ResponseBody
-    public RequestResult addNo_3File(MultipartFile file, FileInfo fileInfo){
+    public Boolean addNo_3File(MultipartFile file, FileInfo fileInfo){
         String filename = CommonUtils.filenameUnique(file);
         fileInfo.setName(filename);
         String url = InfoFileUtil.uploadFile(file, fileInfo.getName(), staticWordFilePath);
         fileInfo.setUrl(url);
-        RequestResult requestResult = tService.addNo_3File(fileInfo);
-        return requestResult;
+        tService.addNo_3File(fileInfo);
+        return true;
     }
 
     /**
@@ -112,58 +110,62 @@ public class ScoController extends ResultHandler {
      */
     @RequestMapping("addNo_3Dir")
     @ResponseBody
-    public RequestResult addNo_3Dir(@RequestBody FileInfo fileInfo){
-        return tService.addNo_3Dir(fileInfo);
+    public Boolean addNo_3Dir(@RequestBody FileInfo fileInfo){
+        tService.addNo_3Dir(fileInfo);
+        return true;
     }
 
     /**
-     * 重新添加文件
+     * 更新文件
      * @param updatefile
      * @param fileInfo
      * @return
      */
     @RequestMapping("reuploadFile")
     @ResponseBody
-    public RequestResult reuploadFile(MultipartFile updatefile,FileInfo fileInfo){
+    public Boolean reuploadFile(MultipartFile updatefile,FileInfo fileInfo){
         String filename = CommonUtils.filenameUnique(updatefile);
         fileInfo.setName(filename);
         String url = InfoFileUtil.uploadFile(updatefile, fileInfo.getName(), staticWordFilePath);
         fileInfo.setUrl(url);
-        RequestResult requestResult = tService.reuploadFile(fileInfo);
-        return requestResult;
+        tService.reuploadFile(fileInfo);
+        return true;
     }
 
     /**
-     * 添加二级分类-文件目录分类
+     * 创建二级目录
      * @param map
      * @return
      */
     @RequestMapping("addNo_2Dir")
     @ResponseBody
-    public RequestResult addNo_2Dir(@RequestBody Map<String,String> map){
-        return tService.addNo_2Dir(map.get("name"), Integer.parseInt(map.get("dirid")));
+    public Boolean addNo_2Dir(@RequestBody Map<String,String> map){
+        tService.addNo_2Dir(map.get("name"), Integer.parseInt(map.get("dirid")));
+        return true;
     }
 
     /**
-     * 删除文件
+     * 删除三级目录文件
      * @param map
      * @return
      */
     @RequestMapping("deleteNo_3FileDir")
     @ResponseBody
-    public RequestResult deleteNo_3FileDir(@RequestBody Map<String,Integer> map){
-        return tService.deleteNo_3File(map.get("id"));
+    public Boolean deleteNo_3FileDir(@RequestBody Map<String,Integer> map){
+        tService.deleteNo_3File(map.get("id"));
+        return true;
     }
 
     /**
-     * 删除二级目录-文件目录
+     * 删除二级目录
      * @param map
      * @return
      */
     @RequestMapping("deleteNo_2Dir")
     @ResponseBody
     public Boolean deleteFileDir(@RequestBody Map<String,Integer> map){
-        return tService.deleteFileDir(map.get("id"));
+        tService.deleteFileDir(map.get("id"));
+        return true;
     }
 
     /**
@@ -173,31 +175,33 @@ public class ScoController extends ResultHandler {
      */
     @RequestMapping("deleteNo_1Dir")
     @ResponseBody
-    public RequestResult deleteNo_1Dir(@RequestBody Map<String,Integer> map){
-        RequestResult id = tService.deleteNo_1Dir(map.get("id"));
-        return id;
+    public Boolean deleteNo_1Dir(@RequestBody Map<String,Integer> map){
+        tService.deleteNo_1Dir(map.get("id"));
+        return true;
     }
 
     /**
-     * 更新二级目录-文件目录名
+     * 更新二级目录
      * @param map
      * @return
      */
     @RequestMapping("updateNo_2Dir")
     @ResponseBody
-    public RequestResult updateNo_2Dir(@RequestBody Map<String,String> map){
-        return tService.updateNo_2Dir(Integer.parseInt(map.get("id")),map.get("name"));
+    public Boolean updateNo_2Dir(@RequestBody Map<String,String> map){
+        tService.updateNo_2Dir(Integer.parseInt(map.get("id")),map.get("name"));
+        return true;
     }
 
     /**
-     * 更新二级目录-文件目录名
+     * 更新三级目录
      * @param fileInfo
      * @return
      */
     @RequestMapping("updateNo_3Dir")
     @ResponseBody
-    public RequestResult updateNo_3Dir(@RequestBody FileInfo fileInfo){
-        return tService.updateNo_3Dir(fileInfo);
+    public Boolean updateNo_3Dir(@RequestBody FileInfo fileInfo){
+        tService.updateNo_3Dir(fileInfo);
+        return true;
     }
 
     /**
@@ -234,8 +238,9 @@ public class ScoController extends ResultHandler {
      */
     @RequestMapping("sortDir")
     @ResponseBody
-    public RequestResult sortDir(@RequestBody Map<String,Integer> map){
-        return tService.sortDir(map.get("opid"), map.get("id"));
+    public Boolean sortDir(@RequestBody Map<String,Integer> map){
+        tService.sortDir(map.get("opid"), map.get("id"));
+        return true;
     }
 
     /**
@@ -245,40 +250,22 @@ public class ScoController extends ResultHandler {
      */
     @RequestMapping("addNO_1Dir")
     @ResponseBody
-    public RequestResult addTDir(@RequestBody Directory directory){
-        try {
-            return tService.addNO_1Dir(directory);
-        } catch (Exception e) {
-            return failure("","");
-        }
+    public Boolean addTDir(@RequestBody Directory directory){
+        tService.addNO_1Dir(directory);
+        return true;
+
     }
 
     /**
-     * 更新一级分类目录名
+     * 更新一级目录
      * @param directory
      * @return
      */
     @RequestMapping("updateNO_1Dir")
     @ResponseBody
-    public RequestResult updateNO_1Dir(@RequestBody Directory directory){
-        return tService.updateNO_1Dir(directory);
+    public Boolean updateNO_1Dir(@RequestBody Directory directory){
+        tService.updateNO_1Dir(directory);
+        return true;
     }
 
-
-
-//    /**
-//     * 认证流程-认证资质文件-图片文件显示
-//     * @param image_name
-//     * @return
-//     * @throws Exception
-//     */
-//    @RequestMapping(value = "/image/{image_name}", produces = MediaType.IMAGE_PNG_VALUE)
-//    public ResponseEntity<byte[]> getImage(@PathVariable("image_name") String image_name) throws Exception{ byte[] imageContent ;
-//        String path = staticWordFilePath+image_name+".png";
-//        imageContent = FileTools.fileToByte(new File(path));
-//
-//        final HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.IMAGE_PNG);
-//        return new ResponseEntity<>(imageContent, headers, HttpStatus.OK);
-//    }
 }
