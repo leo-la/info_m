@@ -36,13 +36,13 @@ public class PermissionRouteController {
     }
 
     @RequestMapping("permission/updateManager/{id}")
-    public String toUpdateRoles(@PathVariable String id,Model model){
+    public String toUpdateRoles(@PathVariable String id, Model model){
         model.addAttribute("managerid",CommonUtils.restFulConverter(id));
         return "permissionPage/updateManager";
     }
 
     @RequestMapping("permission/updateRole/{id}")
-    public String toUpdateRole(@PathVariable String id,Model model){
+    public String toUpdateRole(@PathVariable String id, Model model){
         model.addAttribute("roleid",CommonUtils.restFulConverter(id));
         return "permissionPage/updateRole";
     }

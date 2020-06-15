@@ -49,11 +49,62 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.util.Iterator;
 import java.util.List;
 
 public class OfficeUtils {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OfficeUtils.class);
+
+    /**
+     * 判断word文件版本（是否为word2003）
+     *
+     * @param file
+     * @return
+     */
+    public static boolean isWord2003(File file) {
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            new HWPFDocument(is);
+        } catch (Exception e) {
+            return false;
+        } finally {
+            try {
+                if (null != is) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 判断word版本（是否为word2007）
+     *
+     * @param file
+     * @return
+     */
+    public static boolean isWord2007(File file) {
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            new XWPFDocument(is).close();
+        } catch (Exception e) {
+            return false;
+        } finally {
+            try {
+                if (null != is) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
 
     /**
      * 创建html文档
@@ -78,9 +129,9 @@ public class OfficeUtils {
             }
 
             is = new FileInputStream(input);
-            if (FileTools.isWord2003(input)) { //判断word文件版本
+            if (isWord2003(input)) { //判断word文件版本
                 convertDoc2Html(is, outputFile);
-            } else if (FileTools.isWord2007(input)) {
+            } else if (isWord2007(input)) {
                 convertDocx2Html(is, outputFile);
             } else {
                 parseToHTML(inputFile, outputFile);
@@ -112,9 +163,9 @@ public class OfficeUtils {
             stream = new FileInputStream(new File(fileName));
             parser.parse(stream, handler, metadata);
 
-            FileTools.writeFile(handler.toString(), outPutFile + ".html");
+            InfoFileUtil.writeFile(handler.toString(), outPutFile + ".html");
 
-            FileTools.parse(outPutFile + ".html");
+            parse(outPutFile + ".html");
             return null;
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,6 +173,65 @@ public class OfficeUtils {
 
         }
         return null;
+    }
+
+    /**
+     * @param htmFilePath
+     * @throws IOException
+     */
+    public static void parse(String htmFilePath) throws IOException {
+        File htmFile = new File(htmFilePath);
+        // 以GB2312读取文件
+        org.jsoup.nodes.Document doc = Jsoup.parse(htmFile, "utf-8");
+        String xmlns = doc.getElementsByTag("html").attr("xmlns");
+        if (null == xmlns || "".equals(xmlns)) {
+            return;
+        }
+        doc.getElementsByTag("html").removeAttr("xmlns");
+        Element head = doc.head();
+        /*
+         * Elements headChildren = head.children(); for(Element children : headChildren) { Elements
+         * metas = children.getElementsByTag("meta"); for(Element meta : metas) { meta.remove(); } }
+         */
+        head.appendElement("meta").attr("name", "viewport").attr("content",
+                "width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no");
+
+        // 获取html节点
+        Element element = doc.body();
+        Elements content = head.getElementsByAttributeValueStarting("name", "meta:page-count");
+        for (Element meta : content) {
+            String value = meta.attr("content");
+            try {
+                Integer count = Integer.valueOf(value);
+                Elements ps = element.getElementsByTag("p");
+                Iterator<Element> iterator = ps.iterator();
+                while (iterator.hasNext()) {
+                    Element p = iterator.next();
+                    String text = p.text();
+                    if (text.equals("- " + count + " -")) {
+                        for (int offset = count; offset > 0; offset--) {
+                            p.remove();
+                            p = iterator.next();
+                            text = p.text();
+                        }
+                    }
+                    if (text.equals("")) {
+                        p.remove();
+                        p = iterator.next();
+                    }
+                    p.attr("align", "center");
+                    p.attr("style", "font-size:1.5rem;");
+                    break;
+                }
+            } catch (Exception e) {
+
+            }
+            // 获取content节点，修改charset属性
+            // meta.attr("content", "text/html; charset=utf-8");
+            break;
+        }
+        // 转换成utf-8编码的文件写入
+        FileUtils.writeStringToFile(htmFile, "<!DOCTYPE html>" + doc.html(), "utf-8");
     }
 
     /**
@@ -185,7 +295,7 @@ public class OfficeUtils {
             DOMSource domSource = new DOMSource(htmlDocument);
             serializer.transform(domSource, streamResult);
             String content = new String(out.toByteArray());
-            FileTools.writeFile(content, outPutFile + ".html");
+            InfoFileUtil.writeFile(content, outPutFile + ".html");
             // FileHelper.parseCharset(outPutFile + ".html");
             // System.out.println(new String(out.toByteArray()));
         } finally {
@@ -237,7 +347,7 @@ public class OfficeUtils {
             log.info(
                     "Generate " + fileOutName + " with " + (System.currentTimeMillis() - startTime) + " ms.");
         } finally {
-            FileTools.close(out,document);
+            InfoFileUtil.close(out,document);
         }
     }
 
@@ -315,6 +425,34 @@ public class OfficeUtils {
     }
 
     /**
+     * 获取文件css样式
+     *
+     * @param src 文件
+     * @return 文件css样式
+     * @throws IOException 打开文件异常
+     */
+    public static final StringBuffer getHtmlCss(String src) throws IOException {
+        File htmFile = new File(src);
+        // 以GB2312读取文件
+        org.jsoup.nodes.Document doc = Jsoup.parse(htmFile, "utf-8");
+        Elements styles = doc.getElementsByTag("style");
+        StringBuffer csStringBuffer = new StringBuffer();
+        for (Element style : styles) {
+            csStringBuffer.append(style.toString().replace("<style>", "").replace("</style>", ""));
+        }
+        Elements links = doc.getElementsByTag("link");
+        for (Element style : links) {
+            String href = style.attr("href");
+            String realPath = src + File.separator + href;
+            StringBuffer link = InfoFileUtil.readFile(realPath);
+            csStringBuffer.append(link);
+        }
+
+        return csStringBuffer;
+
+    }
+
+    /**
      * 创建文档对象
      *
      * @param file
@@ -364,7 +502,7 @@ public class OfficeUtils {
             // step 4
             // CSS
             CSSResolver cssResolver = XMLWorkerHelper.getInstance().getDefaultCssResolver(true);
-            StringBuffer cssBuffer = FileTools.getHtmlCss(HTML);
+            StringBuffer cssBuffer = getHtmlCss(HTML);
             CssFile cssFile =
                     XMLWorkerHelper.getCSS(new ByteArrayInputStream(cssBuffer.toString().getBytes()));
             cssResolver.addCss(cssFile);
@@ -393,7 +531,7 @@ public class OfficeUtils {
             // XML Worker
             XMLWorker worker = new XMLWorker(css, true);
             XMLParser p = new XMLParser(worker);
-            StringBuffer buffer = FileTools.readFile(HTML);
+            StringBuffer buffer = InfoFileUtil.readFile(HTML);
             p.parse(new ByteArrayInputStream(buffer.toString().getBytes()));
             p.flush();
         } catch (Exception e) {

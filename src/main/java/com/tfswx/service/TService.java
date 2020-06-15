@@ -1,9 +1,6 @@
 package com.tfswx.service;
 
-import com.tfswx.pojo.Directory;
-import com.tfswx.pojo.FileInfo;
-import com.tfswx.pojo.PageBean;
-import com.tfswx.pojo.VersionFile;
+import com.tfswx.pojo.*;
 
 import java.util.List;
 
@@ -12,7 +9,7 @@ public interface TService {
      * 查找目录信息
      * @return
      */
-    List<Directory> searchDirectory(Integer depid);
+    List<Directory> searchNo_1DirPage(Integer depid);
 
     /**
      * 查找目录预览文件
@@ -26,7 +23,7 @@ public interface TService {
      * @param pageBean
      * @return
      */
-    PageBean searchVersionFilesPage(PageBean pageBean);
+    PageBean searchNo_2DirPage(PageBean pageBean);
 
     /**
      * 查询文件
@@ -54,28 +51,28 @@ public interface TService {
      * @param pageBean
      * @return
      */
-    PageBean searchHistoryVersionPage(PageBean pageBean);
+    PageBean searchNo_3DirPage(PageBean pageBean);
 
     /**
      * 查询四级分类目录页面信息
      * @param pageBean
      * @return
      */
-    PageBean searchFourLevelDirPage(PageBean pageBean);
+    PageBean searchNo_4DirPage(PageBean pageBean);
 
     /**
      * 文件上传
      * @param fileInfo
      * @return
      */
-    String addNewFile(FileInfo fileInfo);
+    RequestResult addNo_3File(FileInfo fileInfo);
 
     /**
      * 文件重新上传
      * @param fileInfo
      * @return
      */
-    String reuploadFile(FileInfo fileInfo);
+    RequestResult reuploadFile(FileInfo fileInfo);
 
     /**
      * 增加文件目录
@@ -83,28 +80,28 @@ public interface TService {
      * @param dirid
      * @return
      */
-    Boolean addFileDir(String name, Integer dirid);
+    RequestResult addNo_2Dir(String name, Integer dirid);
 
     /**
      * 添加一级目录
      * @param directory
      * @return
      */
-    Boolean addTDir(Directory directory);
+    RequestResult addNO_1Dir(Directory directory);
 
     /**
      * 添加三级级目录
      * @param fileInfo
      * @return
      */
-    Boolean addFourDir(FileInfo fileInfo);
+    RequestResult addNo_3Dir(FileInfo fileInfo);
 
     /**
      * 删除文件
      * @param id
      * @return
      */
-    Boolean deleteFile(Integer id);
+    RequestResult deleteNo_3File(Integer id);
 
     /**
      * 删除目录
@@ -118,7 +115,7 @@ public interface TService {
      * @param id
      * @return
      */
-    Boolean deleteTDir(Integer id);
+    RequestResult deleteNo_1Dir(Integer id);
 
     /**
      * 更新目录名
@@ -126,23 +123,21 @@ public interface TService {
      * @param name
      * @return
      */
-    Boolean updateDirName(Integer id, String name);
+    RequestResult updateNo_2Dir(Integer id, String name);
 
     /**
      * 更新一级目录名
-     * @param id
-     * @param name
-     * @param enname
+     * @param directory
      * @return
      */
-    Boolean updateTDirName(Integer id, String name, String enname);
+    RequestResult updateNO_1Dir(Directory directory);
 
     /**
      * 更新3级目录名
      * @param fileInfo
      * @return
      */
-    Boolean update3Dir(FileInfo fileInfo);
+    RequestResult updateNo_3Dir(FileInfo fileInfo);
 
     /**
      * 查询文件路径
@@ -153,11 +148,11 @@ public interface TService {
 
     /**
      * 排序目录
-     * @param lastid
+     * @param opid
      * @param id
      * @return
      */
-    Boolean sortDir(Integer lastid,Integer id);
+    RequestResult sortDir(Integer opid,Integer id);
 
 
 }

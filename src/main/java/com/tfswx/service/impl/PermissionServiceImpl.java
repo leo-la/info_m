@@ -1,6 +1,6 @@
 package com.tfswx.service.impl;
 
-import com.tfswx.common.PageTemplateType;
+import com.tfswx.common.Templates;
 import com.tfswx.dao.PermissionDao;
 import com.tfswx.factory.PageTemplateFactory;
 import com.tfswx.pojo.Dep;
@@ -8,7 +8,7 @@ import com.tfswx.pojo.PageBean;
 import com.tfswx.pojo.Role;
 import com.tfswx.pojo.User;
 import com.tfswx.service.PermissionService;
-import com.tfswx.template.PageSearchTemplate;
+import com.tfswx.template.AbstractPageTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ public class PermissionServiceImpl implements PermissionService {
      */
     @Override
     public PageBean searchManagerPage(PageBean pageBean) {
-        PageSearchTemplate template = PageTemplateFactory.createTemplate(PageTemplateType.MEMBER_PAGE);
+        AbstractPageTemplate template = PageTemplateFactory.createTemplate(Templates.MEMBER_PAGE);
         return template.run(pageBean,permissionDao);
     }
 
@@ -104,7 +104,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public PageBean searchRolesPage(PageBean pageBean) {
-        PageSearchTemplate template = PageTemplateFactory.createTemplate(PageTemplateType.ROLE_PAGE);
+        AbstractPageTemplate template = PageTemplateFactory.createTemplate(Templates.ROLE_PAGE);
         return template.run(pageBean,permissionDao);
     }
 

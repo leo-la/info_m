@@ -154,6 +154,38 @@ public class InfoFileUtil {
     }
 
     /**
+     * 将传入的字符串写入到指定的路径的文件下
+     *
+     * @param content 将要写入文件的内容
+     * @param path    写入内容的文件路径
+     */
+    public static void writeFile(String content, String path) {
+        OutputStream fos = null;
+        BufferedWriter bw = null;
+        try {
+            File file = new File(path);
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            fos = new FileOutputStream(file);
+            bw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
+            bw.write(content);
+        } catch (FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+            } catch (IOException ioException) {
+                System.err.println(ioException.getMessage());
+            }
+        }
+    }
+
+    /**
      * 删除文件夹
      * @param path
      */
@@ -180,6 +212,35 @@ public class InfoFileUtil {
             log.info("["+path+"]已经被成功删除");
         }
     }
+    /**
+     * 读取文件
+     *
+     * @param path
+     * @return
+     */
+    public static StringBuffer readFile(String path) {
+        StringBuffer buffer = new StringBuffer();
+        InputStream is = null;
+        BufferedReader br = null;
+        try {
+            File file = new File(path);
+            if (file.exists()) {
+                is = new FileInputStream(file);
+                br = new BufferedReader(new InputStreamReader(is));
+                String content = br.readLine();
+                while (null != content) {
+                    buffer.append(content);
+                    content = br.readLine();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(is, br);
+        }
+        return buffer;
+    }
+
 
     /**
      * 删除文件

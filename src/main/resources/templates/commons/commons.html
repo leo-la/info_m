@@ -131,9 +131,10 @@
         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
             <div class="menu_section">
                 <ul class="nav side-menu">
-                    <li><a th:href="@{/route/front/firm/index}"><i class="fa fa-home"></i> 主页 <span
+                    <li th:class="${active==1?'active':null}"><a th:href="@{/route/front/index/{1}}"><i class="fa fa-home"></i> 主页 <span
                             class="fa fa-chevron-down"></span></a>
                     </li>
+
                     <shiro:hasRole name="超级管理员">
                         <li><a><i class="fa fa-edit"></i> 权限管理 <span class="fa fa-chevron-down"></span></a>
                             <ul class="nav child_menu">
@@ -143,76 +144,75 @@
                         </li>
                     </shiro:hasRole>
                     <shiro:hasAnyRoles name="超级管理员,公司公告管理员">
-                        <li th:class="${active==1||active==101?'active':null}"><a th:href="@{/route/firm/index}"><i class="fa fa-desktop"></i> 公司公告 <span
+                        <li th:class="${active==101?'active':null}"><a th:href="@{/route/index/{1}}"><i class="fa fa-desktop"></i> 公司公告 <span
                                 class="fa fa-chevron-down"></span></a>
                         </li>
                     </shiro:hasAnyRoles>
 
                     <li th:class="${active<8&&active>1?'active':null}"><a><i class="fa fa-table"></i> 职能部门 <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu" th:style="${active<8&&active>1?'display: block;':null}">
-                            <li th:class="${active==3?'current-page':null}"><a th:href="@{/route/front/human/index}">人力资源部</a></li>
+                            <li th:class="${active==3?'current-page':null}"><a th:href="@{/route/front/index/{3}}">人力资源部</a></li>
 
-                            <li th:class="${active==2?'current-page':null}"><a th:href="@{/route/front/operation/index}">运营中心</a></li>
+                            <li th:class="${active==2?'current-page':null}"><a th:href="@{/route/front/index/{2}}">运营中心</a></li>
 
-                            <li th:class="${active==4?'current-page':null}"><a th:href="@{/route/front/finance/index}">财务部</a></li>
+                            <li th:class="${active==4?'current-page':null}"><a th:href="@{/route/front/index/{4}}">财务部</a></li>
 
-                            <li th:class="${active==5?'current-page':null}"><a th:href="@{/route/front/quality/index}">质量管理部</a></li>
+                            <li th:class="${active==5?'current-page':null}"><a th:href="@{/route/front/index/{5}}">质量管理部</a></li>
 
-                            <li th:class="${active==6?'current-page':null}"><a th:href="@{/route/front/confidentiality/index}">保密管理办公室</a></li>
+                            <li th:class="${active==6?'current-page':null}"><a th:href="@{/route/front/index/{6}}">保密管理办公室</a></li>
 
-                            <li th:class="${active==7?'current-page':null}"><a th:href="@{/route/front/office/index}">办公室</a></li>
-
+                            <li th:class="${active==7?'current-page':null}"><a th:href="@{/route/front/index/{7}}">办公室</a></li>
                         </ul>
                     </li>
                     <li th:class="${active>7&&active<100?'active':null}"><a><i class="fa fa-bar-chart-o"></i> 事业部门 <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu" th:style="${active>7&&active<100?'display: block;':null}">
-                            <li th:class="${active==8?'current-page':null}"><a th:href="@{/route/front/law/index}">政法事业部</a></li>
+                            <li th:class="${active==8?'current-page':null}"><a th:href="@{/route/front/index/{8}}">政法事业部</a></li>
 
-                            <li th:class="${active==9?'current-page':null}"><a th:href="@{/route/front/military/index}">军工事业部</a></li>
+                            <li th:class="${active==9?'current-page':null}"><a th:href="@{/route/front/index/{9}}">军工事业部</a></li>
 
-                            <li th:class="${active==11?'current-page':null}"><a th:href="@{/route/front/remote/index}">遥感事业部</a></li>
+                            <li th:class="${active==11?'current-page':null}"><a th:href="@{/route/front/index/{11}}">遥感事业部</a></li>
 
-                            <li th:class="${active==12?'current-page':null}"><a th:href="@{/route/front/discipline/index}">纪检监察事业部</a></li>
+                            <li th:class="${active==12?'current-page':null}"><a th:href="@{/route/front/index/{12}}">纪检监察事业部</a></li>
 
-                            <li th:class="${active==13?'current-page':null}"><a th:href="@{/route/front/beijing/index}">北京分公司</a></li>
+                            <li th:class="${active==13?'current-page':null}"><a th:href="@{/route/front/index/{13}}">北京分公司</a></li>
                         </ul>
                     </li>
                     <li shiro:authenticated="true">
                     <li th:class="${active>101?'active':null}"><a><i class="fa fa-clipboard"></i> 我的管理部门 <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu" th:style="${active>101?'display: block;':null}">
                             <shiro:hasAnyRoles name="超级管理员,人力资源部管理员">
-                                <li th:class="${active==103?'current-page':null}"><a th:href="@{/route/human/index}">人力资源部</a></li>
+                                <li th:class="${active==103?'current-page':null}"><a th:href="@{/route/index/{3}}">人力资源部</a></li>
                             </shiro:hasAnyRoles>
                             <shiro:hasAnyRoles name="超级管理员,运营中心管理员">
-                                <li th:class="${active==102?'current-page':null}"><a th:href="@{/route/operation/index}">运营中心</a></li>
+                                <li th:class="${active==102?'current-page':null}"><a th:href="@{/route/index/{2}}">运营中心</a></li>
                             </shiro:hasAnyRoles>
                             <shiro:hasAnyRoles name="超级管理员,财务部管理员">
-                                <li th:class="${active==104?'current-page':null}"><a th:href="@{/route/finance/index}">财务部</a></li>
+                                <li th:class="${active==104?'current-page':null}"><a th:href="@{/route/index/{4}}">财务部</a></li>
                             </shiro:hasAnyRoles>
                             <shiro:hasAnyRoles name="超级管理员,质量管理部管理员">
-                                <li th:class="${active==105?'current-page':null}"><a th:href="@{/route/quality/index}">质量管理部</a></li>
+                                <li th:class="${active==105?'current-page':null}"><a th:href="@{/route/index/{5}}">质量管理部</a></li>
                             </shiro:hasAnyRoles>
                             <shiro:hasAnyRoles name="超级管理员,保密管理办公室管理员">
-                                <li th:class="${active==106?'current-page':null}"><a th:href="@{/route/confidentiality/index}">保密管理办公室</a></li>
+                                <li th:class="${active==106?'current-page':null}"><a th:href="@{/route/index/{6}}">保密管理办公室</a></li>
                             </shiro:hasAnyRoles>
                             <shiro:hasAnyRoles name="超级管理员,办公室管理员">
-                                <li th:class="${active==107?'current-page':null}"><a th:href="@{/route/office/index}">办公室</a></li>
+                                <li th:class="${active==107?'current-page':null}"><a th:href="@{/route/index/{7}}">办公室</a></li>
                             </shiro:hasAnyRoles>
 
                             <shiro:hasAnyRoles name="超级管理员,政法事业部管理员">
-                                <li th:class="${active==108?'current-page':null}"><a th:href="@{/route/law/index}">政法事业部</a></li>
+                                <li th:class="${active==108?'current-page':null}"><a th:href="@{/route/index/{8}}">政法事业部</a></li>
                             </shiro:hasAnyRoles>
                             <shiro:hasAnyRoles name="超级管理员,军工事业部管理员">
-                                <li th:class="${active==109?'current-page':null}"><a th:href="@{/route/military/index}">军工事业部</a></li>
+                                <li th:class="${active==109?'current-page':null}"><a th:href="@{/route/index/{9}}">军工事业部</a></li>
                             </shiro:hasAnyRoles>
                             <shiro:hasAnyRoles name="超级管理员,遥感事业部管理员">
-                                <li th:class="${active==111?'current-page':null}"><a th:href="@{/route/remote/index}">遥感事业部</a></li>
+                                <li th:class="${active==111?'current-page':null}"><a th:href="@{/route/index/{11}}">遥感事业部</a></li>
                             </shiro:hasAnyRoles>
                             <shiro:hasAnyRoles name="超级管理员,纪检监察事业部管理员">
-                                <li th:class="${active==112?'current-page':null}"><a th:href="@{/route/discipline/index}">纪检监察事业部</a></li>
+                                <li th:class="${active==112?'current-page':null}"><a th:href="@{/route/index/{12}}">纪检监察事业部</a></li>
                             </shiro:hasAnyRoles>
                             <shiro:hasAnyRoles name="超级管理员,北京分公司管理员">
-                                <li th:class="${active==113?'current-page':null}"><a th:href="@{/route/beijing/index}">北京分公司</a></li>
+                                <li th:class="${active==113?'current-page':null}"><a th:href="@{/route/index/{13}}">北京分公司</a></li>
                             </shiro:hasAnyRoles>
                         </ul>
                     </li>

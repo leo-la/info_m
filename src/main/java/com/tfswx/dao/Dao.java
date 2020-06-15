@@ -125,7 +125,7 @@ public interface Dao extends BaseDao{
      * @param fileInfo
      * @return
      */
-    Integer insertNewFile(FileInfo fileInfo);
+    Integer insertNo_3File(FileInfo fileInfo);
 
     /**
      * 创建文件目录
@@ -133,14 +133,14 @@ public interface Dao extends BaseDao{
      * @param dirid
      * @return
      */
-    Integer insertFileDir(String name,Date createtime,Integer dirid,Integer versionnum);
+    Integer insertNo_2Dir(String name,Date createtime,Integer dirid,Integer versionnum);
 
     /**
      * 创建一级目录
      * @param directory
      * @return
      */
-    Integer insertTDir(Directory directory);
+    Integer insert1LevelDir(Directory directory);
 
     /**
      * 创建三级级目录
@@ -169,7 +169,7 @@ public interface Dao extends BaseDao{
      * @param fileInfo
      * @return
      */
-    Integer update3Dir(FileInfo fileInfo);
+    Integer updateNo_3Dir(FileInfo fileInfo);
 
     /**
      * 更新文件
@@ -194,12 +194,10 @@ public interface Dao extends BaseDao{
 
     /**
      * 更新一级目录名
-     * @param id
-     * @param name
-     * @param enname
+     * @param directory
      * @return
      */
-    Integer updateTDirName(Integer id,String name, String enname);
+    Integer updateNO_1Dir(Directory directory);
 
     /**
      * 更新目录排序

@@ -20,6 +20,8 @@ import java.util.List;
  */
 public class UserRealm extends AuthorizingRealm {
 
+    final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AuthorizationInfo.class);
+
     @Autowired
     PermissionDao queryUser;
 
@@ -30,7 +32,7 @@ public class UserRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AuthorizationInfo.class);
+
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         //拿到当前登录的用户对象
         Subject subject = SecurityUtils.getSubject();

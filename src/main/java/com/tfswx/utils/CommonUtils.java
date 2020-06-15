@@ -35,4 +35,27 @@ public class CommonUtils {
         }
         return filename;
     }
+
+    public static String operateFileNames(String filename){
+        if(filename.contains(".")){
+            int i = filename.lastIndexOf("_");
+            int j = filename.lastIndexOf(".");
+            if(i==-1||j==-1){
+                return filename;
+            }
+            if(j>i){
+                String name = filename.substring(0,i) + filename.substring(j,filename.length());
+                return name;
+            }else{
+                String name = filename.substring(0,i);
+                return name;
+            }
+
+        }else if(filename.contains("_")){
+            int k = filename.lastIndexOf("_");
+            String name = filename.substring(0,k);
+            return name;
+        }
+        return filename;
+    }
 }

@@ -31,42 +31,54 @@
 
     <!-- Custom Theme Style -->
     <link th:href="@{/build/css/custom.min.css}" rel="stylesheet">
+    <link th:href="@{/css/common.css}" rel="stylesheet">
 </head>
 
 <body class="nav-md">
 <div class="container body">
     <div class="main_container">
-        <div th:replace="~{commons/commons::sidebar}"></div>
+        <div th:replace="~{commons/commons::sidebar(active=${id}+100)}"></div>
 
         <!-- top navigation -->
         <div th:replace="~{commons/commons::topbar}"></div>
         <!-- /top navigation -->
+        <input type="hidden" id="parentDirId" th:value="${parentDirId}">
+        <input type="hidden" id="depid" th:value="${id}">
+        <input type="hidden" id="No_2Id">
+        <input type="hidden" id="No_3Id">
+        <input type="hidden" id="No_4Id">
+        <input type="hidden" id="fileLevel">
+        <input type="hidden" id="totalLevel" value="1">
+        <input type="hidden" id="dirid">
 
         <!-- page content -->
-        <div class="right_col" role="main">
-            <input type="hidden" id="depid" th:value="${id}">
+        <div class="right_col" role="main" id="right_col">
             <div class="">
                 <div class="page-title">
-                    <div class="title_left" style="padding-bottom: 8px;padding-left: 12px" id="swx-title">
-
+                    <div class="title_left" style="padding-bottom: -4px;padding-left: 12px" id="swx-title">
+                        <ol class="navigationPath" style="font-size: 14px">
+                            <li ><a href="#" id="No_1Page"> 首页 </a></li>
+                        </ol>
                     </div>
 
-                    <div class="title_right" style="padding-bottom: 8px;padding-left: 12px">
-                        <a href="javascript:addTDir()" style="float:right;padding-right: 10px;padding-top: 5px;"><i class="fa fa-plus fa-2x"></i></a>
+                    <div class="title_right" style="padding-bottom: -4px;padding-left: 12px">
+                        <a id="addNo_1DirWindow" style="float:right;padding-right: 10px;padding-top: 5px;" href="#"><i class="fa fa-plus fa-2x"></i></a>
                     </div>
 
                 </div>
                 <div class="clearfix"></div>
                 <div class="" id="imgContent"></div>
-                <div class="" id="dirContent">
+                <div class="inner">
+                    <div class="innerbox" id="dirContent">
 
-                    <div class="clearfix"></div>
+                        <div class="clearfix"></div>
 
 
+                    </div>
                 </div>
             </div>
-            <!-- Small modal -->
-            <button data-toggle="modal" data-target=".bs-example-modal-sm" style="display: none" id="disbtn"></button>
+            <!-- 更新目录 -->
+            <button data-toggle="modal" data-target=".bs-example-modal-sm" style="display: none" id="updateNo_1Btn"></button>
             <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content" style="width: 500px">
@@ -78,14 +90,12 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form id="updateTDirAction"  method="post">
+                            <form method="post">
                                 <div class="panel-body">
                                     <h2>一级名称</h2>
                                     <div class="form-group">
                                         <div class="input-group">
                                             <div class="custom-file">
-                                                <input type="hidden" id="dirid" name="id">
-
                                                 <input type="text" class="form-control" name="name" id="oneName" required="required">
                                             </div>
                                         </div>
@@ -101,9 +111,9 @@
                                     </div>
                                 </div>
                                 <div style="text-align: center">
-                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">取消
+                                    <button id="cancelUpdateNO_1Dir" class="btn btn-secondary btn-sm" data-dismiss="modal">取消
                                     </button>
-                                    <button type="submit" class="btn btn-info btn-sm">保存</button>
+                                    <a id="updateNO_1Dir" class="btn btn-info btn-sm">保存</a>
                                 </div>
                             </form>
                         </div>
@@ -113,8 +123,8 @@
                 </div>
             </div>
 
-            <!--上传文件-->
-            <button data-toggle="modal" data-target=".bs-example-modal-sm2" style="display: none" id="disbtn2"></button>
+            <!--添加目录-->
+            <button data-toggle="modal" data-target=".bs-example-modal-sm2" style="display: none" id="addNo_1Btn"></button>
             <div class="modal fade bs-example-modal-sm2" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content" style="width: 500px">
@@ -127,15 +137,14 @@
                         </div>
                         <div class="modal-body">
 
-                            <form id="addTDirAction"  method="post">
-                                <input type="hidden" name="depid" th:value="${id}">
+                            <form method="post">
                                 <div class="panel-body">
                                     <h2>一级名称</h2>
                                     <div class="form-group">
                                         <div class="input-group">
                                             <div class="custom-file">
 
-                                                <input type="text" class="form-control" name="dirname" required="required">
+                                                <input type="text" class="form-control" id="dirname" required="required">
                                             </div>
                                         </div>
                                     </div>
@@ -144,15 +153,15 @@
                                         <div class="input-group">
                                             <div class="custom-file">
 
-                                                <input type="text" class="form-control" name="enname" >
+                                                <input type="text" class="form-control" id="enname" >
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div style="text-align: center">
-                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">取消
+                                    <button type="button" id="cancelAdd1LevelDir" class="btn btn-secondary btn-sm" data-dismiss="modal">取消
                                     </button>
-                                    <button type="submit" class="btn btn-info btn-sm">保存</button>
+                                    <a id="addNo_1dir" class="btn btn-info btn-sm">保存</a>
                                 </div>
                             </form>
                         </div>
@@ -162,7 +171,6 @@
                 </div>
             </div>
 
-            <!-- /modals -->
         </div>
         <!-- /page content -->
 
@@ -212,14 +220,25 @@
 <script th:src="@{/vendors/starrr/dist/starrr.js}"></script>
 <!-- Custom Theme Scripts -->
 <script th:src="@{/build/js/custom.min.js}"></script>
+<!-- bs-custom-file-input -->
+<script th:src="@{/js/file-input/bs-custom-file-input.min.js}"></script>
 
 <script th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/layer.js}"></script>
-<script th:src="@{/js/backIndex.js}"></script>
+<div id="reloadJs">
+    <script th:src="@{/js/backCommons.js}"></script>
+</div>
+
+
+
+
 
 <script language='javascript' th:inline="javascript">
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    });
     $(function () {
-        loadDirData();
+        loadNo_1DirPage();
     })
 
 </script>
