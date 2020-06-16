@@ -45,7 +45,7 @@ function updatePassword() {
             type: "post",
             data: da,
             success: function (data) {
-                if(data.name=="yes"){
+                if(data.code == "200"){
                     layer.msg('修改密码成功,请重新登录', {
                         skin: 'layui-layer-molv', //样式类名
                         closeBtn: 0,
@@ -55,16 +55,17 @@ function updatePassword() {
                     setTimeout(function () {
                         window.location.href = getContextPath() + "/route/toLogin"
                     }, 1000)
-                }else if(data.name=="no"){
-                    layer.msg('修改密码失败,请稍后重试', {
+                }else if(data.code == "400"){
+                    $("#errorMsg").css("display","block");
+                    $("#errorMsg").text("原始密码错误");
+
+                }else{
+                    layer.msg(data.message, {
                         skin: 'layui-layer-molv', //样式类名
                         closeBtn: 0,
                         icon: 2,
                         time: 1000 //2秒关闭（如果不配置，默认是3秒）
                     })
-                }else{
-                    $("#errorMsg").css("display","block");
-                    $("#errorMsg").text("原始密码错误");
                 }
             }
         })

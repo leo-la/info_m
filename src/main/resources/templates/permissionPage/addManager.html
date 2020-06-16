@@ -119,7 +119,7 @@
 
                                 <div class="item form-group">
                                     <div class="col-md-6 col-sm-6 offset-md-3" style="text-align: center">
-                                        <button class="btn btn-info btn-sm" type="button" onclick="javascript:history.go(-1);">取消</button>
+                                        <button class="btn btn-info btn-sm" type="button" id="cancelAddManager" onclick="javascript:history.go(-1);">取消</button>
                                         <a onclick="javascript:addManager()" class="btn btn-success btn-sm">确认</a>
                                     </div>
                                 </div>
@@ -189,77 +189,56 @@
         loadData();
     })
 
-
-    var id;
-    var username;
-    var depname;
-    var roleid;
-
     function loadData() {
-        var id = $("#managerid").val();
-        var da = JSON.stringify({id:id});
-        $.ajax({
-            url: getContextPath() + "/permission/manager/searchOneManagerPageInfo",
-            contentType: "application/json;charset=UTF-8",
-            data: da,
-            dataType: "json",
-            type: "post",
-            async: false,
-            success: function (data) {
-                $("#managername").val(data.username)
-                id = data.id;
-                username = data.username;
-                depname = data.depname;
-                roleid = data.roleid;
-            }
-        });
-
-
         $.ajax({
             url: getContextPath() + "/permission/searchDeps",
             contentType: "application/json;charset=UTF-8",
-            data: da,
             dataType: "json",
             type: "post",
             success: function (data2) {
-                var depContent = '';
-                for (var i = 0; i < data2.length; i++) {
-                    if(depname==data2[i].depname){
-                        var c1 =
-                            '  <option value="' + data2[i].id + '" selected="selected">' + data2[i].depname + '</option>';
-                    }else{
-                        var c1 =
-                            '  <option value="' + data2[i].id + '">' + data2[i].depname + '</option>';
+                if(data2.code="200"){
+                    var depContent = '';
+                    for (var i = 0; i < data2.result.length; i++) {
+                            var c1 =
+                                '  <option value="' + data2.result[i].id + '">' + data2.result[i].depname + '</option>';
+                        depContent += c1;
                     }
-
-                    depContent += c1;
+                    $("#depid").html(depContent);
+                }else{
+                    layer.msg(data.message, {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 2,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
                 }
-                $("#depid").html(depContent);
             }
         })
 
         $.ajax({
             url: getContextPath() + "/permission/role/searchRoles",
             contentType: "application/json;charset=UTF-8",
-            data: da,
             dataType: "json",
             type: "post",
             success: function (data3) {
-                var roleContent = '';
-                for (var i = 0; i < data3.length; i++) {
-                    if(roleid==data3[i].id){
+                if(data3.code="200"){
+                    var roleContent = '';
+                    for (var i = 0; i < data3.result.length; i++) {
                         var c2 =
-                            '  <option value="' + data3[i].id + '" selected="selected">' + data3[i].name + '</option>';
-                    }else{
-                        var c2 =
-                            '  <option value="' + data3[i].id + '">' + data3[i].name + '</option>';
+                            '  <option value="' + data3.result[i].id + '">' + data3.result[i].name + '</option>';
+                        roleContent += c2;
                     }
-                    roleContent += c2;
+                    $("#roleid").html(roleContent);
+                }else{
+                    layer.msg(data.message, {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 2,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
                 }
-                $("#roleid").html(roleContent);
             }
         })
-        
     }
 
     function addManager() {
@@ -276,7 +255,7 @@
             type: "post",
             data: da,
             success: function (data) {
-                if (data.name == "yes") {
+                if (data.code == "200") {
                     layer.msg('添加管理员成功', {
                         skin: 'layui-layer-molv', //样式类名
                         closeBtn: 0,
@@ -284,18 +263,19 @@
                         time: 1000 //2秒关闭（如果不配置，默认是3秒）
                     })
                     setTimeout(function () {
-                        window.location.href = getContextPath() + "/route/permission/addManager";
+                        $("#cancelAddManager").click();
+                        loadData();
                     }, 1000)
-                }else if(data.name=="no"){
-                    layer.msg('服务器错误,请稍后重试', {
+                }else if(data.code=="400"){
+                    $("#errorMsg2").css("display","block");
+                    $("#errorMsg2").text(data.message);
+                }else{
+                    layer.msg(data.message, {
                         skin: 'layui-layer-molv', //样式类名
                         closeBtn: 0,
                         icon: 2,
                         time: 1000 //2秒关闭（如果不配置，默认是3秒）
                     })
-                }else{
-                    $("#errorMsg2").css("display","block");
-                    $("#errorMsg2").text(data.name);
                 }
             }
         })

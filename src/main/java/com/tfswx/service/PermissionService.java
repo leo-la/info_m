@@ -16,14 +16,6 @@ public interface PermissionService {
     List<Dep> searchDeps();
 
     /**
-     * 查询单用户信息
-     * @param id
-     * @return
-     */
-    User searchOneUser(Integer id);
-
-
-    /**
      * 查询管理员页面数据
      * @param pageBean
      * @return
@@ -42,14 +34,22 @@ public interface PermissionService {
      * @param id
      * @return
      */
-    Boolean resetPassword(Integer id);
+    void resetPassword(Integer id);
 
+    /**
+     * 添加管理员
+     * @param username
+     * @param password
+     * @param depid
+     * @param roleid
+     */
+    void addManager(String username,String password,Integer depid,Integer roleid);
 
-    String addManager(String username,String password,Integer depid,Integer roleid);
-
-    Boolean deleteManager(Integer id);
-
-    Role searchUserRoles(Integer id);
+    /**
+     * 移出管理员
+     * @param id
+     */
+    void deleteManager(Integer id);
 
     /**
      * 查询单用户信息
@@ -77,7 +77,7 @@ public interface PermissionService {
      * @param roleid
      * @return
      */
-    String updateUserRole(Integer userid,Integer roleid,Integer depid);
+    void updateUserRole(Integer userid,Integer roleid,Integer depid);
 
     /**
      * 更新角色信息
@@ -85,29 +85,21 @@ public interface PermissionService {
      * @param rolename
      * @return
      */
-    Boolean updateRole(Integer roleid,String rolename,String description);
-
-
-    /**
-     * 删除单用户
-     * @param userid
-     * @return
-     */
-    String deleteUser(Integer userid);
+    void updateRole(Integer roleid,String rolename,String description);
 
     /**
      * 添加角色
      * @param name
      * @return
      */
-    String insertRole(String name,String description);
+    void insertRole(String name,String description);
 
     /**
      * 删除角色
      * @param roleid
      * @return
      */
-    Boolean deleteRole(Integer roleid);
+    void deleteRole(Integer roleid);
 
     /**
      * 修改密码
@@ -115,7 +107,7 @@ public interface PermissionService {
      * @param password
      * @return
      */
-    String updatePassword(String name,String password);
+    void updatePassword(String name,String password);
 
     /**
      * 检查重名

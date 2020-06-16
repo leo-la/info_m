@@ -74,7 +74,7 @@
 
                         <div class="x_content">
                             <br>
-                            <form th:action="@{/permission/role/updateRoleInfo}" class="form-horizontal form-label-left">
+                            <form class="form-horizontal form-label-left">
                                 <input type="hidden" name="id" th:value="${roleid}">
                                 <div class="item form-group">
                                     <label class="col-form-label col-md-3 col-sm-3 label-align" for="name">名称 <span class="required">*</span>
@@ -99,8 +99,8 @@
                                 <div class="ln_solid"></div>
                                 <div class="item form-group">
                                     <div class="col-md-6 col-sm-6 offset-md-3" style="text-align: center">
-                                        <button class="btn btn-info btn-sm" type="button" onclick="javascript:history.go(-1);">取消</button>
-                                        <button type="submit" class="btn btn-success btn-sm">确认</button>
+                                        <a class="btn btn-info btn-sm" id="cancelUpdateRole" type="button" onclick="javascript:history.go(-1);">取消</a>
+                                        <a id="updateRoleBtn" class="btn btn-success btn-sm">确认</a>
                                     </div>
                                 </div>
 
@@ -184,15 +184,57 @@
             type: "post",
             async: false,
             success: function (data) {
-                $("#id").val(data.id)
-                $("#name").val(data.name)
-                $("#description").val(data.description)
-                id = data.id;
-                name = data.name;
-                description = data.description;
+                if(data.code == "200"){
+                    $("#id").val(data.result.id);
+                    $("#name").val(data.result.name);
+                    $("#description").val(data.result.description);
+                    id = data.result.id;
+                    name = data.result.name;
+                    description = data.result.description;
+                }else{
+                    layer.msg(data.message, {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 2,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                }
             }
         });
     }
+
+    $("#updateRoleBtn").bind("click",function () {
+        var da = JSON.stringify({id:$("#roleid").val(),name:$("#name").val(),description:$("#description").val()});
+        $.ajax({
+            url: getContextPath() + "/permission/role/updateRoleInfo",
+            contentType: "application/json;charset=UTF-8",
+            data: da,
+            dataType: "json",
+            type: "post",
+            async: false,
+            success: function (data) {
+                if(data == true){
+                    layer.msg('更新管理员信息成功', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 1,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                    setTimeout(function () {
+                        $("#cancelUpdateRole").click();
+                        loadPageData();
+                    }, 1000)
+                }else{
+                    layer.msg(data.message, {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 2,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                }
+            }
+        });
+    })
 
 </script>
 

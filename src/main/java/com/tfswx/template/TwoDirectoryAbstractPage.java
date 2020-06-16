@@ -3,8 +3,8 @@ package com.tfswx.template;
 
 import com.tfswx.dao.BaseDao;
 import com.tfswx.dao.Dao;
+import com.tfswx.pojo.DirectoryTwo;
 import com.tfswx.pojo.PageBean;
-import com.tfswx.pojo.VersionFile;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class TwoDirectoryAbstractPage extends AbstractPageTemplate {
         Dao Dao = (Dao) dao;
         Integer start = (pageBean.getCurrentPage()-1) * pageBean.getPageSize();
         Integer size = pageBean.getPageSize();
-        List<VersionFile> versionFiles = Dao.listVersionFilesPage(start, size, pageBean.getId());
+        List<DirectoryTwo> versionFiles = Dao.listDirectoryTwoPage(start, size, pageBean.getId());
         pageBean.setPageData(versionFiles);
         return pageBean;
     }

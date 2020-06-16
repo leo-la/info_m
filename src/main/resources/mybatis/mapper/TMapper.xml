@@ -8,7 +8,7 @@
         WHERE depid=#{depid}
     </select>
 
-    <select id="listVersionFiles" resultType="versionfile">
+    <select id="listVersionFiles" resultType="directoryTwo">
         SELECT a.id,a.name,b.dirname, a.createtime FROM i_fileversion a
         JOIN i_dir b ON a.dirid=b.id
         WHERE a.dirid=#{dirid}
@@ -18,7 +18,7 @@
       SELECT count(id) FROM i_fileversion WHERE dirid=#{dirid}
     </select>
 
-    <select id="listVersionFilesPage" resultType="versionfile">
+    <select id="listDirectoryTwoPage" resultType="directoryTwo">
       SELECT a.id,a.name,b.dirname,a.createtime,a.versionnum FROM i_fileversion a
       JOIN i_dir b ON a.dirid=b.id
       WHERE dirid=#{param3} LIMIT #{param1},#{param2}
@@ -73,7 +73,7 @@
         WHERE name=#{name}
     </select>
 
-    <select id="getFileDir" resultType="versionfile" parameterType="Integer">
+    <select id="getFileDir" resultType="directoryTwo" parameterType="Integer">
         SELECT name,versionnum FROM i_fileversion
         WHERE id=#{versionid}
     </select>

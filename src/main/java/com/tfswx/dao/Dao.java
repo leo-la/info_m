@@ -2,7 +2,7 @@ package com.tfswx.dao;
 
 import com.tfswx.pojo.Directory;
 import com.tfswx.pojo.FileInfo;
-import com.tfswx.pojo.VersionFile;
+import com.tfswx.pojo.DirectoryTwo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +25,7 @@ public interface Dao extends BaseDao{
      * @param dirid
      * @return
      */
-    List<VersionFile> listVersionFiles(Integer dirid);
+    List<DirectoryTwo> listVersionFiles(Integer dirid);
 
     /**
      * 查找主页最新文件预览信息
@@ -48,7 +48,7 @@ public interface Dao extends BaseDao{
      * @param dirid
      * @return
      */
-    List<VersionFile> listVersionFilesPage(Integer start,Integer size, Integer dirid);
+    List<DirectoryTwo> listDirectoryTwoPage(Integer start,Integer size, Integer dirid);
 
     /**
      * 统计公司信息管理文件历史版本数
@@ -183,7 +183,7 @@ public interface Dao extends BaseDao{
      * @param versionid
      * @return
      */
-    VersionFile getFileDir(Integer versionid);
+    DirectoryTwo getFileDir(Integer versionid);
 
     /**
      * 查询目录

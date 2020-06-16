@@ -44,29 +44,14 @@ public class TServiceImpl implements TService {
     }
 
     @Override
-    public List<VersionFile> searchVersionFiles(Integer dirid) {
-        return dao.listVersionFiles(dirid);
-    }
-
-    @Override
     public PageBean searchNo_2DirPage(PageBean pageBean) {
         AbstractPageTemplate template = PageTemplateFactory.createTemplate(Templates.TWO_DIRECTORY_PAGE);
         return template.run(pageBean,dao);
     }
 
     @Override
-    public FileInfo searchFileById(Integer id) {
-        return dao.getFileById(id);
-    }
-
-    @Override
     public Directory searchDirById(Integer id) {
         return dao.getDirById(id);
-    }
-
-    @Override
-    public FileInfo searchFileByName(String name) {
-        return dao.getFileByName(name);
     }
 
     @Override
@@ -86,7 +71,7 @@ public class TServiceImpl implements TService {
         fileInfo.setCreatetime(DateUtils.getNowDate());
         fileInfo.setType(0);
         dao.insertNo_3File(fileInfo);
-        VersionFile fileDir = dao.getFileDir(fileInfo.getVersionid());
+        DirectoryTwo fileDir = dao.getFileDir(fileInfo.getVersionid());
         if(fileDir!=null){
             fileDir.setVersionnum(fileDir.getVersionnum()+1);
             dao.updateVersionNum(fileInfo.getVersionid(),fileDir.getVersionnum());
@@ -121,7 +106,7 @@ public class TServiceImpl implements TService {
             fileInfo.setDescription(null);
         }
         dao.insertFourDir(fileInfo);
-        VersionFile fileDir = dao.getFileDir(fileInfo.getVersionid());
+        DirectoryTwo fileDir = dao.getFileDir(fileInfo.getVersionid());
         if(fileDir!=null){
             fileDir.setVersionnum(fileDir.getVersionnum()+1);
             dao.updateVersionNum(fileInfo.getVersionid(),fileDir.getVersionnum());
@@ -132,14 +117,14 @@ public class TServiceImpl implements TService {
     public void deleteNo_3File(Integer id) {
         FileInfo file = dao.getFileById(id);
         Integer versionid = file.getVersionid();
-        VersionFile fileDir = dao.getFileDir(versionid);
+        DirectoryTwo fileDir = dao.getFileDir(versionid);
         if(fileDir!=null){
             dao.updateVersionNum(versionid,fileDir.getVersionnum()-1);
         }
         dao.deleteFile(id);
 
         if(file.getName().contains(".")){
-            int i = file.getName().lastIndexOf(".");
+            int i = file.getName().lastIndexOf('.');
             String dirname = staticWordFilePath + "\\" + file.getName().substring(0,i);
             InfoFileUtil.deleteAllFilesOfDir(new File(dirname));
             InfoFileUtil.deleteFile(dirname+".pdf");

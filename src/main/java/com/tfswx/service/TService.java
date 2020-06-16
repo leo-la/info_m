@@ -13,13 +13,6 @@ public interface TService {
     List<Directory> searchNo_1DirPage(Integer depid);
 
     /**
-     * 查找目录预览文件
-     * @param dirid
-     * @return
-     */
-    List<VersionFile> searchVersionFiles(Integer dirid);
-
-    /**
      * 查找版本文件信息集
      * @param pageBean
      * @return
@@ -27,25 +20,11 @@ public interface TService {
     PageBean searchNo_2DirPage(PageBean pageBean);
 
     /**
-     * 查询文件
-     * @param id
-     * @return
-     */
-    FileInfo searchFileById(Integer id);
-
-    /**
      * 查询目录
      * @param id
      * @return
      */
     Directory searchDirById(Integer id);
-
-    /**
-     * 查询文件
-     * @param name
-     * @return
-     */
-    FileInfo searchFileByName(String name);
 
     /**
      * 查找历史版本文件目录

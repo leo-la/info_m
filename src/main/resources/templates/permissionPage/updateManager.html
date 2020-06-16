@@ -74,8 +74,8 @@
 
                         <div class="x_content">
                             <br>
-                            <form th:action="@{/permission/manager/updateManagerPermission}" class="form-horizontal form-label-left">
-                                <input type="hidden" name="userid" th:value="${managerid}">
+                            <form class="form-horizontal form-label-left">
+                                <input type="hidden" id="userid" th:value="${managerid}">
                                 <div class="item form-group">
                                     <label class="col-form-label col-md-3 col-sm-3 label-align" for="managername">姓名 <span class="required">*</span>
                                     </label>
@@ -85,18 +85,18 @@
                                     </div>
                                 </div>
                                 <div class="item form-group">
-                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="deps">部门 <span class="required">*</span>
+                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="depid">部门 <span class="required">*</span>
                                     </label>
                                     <div class="col-md-6 col-sm-6 ">
-                                        <select class="form-control" required id="deps" name="depid">
+                                        <select class="form-control" required name="deps" id="depid">
 
                                         </select>
                                     </div>
                                 </div>
                                 <div class="item form-group">
-                                    <label for="roles" class="col-form-label col-md-3 col-sm-3 label-align">角色 <span class="required">*</span></label>
+                                    <label for="roleid" class="col-form-label col-md-3 col-sm-3 label-align">角色 <span class="required">*</span></label>
                                     <div class="col-md-6 col-sm-6 ">
-                                        <select class="form-control" required id="roles" name="roleid">
+                                        <select class="form-control" required name="roles" id="roleid">
 
                                         </select>
                                     </div>
@@ -105,9 +105,9 @@
                                 <div class="ln_solid"></div>
                                 <div class="item form-group">
                                     <div class="col-md-6 col-sm-6 offset-md-3" style="text-align: center">
-                                        <button class="btn btn-info btn-sm" type="button" onclick="javascript:history.go(-1);">取消</button>
+                                        <button class="btn btn-info btn-sm" type="button" id="cancelUpdate" onclick="javascript:history.go(-1);">取消</button>
                                         <a onclick="javascript:resetConfirm()" class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="right" title="重置密码为8个1" style="color: white">重置密码</a>
-                                        <button type="submit" class="btn btn-success btn-sm">确认</button>
+                                        <a id="updateManager" class="btn btn-success btn-sm">确认</a>
                                     </div>
                                 </div>
 
@@ -193,11 +193,13 @@
             type: "post",
             async: false,
             success: function (data) {
-                $("#managername").val(data.username)
-                id = data.id;
-                username = data.username;
-                depname = data.depname;
-                roleid = data.roleid;
+                if(data.code == "200"){
+                    $("#managername").val(data.result.username)
+                    id = data.result.id;
+                    username = data.result.username;
+                    depname = data.result.depname;
+                    roleid = data.result.roleid;
+                }
             }
         });
 
@@ -209,19 +211,21 @@
             dataType: "json",
             type: "post",
             success: function (data2) {
-                var depContent = '';
-                for (var i = 0; i < data2.length; i++) {
-                    if(depname==data2[i].depname){
-                        var c1 =
-                            '  <option value="' + data2[i].id + '" selected="selected">' + data2[i].depname + '</option>';
-                    }else{
-                        var c1 =
-                            '  <option value="' + data2[i].id + '">' + data2[i].depname + '</option>';
-                    }
+                if(data2.code == "200"){
+                    var depContent = '';
+                    for (var i = 0; i < data2.result.length; i++) {
+                        if(depname==data2.result[i].depname){
+                            var c1 =
+                                '  <option value="' + data2.result[i].id + '" selected="selected">' + data2.result[i].depname + '</option>';
+                        }else{
+                            var c1 =
+                                '  <option value="' + data2.result[i].id + '">' + data2.result[i].depname + '</option>';
+                        }
 
-                    depContent += c1;
+                        depContent += c1;
+                    }
+                    $("#depid").html(depContent);
                 }
-                $("#deps").html(depContent);
             }
         })
 
@@ -232,23 +236,57 @@
             dataType: "json",
             type: "post",
             success: function (data3) {
-                var roleContent = '';
-                for (var i = 0; i < data3.length; i++) {
-                    if(roleid==data3[i].id){
-                        var c2 =
-                            '  <option value="' + data3[i].id + '" selected="selected">' + data3[i].name + '</option>';
-                    }else{
-                        var c2 =
-                            '  <option value="' + data3[i].id + '">' + data3[i].name + '</option>';
+                if(data3.code == "200"){
+                    var roleContent = '';
+                    for (var i = 0; i < data3.result.length; i++) {
+                        if(roleid==data3.result[i].id){
+                            var c2 =
+                                '  <option value="' + data3.result[i].id + '" selected="selected">' + data3.result[i].name + '</option>';
+                        }else{
+                            var c2 =
+                                '  <option value="' + data3.result[i].id + '">' + data3.result[i].name + '</option>';
+                        }
+                        roleContent += c2;
                     }
-                    roleContent += c2;
+                    $("#roleid").html(roleContent);
                 }
-                $("#roles").html(roleContent);
             }
         })
         
     }
 
+    $("#updateManager").bind("click",function () {
+        var da = JSON.stringify({userid: $("#userid").val(),depid:$("#depid").val(),roleid:$("#roleid").val()})
+        var path = getContextPath() + "/permission/manager/updateManagerPermission"
+        $.ajax({
+            url: path,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            data: da,
+            type: "post",
+            success: function (data) {
+                if (data == true) {
+                    layer.msg('重置成功', {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 1,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                    setTimeout(function () {
+                        $("#cancelUpdate").click();
+                        loadData();
+                    },1000)
+                }else{
+                    layer.msg(data.message, {
+                        skin: 'layui-layer-molv', //样式类名
+                        closeBtn: 0,
+                        icon: 2,
+                        time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                    })
+                }
+            }
+        })
+    })
     function resetConfirm() {
         layer.confirm('重置密码为11111111,确认重置吗?', {
                 skin: 'layui-layer-molv', //样式类名

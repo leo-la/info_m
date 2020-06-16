@@ -1,6 +1,6 @@
 package com.tfswx.controller.backcontroller;
 
-import com.tfswx.pojo.ErrorMsg;
+import com.tfswx.exception.ResultBody;
 import com.tfswx.pojo.User;
 import com.tfswx.service.PermissionService;
 import org.apache.shiro.SecurityUtils;
@@ -61,16 +61,14 @@ public class UserController {
 
     @RequestMapping("/updatePassword")
     @ResponseBody
-    public ErrorMsg updatePassword(@RequestBody Map<String,String> map, ErrorMsg errorMsg){
+    public ResultBody updatePassword(@RequestBody Map<String,String> map){
         User user = (User) SecurityUtils.getSubject().getPrincipal();
-        System.out.println(user.getPassword());
-        System.out.println(map.get("oldPassword"));
+
         if(!user.getPassword().equals(map.get("oldPassword"))){
-            errorMsg.setName("原始密码错误");
-            return errorMsg;
+            return ResultBody.error("400","原始密码错误");
         }else{
-            errorMsg.setName(permissionService.updatePassword(user.getUsername(),map.get("newPassword")));
-            return errorMsg;
+            permissionService.updatePassword(user.getUsername(),map.get("newPassword"));
+            return ResultBody.success();
         }
     }
 }
