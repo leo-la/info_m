@@ -16,7 +16,7 @@ public class ThreeDirectoryAbstractPage extends AbstractPageTemplate {
     @Override
     public PageBean getTotalCount(PageBean pageBean, BaseDao dao) {
         Dao Dao = (Dao) dao;
-        pageBean.setTotalCount(Dao.countHistoryVersionsByVersionid(pageBean.getId()));
+        pageBean.setTotalCount(Dao.countNo_3DirFiles(pageBean.getId()));
         return pageBean;
     }
 
@@ -41,7 +41,7 @@ public class ThreeDirectoryAbstractPage extends AbstractPageTemplate {
         Dao Dao = (Dao) dao;
         Integer start = (pageBean.getCurrentPage()-1) * pageBean.getPageSize();
         Integer size = pageBean.getPageSize();
-        List<FileInfo> fileInfos = Dao.listHistoryVersionPageByVersionid(start, size, pageBean.getId());
+        List<FileInfo> fileInfos = Dao.listNo_3DirPage(start, size, pageBean.getId());
         for (FileInfo fileInfo : fileInfos) {
             fileInfo.setName(CommonUtils.operateFileNames(fileInfo.getName()));
         }

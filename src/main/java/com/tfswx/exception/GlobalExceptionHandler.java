@@ -3,11 +3,13 @@ package com.tfswx.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileNotFoundException;
 
 /**
  * 统一异常处理器
@@ -55,6 +57,32 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ResultBody exceptionHandler(HttpServletRequest req, Exception e){
         logger.error("未知异常！原因是:",e);
+        return ResultBody.error(exceptionEnum.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * 数据库操作异常
+     * @param req
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value =DataIntegrityViolationException.class)
+    @ResponseBody
+    public ResultBody dataIntegrityViolationExceptionHandler(HttpServletRequest req, Exception e){
+        logger.error("数据库操作异常！原因是:",e);
+        return ResultBody.error(exceptionEnum.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * 指定文件文件未找到异常
+     * @param req
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value =FileNotFoundException.class)
+    @ResponseBody
+    public ResultBody fileNotFoundException(HttpServletRequest req, Exception e){
+        logger.error("指定文件文件未找到异常！原因是:",e);
         return ResultBody.error(exceptionEnum.INTERNAL_SERVER_ERROR);
     }
 }

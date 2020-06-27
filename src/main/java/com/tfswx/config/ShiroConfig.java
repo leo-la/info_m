@@ -47,19 +47,20 @@ public class ShiroConfig {
 //        role:拥有某个角色权限才可以访问
         Map<String,String> filterMap = new LinkedHashMap<>();
         filterMap.put("/","anon");
-        filterMap.put("/route/permission/**","authc");
-        filterMap.put("/route/beijing/**","authc");
-        filterMap.put("/route/confidentiality/**","authc");
-        filterMap.put("/route/firm/**","authc");
-        filterMap.put("/route/discipline/**","authc");
-        filterMap.put("/route/finance/**","authc");
-        filterMap.put("/route/human/**","authc");
-        filterMap.put("/route/law/**","authc");
-        filterMap.put("/route/military/**","authc");
-        filterMap.put("/route/office/**","authc");
-        filterMap.put("/route/operation/**","authc");
-        filterMap.put("/route/quality/**","authc");
-        filterMap.put("/route/remote/**","authc");
+        filterMap.put("/route/permission/**","roles[超级管理员]");
+        filterMap.put("/route/index/{1}","roles[公司公告管理员]");
+        filterMap.put("/route/index/{2}","roles[运营中心管理员]");
+        filterMap.put("/route/index/{3}","roles[人力资源部管理员]");
+        filterMap.put("/route/index/{4}","roles[财务部管理员]");
+        filterMap.put("/route/index/{5}","roles[质量管理部管理员]");
+        filterMap.put("/route/index/{6}","roles[保密管理办公室管理员]");
+        filterMap.put("/route/index/{7}","roles[办公室管理员]");
+        filterMap.put("/route/index/{8}","roles[政法事业部管理员]");
+        filterMap.put("/route/index/{9}","roles[军工事业部管理员]");
+        filterMap.put("/route/index/{11}","roles[遥感事业部管理员]");
+        filterMap.put("/route/index/{12}","roles[纪检监察事业部管理员]");
+        filterMap.put("/route/index/{13}","roles[北京分公司管理员]");
+        filterMap.put("/back/index","authc");
 //        filterMap.put("/main/toAdd","perms[user:add]");//授权
         bean.setUnauthorizedUrl("/");//未授权的跳转页面
         bean.setLoginUrl("/toLogin");

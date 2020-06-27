@@ -16,7 +16,7 @@ public class TwoDirectoryAbstractPage extends AbstractPageTemplate {
     @Override
     public PageBean getTotalCount(PageBean pageBean, BaseDao dao) {
         Dao Dao = (Dao) dao;
-        pageBean.setTotalCount(Dao.countVersionFiles(pageBean.getId()));
+        pageBean.setTotalCount(Dao.countNo_2DirFiles(pageBean.getId()));
         return pageBean;
     }
 
@@ -41,7 +41,7 @@ public class TwoDirectoryAbstractPage extends AbstractPageTemplate {
         Dao Dao = (Dao) dao;
         Integer start = (pageBean.getCurrentPage()-1) * pageBean.getPageSize();
         Integer size = pageBean.getPageSize();
-        List<DirectoryTwo> versionFiles = Dao.listDirectoryTwoPage(start, size, pageBean.getId());
+        List<DirectoryTwo> versionFiles = Dao.listNo_2DirPage(pageBean.getId(),start, size);
         pageBean.setPageData(versionFiles);
         return pageBean;
     }

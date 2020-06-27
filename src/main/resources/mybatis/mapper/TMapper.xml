@@ -3,79 +3,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tfswx.dao.Dao">
 
-    <select id="listDirectory" resultType="directory">
+    <!--查询-->
+    <!--一级目录-->
+    <select id="listNo_1DirPage" resultType="directory">
         SELECT id,dirname,enname,sortnum FROM i_dir
         WHERE depid=#{depid}
-    </select>
-
-    <select id="listVersionFiles" resultType="directoryTwo">
-        SELECT a.id,a.name,b.dirname, a.createtime FROM i_fileversion a
-        JOIN i_dir b ON a.dirid=b.id
-        WHERE a.dirid=#{dirid}
-    </select>
-
-    <select id="countVersionFiles" resultType="Integer" parameterType="Integer">
-      SELECT count(id) FROM i_fileversion WHERE dirid=#{dirid}
-    </select>
-
-    <select id="listDirectoryTwoPage" resultType="directoryTwo">
-      SELECT a.id,a.name,b.dirname,a.createtime,a.versionnum FROM i_fileversion a
-      JOIN i_dir b ON a.dirid=b.id
-      WHERE dirid=#{param3} LIMIT #{param1},#{param2}
-    </select>
-
-    <select id="countHistoryVersionsByVersionid" resultType="Integer" parameterType="Integer">
-    SELECT count(id) FROM i_file
-    WHERE versionid=#{versionid} AND level=1
-    </select>
-
-    <select id="countFilesByThreeDirid" resultType="Integer" parameterType="Integer">
-    SELECT count(id) FROM i_file
-    WHERE versionid=#{id} AND level=2
-    </select>
-
-    <select id="listHistoryVersionPageByVersionid" resultType="fileinfo">
-      SELECT a.id,a.name,a.description,a.createtime,a.download,a.versionid,a.type FROM i_file a
-      JOIN i_fileversion b ON a.versionid=b.id
-      WHERE a.versionid=#{param3} AND level=1 order by a.id desc LIMIT #{param1},#{param2}
-    </select>
-
-    <select id="listFilesByThreeDirid" resultType="fileinfo">
-      SELECT id,name,description,createtime,download,versionid FROM i_file
-      WHERE versionid=#{param3} AND level=2 order by id desc LIMIT #{param1},#{param2}
-    </select>
-
-    <select id="listFileBy1Dirid" resultType="Integer" parameterType="Integer">
-      SELECT id FROM i_fileversion
-      WHERE dirid=#{id}
-    </select>
-
-    <select id="listFileBy2Dirid" resultType="Integer" parameterType="Integer">
-      SELECT id FROM i_file
-      WHERE versionid=#{id}
-    </select>
-
-    <select id="getVersionFIleMaxId" resultType="Integer">
-        SELECT MAX(id) FROM i_fileversion
-    </select>
-
-    <select id="getFileUrl" resultType="String" parameterType="Integer">
-        SELECT url FROM i_file WHERE id=#{id}
-    </select>
-
-    <select id="getFileById" resultType="fileinfo" parameterType="Integer">
-        SELECT id,name,description,versionid FROM i_file
-        WHERE id=#{id}
-    </select>
-
-    <select id="getFileByName" resultType="fileinfo" parameterType="String">
-        SELECT id,description,versionid FROM i_file
-        WHERE name=#{name}
-    </select>
-
-    <select id="getFileDir" resultType="directoryTwo" parameterType="Integer">
-        SELECT name,versionnum FROM i_fileversion
-        WHERE id=#{versionid}
     </select>
 
     <select id="getDirById" resultType="directory" parameterType="Integer">
@@ -83,22 +15,91 @@
         WHERE id=#{id}
     </select>
 
+    <!--二级目录-->
+    <select id="listVersionFiles" resultType="DirectoryTwo">
+        SELECT a.id,a.name,b.dirname, a.createtime FROM i_fileversion a
+        JOIN i_dir b ON a.dirid=b.id
+        WHERE a.dirid=#{dirid}
+    </select>
+
+    <select id="countNo_2DirFiles" resultType="Integer" parameterType="Integer">
+      SELECT count(id) FROM i_fileversion WHERE dirid=#{dirid}
+    </select>
+
+    <select id="listNo_2DirPage" resultType="DirectoryTwo">
+      SELECT a.id,a.name,b.dirname,a.createtime,a.versionnum FROM i_fileversion a
+      JOIN i_dir b ON a.dirid=b.id
+      WHERE dirid=#{param1} LIMIT #{param2},#{param3}
+    </select>
+
+    <select id="listFileBy1Dirid" resultType="Integer" parameterType="Integer">
+      SELECT id FROM i_fileversion
+      WHERE dirid=#{id}
+    </select>
+
+    <select id="getFileDir" resultType="DirectoryTwo" parameterType="Integer">
+        SELECT name,versionnum FROM i_fileversion
+        WHERE id=#{parentid}
+    </select>
+
+    <!--三级目录-->
+    <select id="countNo_3DirFiles" resultType="Integer" parameterType="Integer">
+    SELECT count(id) FROM i_file
+    WHERE parentid=#{parentid} AND level=1
+    </select>
+
+    <select id="listNo_3DirPage" resultType="fileinfo">
+      SELECT a.id,a.name,a.description,a.createtime,a.download,a.parentid,a.type FROM i_file a
+      JOIN i_fileversion b ON a.parentid=b.id
+      WHERE a.parentid=#{param3} AND level=1 order by a.id desc LIMIT #{param1},#{param2}
+    </select>
+
+    <select id="countNo_4DirFiles" resultType="Integer" parameterType="Integer">
+    SELECT count(id) FROM i_file
+    WHERE parentid=#{id} AND level=2
+    </select>
+
+    <select id="listNo_4DirPage" resultType="fileinfo">
+      SELECT id,name,description,createtime,download,parentid FROM i_file
+      WHERE parentid=#{param3} AND level=2 order by id desc LIMIT #{param1},#{param2}
+    </select>
+
+    <select id="listFileBy2Dirid" resultType="Integer" parameterType="Integer">
+      SELECT id FROM i_file
+      WHERE parentid=#{id}
+    </select>
+
+    <select id="getFileUrl" resultType="String" parameterType="Integer">
+        SELECT url FROM i_file WHERE id=#{id}
+    </select>
+
+    <select id="getFileById" resultType="fileinfo" parameterType="Integer">
+        SELECT id,name,description,parentid FROM i_file
+        WHERE id=#{id}
+    </select>
+
+    <select id="getFileByName" resultType="fileinfo" parameterType="String">
+        SELECT id,description,parentid FROM i_file
+        WHERE name=#{name}
+    </select>
+
     <select id="listNewFilePreview" resultType="fileinfo" parameterType="Integer">
           SELECT a.id,a.name,a.createtime FROM i_file a
-          JOIN i_fileversion b ON a.versionid=b.id
+          JOIN i_fileversion b ON a.parentid=b.id
           WHERE b.dirid=#{dirid} ORDER BY a.id DESC limit 0,3
-
-
     </select>
 
 
-    <insert id="insertNewVersionFile">
-      INSERT INTO i_fileversion (name,createtime,dirid) VALUES(#{param2},#{param3},#{param1})
+    <!--插入-->
+    <!--一级目录-->
+    <insert id="insert1LevelDir" useGeneratedKeys="true" keyProperty="id">
+      INSERT INTO i_dir (dirname,enname,depid)
+      VALUES(#{dirname},#{enname},#{depid})
     </insert>
 
-    <insert id="insertNo_3File" parameterType="fileinfo">
-      INSERT INTO i_file (name,createtime,description,versionid,url,download,type,level)
-      VALUES(#{name},#{createtime},#{description},#{versionid},#{url},#{download},#{type},#{level})
+    <!--二级目录-->
+    <insert id="insertNewVersionFile">
+      INSERT INTO i_fileversion (name,createtime,dirid) VALUES(#{param2},#{param3},#{param1})
     </insert>
 
     <insert id="insertNo_2Dir" >
@@ -106,37 +107,20 @@
       VALUES(#{param1},#{param2},#{param3},#{param4})
     </insert>
 
-    <insert id="insert1LevelDir" useGeneratedKeys="true" keyProperty="id">
-      INSERT INTO i_dir (dirname,enname,depid)
-      VALUES(#{dirname},#{enname},#{depid})
+    <!--三级目录-->
+    <insert id="insertNo_3File" parameterType="fileinfo">
+      INSERT INTO i_file (name,createtime,description,parentid,url,download,type,level)
+      VALUES(#{name},#{createtime},#{description},#{parentid},#{url},#{download},#{type},#{level})
     </insert>
+
 
     <insert id="insertFourDir" parameterType="fileinfo">
-      INSERT INTO i_file (name,createtime,description,versionid,download,type,level)
-      VALUES(#{name},#{createtime},#{description},#{versionid},#{download},#{type},#{level})
+      INSERT INTO i_file (name,createtime,description,parentid,download,type,level)
+      VALUES(#{name},#{createtime},#{description},#{parentid},#{download},#{type},#{level})
     </insert>
 
-
-    <update id="updateUserType">
-        UPDATE i_user SET usertype=#{param2}
-        WHERE id=#{param1}
-    </update>
-
-    <update id="updateVersionNum">
-        UPDATE i_fileversion SET versionnum=#{param2}
-        WHERE id=#{param1}
-    </update>
-
-    <update id="updateDirName">
-        UPDATE i_fileversion SET name=#{param2}
-        WHERE id=#{param1}
-    </update>
-
-    <update id="updateNo_3Dir">
-        UPDATE i_file SET name=#{name},description=#{description}
-        WHERE id=#{id}
-    </update>
-
+    <!--更新-->
+    <!--一级目录-->
     <update id="updateNO_1Dir" parameterType="directory">
         UPDATE i_dir SET dirname=#{dirname},enname=#{enname}
         WHERE id=#{id}
@@ -147,16 +131,43 @@
         WHERE id=#{id}
     </update>
 
-    <update id="updateFile" parameterType="fileinfo">
-        UPDATE i_file SET name=#{name},createtime=#{createtime},description=#{description},
-        versionid=#{versionid},url=#{url},download=#{download}
+    <!--二级目录-->
+    <update id="updateVersionNum">
+        UPDATE i_fileversion SET versionnum=#{param2}
+        WHERE id=#{param1}
+    </update>
+
+    <update id="updateDirName">
+        UPDATE i_fileversion SET name=#{param2}
+        WHERE id=#{param1}
+    </update>
+
+    <!--三级目录-->
+    <update id="update3Dir">
+        UPDATE i_file SET name=#{name},description=#{description}
         WHERE id=#{id}
     </update>
 
-    <delete id="deleteUser" parameterType="Integer">
-        DELETE FROM i_user WHERE id=#{userid}
+    <update id="updateFile" parameterType="fileinfo">
+        UPDATE i_file SET name=#{name},createtime=#{createtime},description=#{description},
+        parentid=#{parentid},url=#{url},download=#{download}
+        WHERE id=#{id}
+    </update>
+
+    <!--删除-->
+    <!--一级目录-->
+    <delete id="deleteTDir" parameterType="Integer">
+        DELETE FROM i_dir
+        WHERE id=#{id}
     </delete>
 
+    <!--二级目录-->
+    <delete id="deleteFileDir" parameterType="Integer">
+        DELETE FROM i_fileversion
+        WHERE id=#{id}
+    </delete>
+
+    <!--三级目录-->
     <delete id="deleteFile" parameterType="Integer">
         DELETE FROM i_file WHERE id=#{id}
     </delete>
@@ -167,15 +178,4 @@
              #{item}
             </foreach>
     </delete>
-
-    <delete id="deleteFileDir" parameterType="Integer">
-        DELETE FROM i_fileversion
-        WHERE id=#{id}
-    </delete>
-
-    <delete id="deleteTDir" parameterType="Integer">
-        DELETE FROM i_dir
-        WHERE id=#{id}
-    </delete>
-
 </mapper>
