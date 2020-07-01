@@ -106,13 +106,14 @@ public class InfoFileUtil {
             suffix = inputFile.substring(i,inputFile.length());
         }
         if(suffix.equals(".doc")||suffix.equals(".docx")){
-
-            //word -> html
-            OfficeUtils.createHtml(inputFile, outputFile);
-            OfficeUtils.changeImageType(outputFile + ".html");//编辑html文件图片格式
-            OfficeUtils.checkHtmlEndTag(outputFile + ".html");
-
-            OfficeUtils.createPdf(outputFile + ".html",outputFile);
+            if(!new File(outputFile+".pdf").exists()){
+                //word -> html
+                OfficeUtils.createHtml(inputFile, outputFile);
+                OfficeUtils.changeImageType(outputFile + ".html");//编辑html文件图片格式
+                OfficeUtils.checkHtmlEndTag(outputFile + ".html");
+                //html -> pdf
+                OfficeUtils.createPdf(outputFile + ".html",outputFile);
+            }
 
             response.setContentType("application/pdf");
             //预览

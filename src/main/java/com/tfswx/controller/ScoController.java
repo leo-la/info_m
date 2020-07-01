@@ -100,6 +100,7 @@ public class ScoController {
         String url = InfoFileUtil.uploadFile(file, fileInfo.getName(), staticWordFilePath);
         fileInfo.setUrl(url);
         tService.addNo_3File(fileInfo);
+        LOG.info("添加三级目录文件：{}",file.getOriginalFilename());
         return true;
     }
 
@@ -112,6 +113,7 @@ public class ScoController {
     @ResponseBody
     public Boolean addNo_3Dir(@RequestBody FileInfo fileInfo){
         tService.addNo_3Dir(fileInfo);
+        LOG.info("添加三级目录：{}",fileInfo.getName());
         return true;
     }
 
@@ -129,6 +131,7 @@ public class ScoController {
         String url = InfoFileUtil.uploadFile(updatefile, fileInfo.getName(), staticWordFilePath);
         fileInfo.setUrl(url);
         tService.reuploadFile(fileInfo);
+        LOG.info("更新文件：{}",fileInfo.getName());
         return true;
     }
 
@@ -141,6 +144,7 @@ public class ScoController {
     @ResponseBody
     public Boolean addNo_2Dir(@RequestBody Map<String,String> map){
         tService.addNo_2Dir(map.get("name"), Integer.parseInt(map.get("dirid")));
+        LOG.info("创建二级目录：{}",map.get("name"));
         return true;
     }
 
@@ -153,6 +157,7 @@ public class ScoController {
     @ResponseBody
     public Boolean deleteNo_3FileDir(@RequestBody Map<String,Integer> map){
         tService.deleteNo_3File(map.get("id"));
+        LOG.info("删除三级目录文件：{}",map.get("name"));
         return true;
     }
 
@@ -165,6 +170,7 @@ public class ScoController {
     @ResponseBody
     public Boolean deleteFileDir(@RequestBody Map<String,Integer> map){
         tService.deleteFileDir(map.get("id"));
+        LOG.info("删除二级目录id：{}",map.get("id"));
         return true;
     }
 
@@ -177,6 +183,7 @@ public class ScoController {
     @ResponseBody
     public Boolean deleteNo_1Dir(@RequestBody Map<String,Integer> map){
         tService.deleteNo_1Dir(map.get("id"));
+        LOG.info("删除一级目录id：{}",map.get("id"));
         return true;
     }
 
@@ -189,6 +196,7 @@ public class ScoController {
     @ResponseBody
     public Boolean updateNo_2Dir(@RequestBody Map<String,String> map){
         tService.updateNo_2Dir(Integer.parseInt(map.get("id")),map.get("name"));
+        LOG.info("更新二级目录：{}",map.get("name"));
         return true;
     }
 
@@ -201,6 +209,7 @@ public class ScoController {
     @ResponseBody
     public Boolean updateNo_3Dir(@RequestBody FileInfo fileInfo){
         tService.updateNo_3Dir(fileInfo);
+        LOG.info("更新三级目录：{}",fileInfo.getName());
         return true;
     }
 
@@ -214,6 +223,7 @@ public class ScoController {
     public void searchFilePreview(@PathVariable String id, HttpServletResponse response) throws Exception {
         String fileUrl = tService.searchFileUrl(CommonUtils.restFulConverter(id));
         InfoFileUtil.previewFile(fileUrl,response,staticWordFilePath);
+        LOG.info("预览文件id:{}",CommonUtils.restFulConverter(id));
     }
 
     /**
@@ -228,6 +238,7 @@ public class ScoController {
     public void downloadFile(@PathVariable String id, HttpServletRequest request, HttpServletResponse response){
         String fileUrl = tService.searchFileUrl(CommonUtils.restFulConverter(id));
         InfoFileUtil.downloadFile(fileUrl,request,response);
+        LOG.info("下载文件id:{}",CommonUtils.restFulConverter(id));
     }
 
     /**
@@ -240,6 +251,7 @@ public class ScoController {
     @ResponseBody
     public Boolean sortDir(@RequestBody Map<String,Integer> map){
         tService.sortDir(map.get("opid"), map.get("id"));
+        LOG.info("目录顺序交换:{}-{}",map.get("opid"), map.get("id"));
         return true;
     }
 
@@ -252,6 +264,7 @@ public class ScoController {
     @ResponseBody
     public Boolean addTDir(@RequestBody Directory directory){
         tService.addNO_1Dir(directory);
+        LOG.info("创建一级目录:{}",directory.getDirname());
         return true;
 
     }
@@ -265,6 +278,7 @@ public class ScoController {
     @ResponseBody
     public Boolean updateNO_1Dir(@RequestBody Directory directory){
         tService.updateNO_1Dir(directory);
+        LOG.info("更新一级目录:{}",directory.getDirname());
         return true;
     }
 

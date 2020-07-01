@@ -1,6 +1,9 @@
 package com.tfswx.pojo;
 
-public class Directory implements Comparable<Directory>{
+import java.io.Serializable;
+
+public class Directory implements Comparable<Directory>,Serializable {
+    private static final long serialVersionUID = 1L;
     private Integer id;
     private String dirname;
     private Integer depid;
