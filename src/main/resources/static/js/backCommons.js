@@ -535,7 +535,7 @@ $("#reuploadFile").bind("click",function () {
             download = 1;
         }
         formData.append("updatefile", updatefile);
-        formData.append("parentid", $("#parentDirId").val());
+        formData.append("versionid", $("#parentDirId").val());
         formData.append("description", $("#updatedescription").val());
         formData.append("download", download);
         formData.append("id", $("#updateNo_3Fileid").val());
@@ -723,7 +723,7 @@ $("#addNo_2Dir").bind("click",function () {
 
 $("#addNo_3Dir").bind("click",function () {
     var da = JSON.stringify({
-        parentid: $("#parentDirId").val(),
+        versionid: $("#parentDirId").val(),
         name: $("#name").val(),
         description: $("#dirDescription").val(),
         level: $("#fileLevel").val()
@@ -766,7 +766,7 @@ $("#uploadfile").bind("click",function uploadFile() {
             download = 1;
         }
         formData.append("file",document.getElementById("file").files[0]);
-        formData.append("parentid",$("#parentDirId").val());
+        formData.append("versionid",$("#parentDirId").val());
         formData.append("description", $("#description").val());
         formData.append("download", download);
         formData.append("level", $("#fileLevel").val());

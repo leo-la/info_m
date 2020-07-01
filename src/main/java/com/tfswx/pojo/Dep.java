@@ -1,9 +1,6 @@
 package com.tfswx.pojo;
 
-import java.io.Serializable;
-
-public class Dep implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Dep {
     private Integer id;
     private String depname;
 
@@ -22,5 +19,4 @@ public class Dep implements Serializable {
     public void setDepname(String depname) {
         this.depname = depname;
     }
-
 }

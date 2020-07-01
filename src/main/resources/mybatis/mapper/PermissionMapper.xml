@@ -27,7 +27,6 @@
 
     <select id="listRoles" resultType="role">
         SELECT id,name,description FROM i_role
-        where name != '超级管理员'
     </select>
 
     <select id="listDeps" resultType="dep">
@@ -53,13 +52,10 @@
         JOIN i_dep b ON a.depid=b.id
         JOIN i_user_role c ON a.id = c.userid
         JOIN i_role d ON c.roleid = d.id
-        where (a.username='super' and d.name = '超级管理员')
-        or a.username != 'super';
     </select>
 
     <select id="countRoles" resultType="Integer">
         SELECT count(id) FROM i_role
-        where name != '超级管理员'
     </select>
 
     <select id="listUserPage" resultType="user">
@@ -74,16 +70,11 @@
        SELECT a.id,a.username,b.depname,d.name AS role, a.createtime FROM i_user a
         JOIN i_dep b ON a.depid=b.id
         JOIN i_user_role c ON a.id = c.userid
-        JOIN i_role d ON c.roleid = d.id
-        where (a.username='super' and d.name = '超级管理员')
-        or a.username != 'super'
-        LIMIT #{param1},#{param2}
+        JOIN i_role d ON c.roleid = d.id LIMIT #{param1},#{param2}
     </select>
 
     <select id="listRolesPage" resultType="role">
-       SELECT id,name,description FROM i_role
-       where name != '超级管理员'
-       LIMIT #{param1},#{param2}
+       SELECT id,name,description FROM i_role LIMIT #{param1},#{param2}
     </select>
 
     <insert id="insertUser">

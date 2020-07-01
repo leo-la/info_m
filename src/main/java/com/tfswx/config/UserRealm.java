@@ -39,7 +39,7 @@ public class UserRealm extends AuthorizingRealm {
         User principal = (User) subject.getPrincipal();
         List<String> userRoles = queryUser.listUserRoles(principal.getId());
         info.addRoles(userRoles);
-//        log.info("[{}] 登录了系统，拥有角色：[{}]",principal.getUsername(),userRoles.get(0));
+        log.info("[{}] 登录了系统，拥有角色：[{}]",principal.getUsername(),userRoles.get(0));
         return info;
     }
     //认证

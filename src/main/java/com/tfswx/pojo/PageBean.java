@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 public class PageBean implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Integer currentPage;
     private Integer totalPage;
     private Integer pageSize;
@@ -76,19 +75,5 @@ public class PageBean implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "PageBean{" +
-                "currentPage=" + currentPage +
-                ", totalPage=" + totalPage +
-                ", pageSize=" + pageSize +
-                ", totalCount=" + totalCount +
-                ", pageData=" + pageData +
-                ", pageData2=" + pageData2 +
-                ", str='" + str + '\'' +
-                ", id=" + id +
-                '}';
     }
 }
