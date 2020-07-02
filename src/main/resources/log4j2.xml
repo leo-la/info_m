@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="OFF" monitorInterval="1800">
     <properties>
-        <property name="LOG_HOME">D:\info\log</property>
+        <property name="LOG_HOME">log</property>
         <property name="FILE_NAME">finance-pay</property>
     </properties>
 
 
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout charset="UTF-8"  pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+            <PatternLayout
+                    charset="UTF-8"
+                    pattern="%style{%d} %highlight{%p} %style{%t}{magenta} %style{%C}{cyan}: %msg%n%style{%throwable}{red}"
+                    disableAnsi="false" noConsoleNoAnsi="false"/>
         </Console>
 
         <RollingFile name="running-log" fileName="${LOG_HOME}/${FILE_NAME}.log"

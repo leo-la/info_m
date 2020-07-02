@@ -16,6 +16,8 @@ spring:
   #时间转换
   mvc:
     date-format: yyyy-MM-dd
+    favicon:
+      enabled: false
   #数据源
   datasource:
     username: root

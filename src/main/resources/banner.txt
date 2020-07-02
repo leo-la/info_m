@@ -1,0 +1,9 @@
+            ${AnsiColor.BRIGHT_YELLOW}
+              /  _/ | / / ____/ __ \
+               / //  |/ / /_  / / / /
+             _/ // /|  / __/ / /_/ /
+            /___/_/ |_/_/    \____/
+               ${AnsiColor.BRIGHT_CYAN}
+             ::: version:1.3.2 :::
+           Spring-Boot ${spring-boot.version}
+ Welcome to use TFSWX Information Manager System
